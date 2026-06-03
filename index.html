@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Painkiller Almanac - iOS Pro Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body {
+            background-color: #000;
+            background-image: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #020617 60%);
+            background-attachment: fixed;
+        }
+        /* Apple-style Frosted Glass */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .glass-button:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.97); }
+        
+        /* iOS Segmented Control */
+        .ios-segment-bg { background: rgba(0, 0, 0, 0.3); border-radius: 999px; padding: 4px; }
+        .ios-segment-btn { border-radius: 999px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ios-segment-active { background: rgba(255, 255, 255, 0.15); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        
+        /* Glowing Alerts */
+        .alert-safe { background: linear-gradient(145deg, rgba(16,185,129,0.15), rgba(6,78,59,0.2)); border: 1px solid rgba(16,185,129,0.3); box-shadow: 0 0 20px rgba(16,185,129,0.1); }
+        .alert-danger { background: linear-gradient(145deg, rgba(244,63,94,0.15), rgba(136,19,55,0.2)); border: 1px solid rgba(244,63,94,0.3); box-shadow: 0 0 20px rgba(244,63,94,0.15); }
+        
+        select { -webkit-appearance: none; appearance: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        
+        /* Range Slider iOS Style */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); cursor: pointer; margin-top: -10px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 3px; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col items-center p-2 sm:p-6 lg:p-8 antialiased selection:bg-blue-500/30">
+
+    <div class="max-w-7xl w-full mx-auto space-y-4 sm:space-y-6">
+        
+        <!-- App Header -->
+        <header class="glass-panel rounded-[2rem] p-5 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-4 relative overflow-hidden">
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex items-center gap-4 z-10 w-full sm:w-auto">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-2xl flex items-center justify-center shadow-[0_8px_16px_rgba(37,99,235,0.3)] shrink-0 border border-white/20">
+                    <i class="fas fa-compass text-3xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">Almanac Pro</h1>
+                    <p class="text-sm text-blue-300 font-medium opacity-80">Passage Planner & Port Intelligence</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-center sm:items-end gap-2 z-10">
+                <div id="tideContextBanner" class="text-xs font-semibold px-4 py-2 bg-black/40 rounded-full border border-white/10 flex items-center gap-2 shadow-inner">
+                    <!-- Javascript populates personalized date here -->
+                </div>
+                <div class="text-[10px] uppercase tracking-widest font-bold text-emerald-400 flex items-center gap-1.5 px-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live Routing Active
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+            
+            <!-- LEFT COLUMN: Navigation & Map -->
+            <div class="lg:col-span-7 space-y-4 sm:space-y-6 flex flex-col">
+                
+                <!-- Routing Choosers Card -->
+                <div class="glass-panel rounded-[2rem] p-5 sm:p-6 space-y-5 relative overflow-hidden shrink-0">
+                    
+                    <div class="ios-segment-bg flex w-full">
+                        <button id="btnRouteAuto" onclick="setRoutePreference('auto')" class="ios-segment-btn ios-segment-active flex-1 py-2 text-xs font-semibold text-slate-300">Auto-Detect</button>
+                        <button id="btnRouteOffshore" onclick="setRoutePreference('offshore')" class="ios-segment-btn flex-1 py-2 text-xs font-semibold text-slate-300">Offshore Route</button>
+                        <button id="btnRouteSolent" onclick="setRoutePreference('solent')" class="ios-segment-btn flex-1 py-2 text-xs font-semibold text-slate-300">Force Solent</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+                        <div class="space-y-1.5 w-full">
+                            <label class="px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Departure</label>
+                            <div class="relative group">
+                                <select id="departure" class="w-full h-14 pl-12 pr-10 text-sm font-semibold bg-black/30 border border-white/10 rounded-2xl text-white focus:ring-2 focus:ring-blue-500 transition-all shadow-inner relative z-10"></select>
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-20"><i class="fas fa-anchor text-blue-400"></i></div>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none z-20"><i class="fas fa-chevron-down text-slate-500 text-xs"></i></div>
+                            </div>
+                        </div>
+
+                        <button onclick="swapPorts()" class="w-12 h-12 rounded-full glass-button text-white flex items-center justify-center shadow-lg transform md:mt-6 active:scale-95 transition-transform shrink-0 mx-auto">
+                            <i class="fas fa-exchange-alt rotate-90 md:rotate-0"></i>
+                        </button>
+
+                        <div class="space-y-1.5 w-full">
+                            <label class="px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Destination</label>
+                            <div class="relative group">
+                                <select id="destination" class="w-full h-14 pl-12 pr-10 text-sm font-semibold bg-black/30 border border-white/10 rounded-2xl text-white focus:ring-2 focus:ring-emerald-500 transition-all shadow-inner relative z-10"></select>
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-20"><i class="fas fa-map-marker-alt text-emerald-400"></i></div>
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none z-20"><i class="fas fa-chevron-down text-slate-500 text-xs"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Map Card (Strict Height with Overlay Buttons) -->
+                <div class="glass-panel rounded-[2rem] p-3 flex flex-col relative shadow-2xl flex-grow min-h-[400px]">
+                    <div class="relative w-full h-[350px] sm:h-[450px] rounded-[1.5rem] overflow-hidden border border-white/5">
+                        
+                        <!-- Map Canvas -->
+                        <canvas id="routingMap" class="absolute inset-0 w-full h-full bg-[#050b14] cursor-grab active:cursor-grabbing block z-10"></canvas>
+                        
+                        <!-- Top Left Coordinate Panel -->
+                        <div class="absolute top-4 left-4 z-30 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-2 pointer-events-none shadow-lg">
+                            <i class="fas fa-satellite text-blue-400"></i>
+                            <span id="coordinateReadout" class="text-[10px] font-mono font-medium text-slate-200">Plotter Active</span>
+                        </div>
+
+                        <!-- Fixed UI Map Buttons (Bottom Right) -->
+                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 z-30 pointer-events-none">
+                            <!-- pointer-events-none on parent so it doesn't block map, but pointer-events-auto on buttons so they are clickable -->
+                            <button onclick="zoomIn()" class="w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/10 text-white flex items-center justify-center active:scale-90 transition-transform shadow-md pointer-events-auto hover:bg-slate-800"><i class="fas fa-plus"></i></button>
+                            <button onclick="zoomOut()" class="w-10 h-10 rounded-full bg-black/60 backdrop-blur border border-white/10 text-white flex items-center justify-center active:scale-90 transition-transform shadow-md pointer-events-auto hover:bg-slate-800"><i class="fas fa-minus"></i></button>
+                            <button onclick="setDepartureToGPS()" class="w-10 h-10 rounded-full bg-blue-600/80 backdrop-blur border border-blue-400/30 text-white flex items-center justify-center active:scale-90 transition-transform mt-2 shadow-md pointer-events-auto hover:bg-blue-500"><i class="fas fa-location-arrow"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Dashboard & Insights -->
+            <div class="lg:col-span-5 space-y-4 sm:space-y-6 flex flex-col">
+                
+                <!-- Telemetry Dashboard -->
+                <div class="glass-panel rounded-[2rem] p-6 text-center relative overflow-hidden flex flex-col items-center justify-center shrink-0">
+                    <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-emerald-400 to-indigo-500"></div>
+                    
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Total Passage</div>
+                    <div id="distanceOutput" class="text-6xl sm:text-7xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-lg">0.0<span class="text-3xl text-slate-500 font-medium ml-1">NM</span></div>
+                    
+                    <div class="flex items-center gap-2 mt-4 bg-black/30 px-4 py-2 rounded-full border border-white/5">
+                        <i class="fas fa-hourglass-half text-sky-400 text-sm"></i>
+                        <span id="timeOutput" class="text-lg font-semibold text-white">0 hrs 0 mins</span>
+                    </div>
+                    
+                    <div class="w-full px-4 mt-6">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-2 px-1">
+                            <span>3 KTS</span><span id="speedLabel" class="text-blue-300">5.0 KTS</span><span>10 KTS</span>
+                        </div>
+                        <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Depth & Status Alert -->
+                <div id="depthAlertBox" class="rounded-[1.5rem] p-5 flex items-start gap-4 fade-in glass-panel alert-safe shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-black/40 flex items-center justify-center shrink-0 border border-white/10 shadow-inner" id="depthAlertIconBg">
+                        <i id="depthAlertIcon" class="fas fa-water text-2xl text-emerald-400"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 id="depthAlertTitle" class="text-sm font-bold text-white tracking-wide">Deep Water Safe</h4>
+                        <p id="depthAlertDesc" class="text-xs text-slate-300 leading-relaxed font-medium">No shallow bars detected. Entry clearances are adequate.</p>
+                    </div>
+                </div>
+
+                <!-- Port Intelligence Panel -->
+                <div class="glass-panel rounded-[2rem] p-6 flex-grow flex flex-col space-y-5">
+                    
+                    <div class="flex justify-between items-start border-b border-white/10 pb-4">
+                        <div class="min-w-0 pr-2">
+                            <h3 id="portName" class="text-2xl font-bold text-white tracking-tight truncate">Select Port</h3>
+                            <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                <span id="vhfChannel" class="text-[10px] font-bold bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full border border-blue-500/30"></span>
+                                <span id="harborCategory" class="text-[10px] font-bold bg-slate-700/50 text-slate-300 px-2.5 py-1 rounded-full border border-white/10"></span>
+                            </div>
+                        </div>
+                        <div id="fuelAvailable" class="shrink-0 text-right"></div>
+                    </div>
+
+                    <div class="space-y-4 text-sm font-medium text-slate-200">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fas fa-anchor text-blue-400"></i> Infrastructure</span>
+                            <div id="marinaInfo" class="bg-black/30 p-4 rounded-2xl border border-white/5 shadow-inner leading-relaxed text-xs"></div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-500/80 uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> Pilotage Warnings</span>
+                            <div class="bg-amber-900/20 p-4 rounded-2xl border border-amber-500/20 shadow-inner">
+                                <p id="hazardInfo" class="text-amber-200/90 text-xs leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- External Apps Grid -->
+                <div class="grid grid-cols-5 gap-3 shrink-0">
+                    <a id="weatherLink" href="#" target="_blank" class="glass-button rounded-2xl flex flex-col items-center justify-center p-3 gap-1.5 transition-colors group">
+                        <i class="fas fa-wind text-sky-400 text-xl group-hover:scale-110 transition-transform"></i><span class="text-[9px] font-semibold text-slate-300">Windy</span>
+                    </a>
+                    <a id="tideLink" href="#" target="_blank" class="glass-button rounded-2xl flex flex-col items-center justify-center p-3 gap-1.5 transition-colors group">
+                        <i class="fas fa-water text-indigo-400 text-xl group-hover:scale-110 transition-transform"></i><span class="text-[9px] font-semibold text-slate-300">EasyTide</span>
+                    </a>
+                    <a id="navilyLink" href="#" target="_blank" class="glass-button rounded-2xl flex flex-col items-center justify-center p-3 gap-1.5 transition-colors group">
+                        <i class="fas fa-map-marked-alt text-emerald-400 text-xl group-hover:scale-110 transition-transform"></i><span class="text-[9px] font-semibold text-slate-300">Navily</span>
+                    </a>
+                    <a id="eoceanicLink" href="#" target="_blank" class="glass-button rounded-2xl flex flex-col items-center justify-center p-3 gap-1.5 transition-colors group">
+                        <i class="fas fa-ship text-teal-400 text-xl group-hover:scale-110 transition-transform"></i><span class="text-[9px] font-semibold text-slate-300">eOceanic</span>
+                    </a>
+                    <a id="googleMapsLink" href="#" target="_blank" class="glass-button rounded-2xl flex flex-col items-center justify-center p-3 gap-1.5 transition-colors group">
+                        <i class="fas fa-location-dot text-rose-400 text-xl group-hover:scale-110 transition-transform"></i><span class="text-[9px] font-semibold text-slate-300">G-Maps</span>
+                    </a>
+                </div>
+                
+                <!-- AI Local Guide Button -->
+                <button onclick="fetchAIPortGuide()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white p-4 rounded-[1.5rem] font-bold shadow-[0_4px_20px_rgba(79,70,229,0.4)] transition-all active:scale-95 flex items-center justify-center gap-3 border border-purple-400/30 shrink-0">
+                    <i class="fas fa-sparkles text-lg animate-pulse"></i> Generate Detailed AI Guide
+                </button>
+
+                <!-- AI Output Container -->
+                <div id="aiGuideContainer" class="hidden glass-panel p-5 rounded-[1.5rem] text-sm text-slate-200 border border-purple-500/30 shadow-inner custom-scrollbar overflow-y-auto max-h-[50vh]"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Script Data & Logic -->
+    <script>
+        const depSelect = document.getElementById('departure');
+        const destSelect = document.getElementById('destination');
+        const canvas = document.getElementById('routingMap');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedLabel = document.getElementById('speedLabel');
+        let tpCache = [];
+        let currentRoutePath = [];
+
+        function telLink(p) { return `<a href="tel:${p.replace(/[^0-9]/g, '')}" class="text-blue-400 hover:text-blue-300 font-bold bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20 whitespace-nowrap"><i class="fas fa-phone-alt text-[10px]"></i> ${p}</a>`; }
+        function emailLink(e) { return `<a href="mailto:${e}" class="text-sky-400 hover:text-sky-300 font-bold bg-sky-500/10 px-2 py-0.5 rounded-lg border border-sky-500/20"><i class="fas fa-envelope text-[10px]"></i> Email</a>`; }
+        function webLink(u, l) { return `<a href="${u}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-bold bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg"><i class="fas fa-globe text-[10px]"></i> ${l}</a>`; }
+        function vhfBadge(c) { return `<span class="inline-block text-sky-300 font-bold bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/30 text-[10px] mx-1"><i class="fas fa-walkie-talkie"></i> Ch ${c}</span>`; }
+        
+        let zoomLevel = 1.0; let panX = 0; let panY = 0;
+        let isDragging = false; let isTouchDragging = false;
+        let startX = 0; let startY = 0; let lastTouchX = 0; let lastTouchY = 0;
+        let dragDistance = 0; let touchDragDistance = 0;
+        let activeRoutePreference = 'auto';
+
+        // Coastal Geometry Data
+        const coastline=[{lon:-6.6,lat:50.05},{lon:-6.4,lat:49.95},{lon:-5.81,lat:50.02},{lon:-5.71,lat:50.06},{lon:-5.58,lat:50.12},{lon:-5.52,lat:50.14},{lon:-5.43,lat:50.12},{lon:-5.30,lat:50.03},{lon:-5.20,lat:49.96},{lon:-5.12,lat:50.05},{lon:-5.10,lat:50.08},{lon:-5.14,lat:50.10},{lon:-5.10,lat:50.11},{lon:-5.08,lat:50.11},{lon:-5.06,lat:50.15},{lon:-5.11,lat:50.16},{lon:-5.06,lat:50.18},{lon:-5.06,lat:50.26},{lon:-5.03,lat:50.26},{lon:-5.01,lat:50.16},{lon:-4.96,lat:50.18},{lon:-4.78,lat:50.21},{lon:-4.65,lat:50.31},{lon:-4.64,lat:50.32},{lon:-4.64,lat:50.36},{lon:-4.62,lat:50.36},{lon:-4.62,lat:50.33},{lon:-4.50,lat:50.32},{lon:-4.18,lat:50.33},{lon:-4.19,lat:50.40},{lon:-4.16,lat:50.40},{lon:-4.14,lat:50.36},{lon:-4.06,lat:50.31},{lon:-4.04,lat:50.32},{lon:-4.03,lat:50.31},{lon:-3.98,lat:50.31},{lon:-3.85,lat:50.23},{lon:-3.79,lat:50.21},{lon:-3.78,lat:50.25},{lon:-3.76,lat:50.25},{lon:-3.76,lat:50.21},{lon:-3.68,lat:50.22},{lon:-3.58,lat:50.34},{lon:-3.60,lat:50.39},{lon:-3.69,lat:50.44},{lon:-3.66,lat:50.45},{lon:-3.57,lat:50.40},{lon:-3.55,lat:50.35},{lon:-3.48,lat:50.40},{lon:-3.52,lat:50.47},{lon:-3.45,lat:50.56},{lon:-3.35,lat:50.62},{lon:-2.93,lat:50.72},{lon:-2.82,lat:50.68},{lon:-2.65,lat:50.65},{lon:-2.45,lat:50.51},{lon:-2.43,lat:50.54},{lon:-2.41,lat:50.60},{lon:-2.26,lat:50.61},{lon:-2.10,lat:50.59},{lon:-1.97,lat:50.61},{lon:-1.95,lat:50.68},{lon:-2.06,lat:50.71},{lon:-1.98,lat:50.73},{lon:-1.94,lat:50.69},{lon:-1.91,lat:50.68},{lon:-1.82,lat:50.71},{lon:-1.72,lat:50.73},{lon:-1.56,lat:50.70},{lon:-1.55,lat:50.75},{lon:-1.52,lat:50.75},{lon:-1.48,lat:50.72},{lon:-1.45,lat:50.80},{lon:-1.42,lat:50.80},{lon:-1.41,lat:50.83},{lon:-1.42,lat:50.90},{lon:-1.37,lat:50.90},{lon:-1.31,lat:50.85},{lon:-1.10,lat:50.79},{lon:-1.12,lat:50.84},{lon:-1.08,lat:50.84},{lon:-1.05,lat:50.79},{lon:-0.97,lat:50.78},{lon:-0.95,lat:50.82},{lon:-0.91,lat:50.82},{lon:-0.93,lat:50.78},{lon:-0.75,lat:50.79},{lon:-0.50,lat:50.80}];
+        const iow=[{lon:-1.58,lat:50.66},{lon:-1.50,lat:50.71},{lon:-1.43,lat:50.73},{lon:-1.41,lat:50.71},{lon:-1.39,lat:50.73},{lon:-1.30,lat:50.76},{lon:-1.31,lat:50.70},{lon:-1.27,lat:50.70},{lon:-1.28,lat:50.76},{lon:-1.08,lat:50.73},{lon:-1.06,lat:50.66},{lon:-1.10,lat:50.67},{lon:-1.08,lat:50.65},{lon:-1.30,lat:50.57},{lon:-1.58,lat:50.66}];
+        
+        const lighthouses=[
+            {name:"Needles",lat:50.662,lon:-1.642,color:"rgba(239, 68, 68, 0.4)",period:4000,hasSector:true,sectorStart:2.4,sectorEnd:4.1},
+            {name:"Portland Bill",lat:50.455,lon:-2.455,color:"rgba(255, 255, 255, 0.3)",period:2000,hasSector:false},
+            {name:"Eddystone",lat:50.180,lon:-4.265,color:"rgba(255, 255, 255, 0.3)",period:10000,hasSector:false},
+            {name:"Start Point",lat:50.221,lon:-3.642,color:"rgba(255, 255, 255, 0.3)",period:8000,hasSector:false},
+            {name:"Lizard Point",lat:49.959,lon:-5.201,color:"rgba(255, 255, 255, 0.35)",period:3000,hasSector:false}
+        ];
+
+        // MASSIVE Fully Restored Database with Rich AI Guides
+        const mapNodes = {
+            chichester_entrance: { name: "Chichester Entrance", lat: 50.764, lon: -0.935, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0068", vhf: "CH 14 / 80", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Chichester Marina ${vhfBadge('80')} ${telLink('01243 512731')}<br>• Birdham Pool Marina ${vhfBadge('80')} ${telLink('01243 512310')}<br>• Sparkes Marina ${vhfBadge('80')} ${telLink('023 9246 3572')}<br>HM (Chichester): ${telLink('01243 512301')}`,
+                hazards: "Chichester Bar: Extremely dangerous shallow entrance bar in southerly wind-against-tide conditions. Ebb current runs up to 6 knots.", links: ["iow_east_offshore", "solent_east_forts"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Ship Inn (Itchenor)</strong> - Classic sailing pub, great woodfires.</li><li><strong>Crown & Anchor (Dell Quay)</strong> - Spectacular waterside sunsets.</li><li><strong>Anchor Bleu (Bosham)</strong> - Historic, floods at high tide.</li><li><strong>The Lamb Inn (Wittering)</strong> - Premium country pub.</li><li><strong>The Bell Inn</strong> - Local favorite in Chichester.</li><li><strong>The Sussex Brewery</strong> - Famous for local sausages and ales.</li><li><strong>The Old Cross</strong> - 16th Century tavern in town.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Deck Cafe</strong> - Excellent breakfasts inside the marina.</li><li><strong>Purchases Restaurant</strong> - High-end dining.</li><li><strong>Cassons Restaurant</strong> - Award-winning European menu.</li><li><strong>Crab & Lobster (Sidlesham)</strong> - Superb local seafood.</li><li><strong>The Richmond Arms</strong> - Gastronomic excellence.</li><li><strong>Brasserie Blanc</strong> - Classic French bistro.</li><li><strong>Little London</strong> - Authentic Italian.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Tinwood Estate Vineyard</strong> - Famous local sparkling wine tasting.</li><li><strong>West Dean Gardens</strong> - Stunning restored 19th-century gardens.</li><li><strong>Cass Sculpture Foundation</strong> - Woodland art trail.</li><li><strong>Chichester Cathedral & Bishop's Palace Gardens</strong> - Historic oasis.</li></ul></div></div>`
+            },
+            bembridge: { name: "Bembridge Harbour", lat: 50.685, lon: -1.050, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0064", vhf: "CH 80", category: "Harbour", fuel: "Diesel Only",
+                marina: `• Bembridge Marina ${vhfBadge('80')} ${telLink('01983 872828')}<br>• Duver Marina ${vhfBadge('80')} ${telLink('01983 872828')}`, 
+                hazards: "Highly tidal drying access. Narrow winding channel marked by withies. Stay clear of the Bembridge Ledge to the east.", links: ["solent_east_forts", "iow_east_offshore", "priory_bay", "whitecliff_bay", "seaview"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Pilot Boat Inn</strong> - Overlooking the harbor, great pizzas.</li><li><strong>The Propeller Inn</strong> - Atmospheric pub by the airfield.</li><li><strong>Crab & Lobster Inn</strong> - Stunning sea views from the cliff edge.</li><li><strong>The Village Inn</strong> - Cozy hub in the village center.</li><li><strong>Ye Olde Village Inn</strong> - Traditional thatched roof pub.</li><li><strong>The Spinnaker</strong> - Excellent real ales.</li><li><strong>The Vine Inn (St Helens)</strong> - Overlooking the village green.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Terrace (St Helens)</strong> - Fine dining by the green.</li><li><strong>Lockslane Bistro</strong> - Highly rated intimate dinner spot.</li><li><strong>Fox's Restaurant</strong> - Fantastic local seafood and steaks.</li><li><strong>The Beach Hut</strong> - Legendary seafood on the sand.</li><li><strong>Bembridge Coast Hotel Dining</strong> - Refined sea-view restaurant.</li><li><strong>Captains Table</strong> - Family friendly classic food.</li><li><strong>Brading Roman Villa Cafe</strong> - Great lunches with history.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Bembridge Windmill</strong> - The last surviving windmill on the IOW.</li><li><strong>Adgestone Vineyard</strong> - One of the oldest vineyards in England (short taxi).</li><li><strong>Culver Down Heritage Coast</strong> - Spectacular cliff walks and wildflowers.</li><li><strong>RSPB Brading Marshes</strong> - Nature reserve walking trails.</li></ul></div></div>`
+            },
+            priory_bay: { name: "Priory Bay (Anchorage)", lat: 50.721, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Anchorage on sand/mud. Excellent shelter in SW/W winds.`, hazards: "Shallow shelf extends far offshore. Avoid dropping anchor in the sensitive seagrass meadows.", links: ["bembridge", "solent_east_forts"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Old Fort (Seaview)</strong> - Direct sea wall access.</li><li><strong>The Boat House</strong> - Beachside local ales.</li><li><strong>The Vine Inn (St Helens)</strong> - Historic village green pub.</li><li><strong>The Spinnaker</strong> - Close walk, yachting crowd.</li><li><strong>Crab & Lobster Inn</strong> - Beautiful cliffside walk.</li><li><strong>The Pilot Boat Inn</strong> - Over in Bembridge harbor.</li><li><strong>The Propeller Inn</strong> - Near the small runway.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Terrace (St Helens)</strong> - Superb local ingredients.</li><li><strong>Seaview Hotel Restaurant</strong> - Award winning dining.</li><li><strong>Lily's Coffee Shop</strong> - Great cakes and lunches.</li><li><strong>The Beach Hut</strong> - Short walk for legendary seafood.</li><li><strong>Lockslane Bistro</strong> - Evening fine dining.</li><li><strong>Fox's Restaurant</strong> - Hearty coastal meals.</li><li><strong>Captains Table</strong> - Relaxed bistro fare.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Priory Bay Woods</strong> - Protected National Trust ancient woodland backing the beach.</li><li><strong>St Helens Duver</strong> - Coastal sand dune ecosystem.</li><li><strong>Nunwell House Gardens</strong> - Historic estate (short taxi).</li></ul></div></div>`
+            },
+            whitecliff_bay: { name: "Whitecliff Bay (Anchorage)", lat: 50.670, lon: -1.090, isPort: true, isShallowBar: false, tideId: "0064", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Anchorage on sand. Dramatic chalk-cliff scenery.`, hazards: "Do not cut inside the Bembridge Ledge cardinal markers. Watch for submerged limestone ledges near the beach.", links: ["bembridge", "iow_east_offshore"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Culver Haven Inn</strong> - Spectacular views at the top of the cliff.</li><li><strong>Crab & Lobster Inn</strong> - Short walk along the coast path.</li><li><strong>The Pilot Boat Inn</strong> - Over in Bembridge.</li><li><strong>The Village Inn</strong> - Bembridge center.</li><li><strong>Ye Olde Village Inn</strong> - Thatched roof classic.</li><li><strong>The Propeller Inn</strong> - Edge of the airfield.</li><li><strong>The Spinnaker</strong> - Great local ales.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Whitecliff Bay Beach Cafe</strong> - Right on the sand.</li><li><strong>The Beach Hut</strong> - Bembridge coast seafood.</li><li><strong>Lockslane Bistro</strong> - Fine dining nearby.</li><li><strong>Fox's Restaurant</strong> - Excellent steaks and fish.</li><li><strong>The Terrace</strong> - St Helens green.</li><li><strong>Bembridge Coast Hotel Dining</strong> - Sea views.</li><li><strong>Captains Table</strong> - Family bistro.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Culver Down</strong> - Unmatched panoramic coastal views and walks.</li><li><strong>Bembridge Windmill</strong> - Historic Trust property.</li><li><strong>Adgestone Vineyard</strong> - Tours and tastings nearby.</li></ul></div></div>`
+            },
+            seaview: { name: "Seaview (Anchorage)", lat: 50.723, lon: -1.105, isPort: true, isShallowBar: false, tideId: "0064", vhf: "CH M1 / 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Seaview Yacht Club visitor moorings ${vhfBadge('M1')}<br>• Yacht Club HM: ${telLink('01983 612536')}`, hazards: "Exposed anchorage to any northern or easterly winds. Strong tidal streams run through the nearby Solent channel.", links: ["bembridge", "solent_east_forts"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Old Fort</strong> - Legendary sea wall pub.</li><li><strong>The Boat House</strong> - Fantastic beachside drinks.</li><li><strong>The Vine Inn</strong> - Short walk to St Helens.</li><li><strong>The Spinnaker</strong> - Bembridge yachting pub.</li><li><strong>Pilot Boat Inn</strong> - Bembridge harbor.</li><li><strong>Crab & Lobster Inn</strong> - Coastal path pub.</li><li><strong>The Propeller Inn</strong> - Classic tavern.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Seaview Hotel Restaurant</strong> - Michelin Bib Gourmand.</li><li><strong>The Terrace (St Helens)</strong> - Exceptional local dining.</li><li><strong>Lily's Coffee Shop</strong> - Breakfast and bakes.</li><li><strong>The Beach Hut</strong> - Bembridge ledge seafood.</li><li><strong>Lockslane Bistro</strong> - Highly rated dinners.</li><li><strong>Fox's Restaurant</strong> - Hearty coastal menu.</li><li><strong>Captains Table</strong> - Family friendly.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Puckpool Park</strong> - Historic battery gardens and parkland.</li><li><strong>Rosemary Vineyard</strong> - Short drive for local wine tasting.</li><li><strong>Appley Beach Walks</strong> - Miles of sandy trails toward Ryde.</li></ul></div></div>`
+            },
+            portsmouth: { name: "Portsmouth Harbour", lat: 50.790, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0065", vhf: "CH 11 (KHM)", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Haslar Marina ${vhfBadge('80')} ${telLink('023 9252 4811')}<br>• Gunwharf Quays ${vhfBadge('80')} ${telLink('023 9283 6732')}<br>• Gosport Marina ${vhfBadge('80')} ${telLink('023 9252 4811')}<br>• Port Solent ${vhfBadge('80')} ${telLink('023 9221 0765')}<br>KHM Office: ${telLink('023 9272 3124')}`,
+                hazards: "Extremely heavy shipping, ferry, and Navy traffic. Small Boat Channel strictly enforced. Do not cross the Swashway without active KHM approval.", links: ["solent_east_forts", "stokes_bay"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Still & West</strong> - Watch supercarriers from the bay window.</li><li><strong>Spice Island Inn</strong> - Classic pier-style pub on the entrance.</li><li><strong>The Bridge Tavern</strong> - Tucked away in the Camber docks.</li><li><strong>The Hole In The Wall</strong> - Exceptional real ale pub.</li><li><strong>The Wellington</strong> - Historic Old Portsmouth favorite.</li><li><strong>The Dolphin</strong> - Portsmouth's oldest pub (est 1716).</li><li><strong>The Ship Anson</strong> - Classic dockyard sailors' tavern.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Lightship Haslar</strong> - Fine dining aboard a restored green lightship.</li><li><strong>Brasserie Blanc</strong> - Elegant French dining in Gunwharf.</li><li><strong>The Alchemist</strong> - Theatrical cocktails and dining.</li><li><strong>Loch Fyne</strong> - Excellent seafood in an old armory.</li><li><strong>Abarbistro</strong> - Great steaks and seafood in Old Portsmouth.</li><li><strong>Restaurant 27</strong> - Michelin-starred local gastronomy.</li><li><strong>Sant Yago</strong> - Premium tapas and cocktails.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Historic Dockyard & HMS Victory</strong> - World leading naval museum.</li><li><strong>Spinnaker Tower</strong> - 170m high observation deck.</li><li><strong>Southsea Castle & Gardens</strong> - Henry VIII's historic fort.</li><li><strong>Gunwharf Quays</strong> - Premium designer outlet shopping.</li></ul></div></div>`
+            },
+            stokes_bay: { name: "Stokes Bay (Anchorage)", lat: 50.785, lon: -1.165, isPort: true, isShallowBar: false, tideId: "0065", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Open roadstead anchorage with gravel/shingle holding.`, hazards: "Sits immediately adjacent to the deep-water Gosport shipping lane. Strong tidal currents sweep parallel to the shoreline.", links: ["portsmouth", "solent_mid"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Anglesey Hotel Bar</strong> - Overlooking the bay.</li><li><strong>The Fighting Cocks</strong> - Classic local pub nearby.</li><li><strong>The Bayside Cabin Bar</strong> - Beachfront drinks.</li><li><strong>The Bun Penny</strong> - Historic coaching inn in Lee-on-the-Solent.</li><li><strong>The Old Ship</strong> - Traditional ale house.</li><li><strong>The Still & West</strong> - Short taxi to Portsmouth.</li><li><strong>Spice Island Inn</strong> - Short taxi to Portsmouth.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Pebbles Beach Cafe</strong> - Excellent fish and chips on the beach.</li><li><strong>Leon's Bistro</strong> - Highly rated local dining.</li><li><strong>The Seahorse</strong> - Great coastal menu.</li><li><strong>Penguin Cafe</strong> - Breakfasts and brunches.</li><li><strong>Bluebird Cafe</strong> - Waterside lunches.</li><li><strong>Lightship Haslar</strong> - Premium dining a short taxi away.</li><li><strong>Abarbistro</strong> - Portsmouth harbor side.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Stanley Park</strong> - Beautiful floral gardens directly behind the beach.</li><li><strong>Hovercraft Museum</strong> - Unique collection at Lee-on-the-Solent.</li><li><strong>Gilkicker Fort</strong> - Historic coastal defenses walking route.</li></ul></div></div>`
+            },
+            southampton: { name: "Southampton Water", lat: 50.850, lon: -1.390, isPort: true, isShallowBar: false, tideId: "0060", vhf: "CH 12", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Ocean Village ${vhfBadge('80')} ${telLink('023 8022 9385')}<br>• Hythe Marina ${vhfBadge('80')} ${telLink('023 8020 7073')}<br>• Town Quay ${vhfBadge('80')} ${telLink('023 8023 4397')}`, 
+                hazards: "Enforced Moving Prohibited Zone (MPZ) around vessels >150m. Massive container ships and cruise liners cannot stop or turn in the channel.", links: ["solent_mid"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Dancing Man Brewery</strong> - Amazing local ales in a 14th-century wool house.</li><li><strong>The Duke of Wellington</strong> - Historic timber-framed pub.</li><li><strong>The Red Lion</strong> - Henry V's historic courtroom pub.</li><li><strong>The Oxford Tavern</strong> - Great atmosphere near Ocean Village.</li><li><strong>The Platform Tavern</strong> - Historic pub next to the old docks.</li><li><strong>The White Star Tavern</strong> - Premium gastro pub.</li><li><strong>The Grapes</strong> - Famous Titanic-linked local pub.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Banana Wharf</strong> - Lively dockside dining.</li><li><strong>Ennio's</strong> - Superb Italian in a converted warehouse.</li><li><strong>The Pig - in the wall</strong> - Exceptional deli and dining.</li><li><strong>Blue Jasmine</strong> - High-end Southeast Asian cuisine.</li><li><strong>Porters Wine & Charcuterie</strong> - Great evening spot.</li><li><strong>Ottoman Kitchen</strong> - Award-winning Turkish food.</li><li><strong>Kuti's Brasserie</strong> - Royal Pier fine Indian dining.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Tudor House & Garden</strong> - Historic jewel in the Old Town.</li><li><strong>Exbury Gardens & Steam Railway</strong> - Short journey to world-class flora.</li><li><strong>SeaCity Museum</strong> - Learn the deep Titanic history.</li><li><strong>Netley Abbey</strong> - Dramatic romantic ruins near the water.</li></ul></div></div>`
+            },
+            beaulieu: { name: "Beaulieu River", lat: 50.800, lon: -1.425, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0060", vhf: "CH 68", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Buckler's Hard Yacht Harbour ${vhfBadge('68')} ${telLink('01590 616200')}`, 
+                hazards: "Dolphin beacon marks the entrance. Narrow winding channel flanked by shallow mudflats. Keep strictly inside withies.", links: ["solent_mid"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Master Builder's House</strong> - River bank at Buckler's Hard.</li><li><strong>The Montague Arms</strong> - Historic inn at Beaulieu village.</li><li><strong>The Turfcutters Arms</strong> - Classic New Forest local.</li><li><strong>The East End Arms</strong> - Famous traditional alehouse.</li><li><strong>The Royal Oak</strong> - Cozy pub with forest ponies outside.</li><li><strong>The Trusty Servant</strong> - Village green pub in Minstead.</li><li><strong>The Chequers Inn</strong> - Riverside dining nearby.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Terrace Restaurant</strong> - Michelin-starred luxury dining.</li><li><strong>Beaulieu Hotel Bakehouse</strong> - Great afternoon teas.</li><li><strong>Monty's Inn</strong> - Hearty forest fare.</li><li><strong>The Pig (Brockenhurst)</strong> - Legendary 25-mile menu.</li><li><strong>Lime Wood (Lyndhurst)</strong> - Ultra-premium Italian dining.</li><li><strong>Steff's Kitchen</strong> - Brilliant village cafe.</li><li><strong>Exbury Gardens Cafe</strong> - Great lunches after walking.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Exbury Gardens</strong> - World famous Rothschild rhododendron gardens.</li><li><strong>Palace House & Gardens</strong> - Beaulieu estate grounds.</li><li><strong>National Motor Museum</strong> - Huge collection of classic cars.</li><li><strong>Buckler's Hard Museum</strong> - 18th-century shipbuilding village.</li></ul></div></div>`
+            },
+            cowes: { name: "Cowes Harbour", lat: 50.760, lon: -1.290, isPort: true, isShallowBar: false, tideId: "0062", vhf: "CH 69", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')}<br>• Shepards Marina ${vhfBadge('80')} ${telLink('01983 297821')}<br>• East Cowes Marina ${vhfBadge('80')} ${telLink('01983 293983')}`, 
+                hazards: "High-speed red-funnel passenger ferries. Chain ferry at river mouth has absolute priority—do not try to cut across.", links: ["solent_mid", "osborne_bay", "king_quay"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Anchor</strong> - Quintessential yachting pub, live music.</li><li><strong>The Pier View</strong> - Historic sailor's favorite.</li><li><strong>The Globe</strong> - Seafront views and great atmosphere.</li><li><strong>The Fountain</strong> - Central coaching inn on the quay.</li><li><strong>The Union Inn</strong> - Excellent boutique pub.</li><li><strong>The Duke of York</strong> - Traditional local with great ales.</li><li><strong>The Vectis Tavern</strong> - Lively high street spot.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Smoking Lobster</strong> - Exceptional Pan-Asian seafood.</li><li><strong>The Coast Bar & Dining</strong> - Lively brasserie and pizzas.</li><li><strong>Gastronomy</strong> - Fine dining street food.</li><li><strong>Harbour Kitchen</strong> - Famous gourmet burgers.</li><li><strong>Mojacs</strong> - Intimate, highly rated bistro.</li><li><strong>The Heron</strong> - Award-winning tasting menus.</li><li><strong>The Woodnutts</strong> - Classic seafood dining.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Osborne House & Gardens</strong> - Queen Victoria's palatial holiday home.</li><li><strong>Northwood House & Park</strong> - Sweeping lawns and woodland.</li><li><strong>Adgestone Vineyard</strong> - Short taxi to local IOW wine tasting.</li><li><strong>Classic Boat Museum</strong> - Rich maritime history.</li></ul></div></div>`
+            },
+            osborne_bay: { name: "Osborne Bay (Anchorage)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Extremely popular sandy daytime anchorage.`, hazards: "Extremely crowded during peak summer weekends. Guard the historic royal beach exclusion zone boundaries.", links: ["cowes", "solent_mid"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Folly Inn</strong> - Epic riverside pub up the Medina.</li><li><strong>The Lifeboat</strong> - Over in East Cowes marina.</li><li><strong>The Anchor</strong> - Classic pub in Cowes.</li><li><strong>The Pier View</strong> - Real ales in Cowes.</li><li><strong>The Duke of York</strong> - Cowes local.</li><li><strong>The Globe</strong> - Seafront pub.</li><li><strong>The Union Inn</strong> - Boutique tavern.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Osborne Beach Cafe</strong> - Royal beach ice creams and lunches.</li><li><strong>Smoking Lobster</strong> - High-end seafood in Cowes.</li><li><strong>The Coast Bar</strong> - Cowes brasserie.</li><li><strong>Gastronomy</strong> - Cowes fine dining.</li><li><strong>Harbour Kitchen</strong> - Great burgers.</li><li><strong>Mojacs</strong> - Intimate dining.</li><li><strong>The Heron</strong> - Award-winning menus.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Osborne House Gardens</strong> - Land at the beach and walk right into Queen Victoria's estate.</li><li><strong>Whippingham Church</strong> - Historic royal church nearby.</li><li><strong>Classic Boat Museum</strong> - Cowes maritime history.</li></ul></div></div>`
+            },
+            king_quay: { name: "King's Quay (Anchorage)", lat: 50.755, lon: -1.220, isPort: true, isShallowBar: false, tideId: "0062", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Isolated creek anchorage bordered by private ancient oak woods.`, hazards: "Dries rapidly. Shallow mud bars at creek mouth. Completely remote, no facilities.", links: ["cowes", "solent_mid"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Folly Inn</strong> - Famous riverside pub a short trip west.</li><li><strong>The Lifeboat</strong> - East Cowes.</li><li><strong>The Anchor</strong> - West Cowes.</li><li><strong>The Pier View</strong> - West Cowes.</li><li><strong>The Duke of York</strong> - West Cowes.</li><li><strong>The Globe</strong> - West Cowes.</li><li><strong>The Fishbourne</strong> - Short trip east.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Smoking Lobster</strong> - Cowes.</li><li><strong>The Coast Bar</strong> - Cowes.</li><li><strong>Gastronomy</strong> - Cowes.</li><li><strong>Harbour Kitchen</strong> - Cowes.</li><li><strong>Mojacs</strong> - Cowes.</li><li><strong>The Heron</strong> - Cowes.</li><li><strong>Osborne Beach Cafe</strong> - Next bay over.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Ancient Oak Woodlands</strong> - The creek is surrounded by pristine, untouched private forests.</li><li><strong>Osborne House Gardens</strong> - Just around the corner.</li><li><strong>Quarr Abbey</strong> - Historic monastery a short distance east.</li></ul></div></div>`
+            },
+            newtown_creek: { name: "Newtown Creek", lat: 50.725, lon: -1.417, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0061", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• National Trust protected wildlife reserve.`, hazards: "Shallow, shifting entrance bar. Extremely fast cross-currents at the entrance mouth. Stay close to the spit markers.", links: ["solent_mid", "yarmouth"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The New Inn (Shalfleet)</strong> - Outstanding historic pub, famous for seafood.</li><li><strong>The Sun Inn (Calbourne)</strong> - Classic country pub.</li><li><strong>The Bugle Coaching Inn</strong> - Yarmouth.</li><li><strong>The Kings Head</strong> - Yarmouth.</li><li><strong>The Wheatsheaf</strong> - Yarmouth.</li><li><strong>The Red Lion</strong> - Freshwater.</li><li><strong>The Horse & Groom</strong> - Ningwood.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The George Hotel</strong> - Yarmouth fine dining.</li><li><strong>Salty's</strong> - Yarmouth seafood.</li><li><strong>On the Rocks</strong> - Yarmouth steaks.</li><li><strong>The Terrace</strong> - Yarmouth views.</li><li><strong>Off the Rails</strong> - Yarmouth quirky dining.</li><li><strong>The Hut</strong> - Colwell Bay luxury.</li><li><strong>Three Bishops</strong> - Brighstone.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Newtown National Nature Reserve</strong> - Pristine saltmarshes and bird hides.</li><li><strong>Old Town Hall</strong> - The only remaining building of the medieval town.</li><li><strong>Shalfleet Manor Gardens</strong> - Historic local grounds.</li></ul></div></div>`
+            },
+            lymington: { name: "Lymington River", lat: 50.750, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044", vhf: "CH 66", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Lymington Yacht Haven ${vhfBadge('80')} ${telLink('01590 677071')}<br>• Berthon Lymington Marina ${vhfBadge('80')} ${telLink('01590 673312')}`, 
+                hazards: "Active Wightlink car ferry route shares the narrow dredged channel. Shallow mud flats immediately border the wooden channel posts.", links: ["solent_mid", "needles_fairway"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Haven Bar</strong> - Panoramic marina and Solent views.</li><li><strong>The Ship Inn</strong> - Waterside cobblestone pub.</li><li><strong>The Chequers Inn</strong> - Cozy traditional atmosphere.</li><li><strong>The Kings Head</strong> - High street classic.</li><li><strong>The Mayflower</strong> - Great coastal beer garden.</li><li><strong>The Borough Arms</strong> - Local real ale spot.</li><li><strong>The Thomas Tripp</strong> - Live music and vibrant crowd.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Elderflower</strong> - High-end unique tasting menus.</li><li><strong>Lanes of Lymington</strong> - Intimate fine dining.</li><li><strong>Rivaaz</strong> - Award-winning Indian cuisine.</li><li><strong>Koh Thai</strong> - Excellent Thai tapas.</li><li><strong>The Monkey Brewhouse</strong> - Great gastro food and microbrewery.</li><li><strong>Stanwell House Dining</strong> - Elegant hotel dining.</li><li><strong>Lymington Yacht Club Dining</strong> - Premium views (call ahead).</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Setley Ridge Vineyard</strong> - Local wine tasting in the New Forest.</li><li><strong>Lymington Nature Reserve</strong> - Stunning coastal saltmarsh walks.</li><li><strong>Lymington Sea Water Baths</strong> - Historic open-air lido.</li><li><strong>St Barbe Museum & Art Gallery</strong> - Local history.</li></ul></div></div>`
+            },
+            yarmouth: { name: "Yarmouth Harbour", lat: 50.700, lon: -1.500, isPort: true, isShallowBar: false, tideId: "0061", vhf: "CH 68", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')}`, 
+                hazards: "Frequent Wightlink car ferries maneuver inside the harbor entrance. Strong tidal currents sweep east/west across the outer harbor pierhead.", links: ["solent_mid", "newtown_creek", "needles_fairway"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Bugle Coaching Inn</strong> - Massive fireplaces and great food.</li><li><strong>The Kings Head</strong> - Traditional town square pub.</li><li><strong>The Wheatsheaf</strong> - Cozy atmosphere.</li><li><strong>The Red Lion (Freshwater)</strong> - Excellent country pub nearby.</li><li><strong>The Highdown Inn</strong> - Great walker's pub near the needles.</li><li><strong>The Sun Inn (Hulverstone)</strong> - Historic thatched tavern.</li><li><strong>The Horse & Groom</strong> - Highly rated local.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The George Hotel</strong> - Premium waterside dining garden.</li><li><strong>Salty's</strong> - Renowned, lively seafood bar.</li><li><strong>On the Rocks</strong> - Cook your own steak on volcanic rocks.</li><li><strong>The Terrace</strong> - Stunning castle and harbor views.</li><li><strong>Off the Rails</strong> - Quirky dining in an old train station.</li><li><strong>The Hut (Colwell Bay)</strong> - Epic luxury beach dining.</li><li><strong>Three Bishops</strong> - Great gastro menu.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Farringford Estate Gardens</strong> - Lord Tennyson's historic home.</li><li><strong>Yarmouth Castle</strong> - English Heritage fortress on the water.</li><li><strong>The Needles Old Battery</strong> - Dramatic cliffside fort.</li><li><strong>Tapnell Farm Park</strong> - Great for families.</li></ul></div></div>`
+            },
+            alum_bay: { name: "Alum Bay (Anchorage)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Fair-weather daytime anchorage under the famous multi-colored sand cliffs.`, hazards: "Strong tidal flows coming from Hurst Narrows and the Needles. Strictly a fair-weather anchorage.", links: ["needles_fairway"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Highdown Inn</strong> - Famous walker's pub just up the down.</li><li><strong>The Red Lion (Freshwater)</strong> - Cozy country pub.</li><li><strong>The Bugle Coaching Inn</strong> - Over in Yarmouth.</li><li><strong>The Kings Head</strong> - Yarmouth.</li><li><strong>The Wheatsheaf</strong> - Yarmouth.</li><li><strong>The Sun Inn</strong> - Hulverstone.</li><li><strong>The Horse & Groom</strong> - Ningwood.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Hut (Colwell Bay)</strong> - Luxury beachside dining nearby.</li><li><strong>The George Hotel</strong> - Yarmouth fine dining.</li><li><strong>Salty's</strong> - Yarmouth seafood.</li><li><strong>On the Rocks</strong> - Yarmouth steaks.</li><li><strong>The Terrace</strong> - Yarmouth views.</li><li><strong>Off the Rails</strong> - Yarmouth.</li><li><strong>Warren Farm Cafe</strong> - Great local teas.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Needles Landmark Park</strong> - Take the chairlift up from the beach.</li><li><strong>The Needles Old Battery</strong> - Dramatic cliffside Victorian fort.</li><li><strong>Farringford Estate Gardens</strong> - Historic Tennyson home nearby.</li></ul></div></div>`
+            },
+            poole: { name: "Poole Harbour", lat: 50.710, lon: -1.980, isPort: true, isShallowBar: false, tideId: "0036", vhf: "CH 14", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Poole Quay Boat Haven ${vhfBadge('80')} ${telLink('01202 649488')}<br>• Cobbs Quay Marina ${vhfBadge('80')} ${telLink('01202 674751')}<br>• Salterns Marina ${vhfBadge('80')} ${telLink('01202 709971')}`, 
+                hazards: "Sandbanks chain ferry operates across the highly compressed, narrow entrance. Fast commercial ships use the main Swash Channel.", links: ["poole_bay", "studland"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Custom House</strong> - Premium Georgian quay-side pub.</li><li><strong>The Poole Arms</strong> - Oldest pub on the quay, distinctive green tiles.</li><li><strong>The Lord Nelson</strong> - Classic sailor's pub with live music.</li><li><strong>The Crown Hotel</strong> - Historic market town tavern.</li><li><strong>The Blue Boar</strong> - Featuring a massive historic cellar.</li><li><strong>The Jolly Sailor</strong> - Right on the waterfront.</li><li><strong>The Portsmouth Hoy</strong> - Traditional real ales.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Guildhall Tavern</strong> - Exquisite local seafood.</li><li><strong>Rick Stein Sandbanks</strong> - Famous premium dining nearby.</li><li><strong>The Seafood Bar</strong> - Fresh local catch.</li><li><strong>Rockwater Village</strong> - Trendy beachfront dining.</li><li><strong>St Tropez Lounge</strong> - High-end French cuisine.</li><li><strong>Storm Restaurant</strong> - Excellent seafood bistro.</li><li><strong>Da Vinci's</strong> - Authentic Italian on the quay.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Compton Acres Gardens</strong> - 10 acres of spectacular themed gardens.</li><li><strong>Brownsea Island</strong> - National Trust wildlife haven (Red Squirrels).</li><li><strong>Poole Museum</strong> - Rich local maritime history.</li><li><strong>English Oak Vineyard</strong> - Short drive for boutique sparkling wine.</li></ul></div></div>`
+            },
+            studland: { name: "Studland Bay", lat: 50.640, lon: -1.940, isPort: true, isShallowBar: false, tideId: "0035", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Beautiful sandy bay anchorage. Good shelter in SW/W winds.`, hazards: "Do not cut inside the Old Harry chalk stacks or the surrounding reef to the north-east.", links: ["poole_bay"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Bankes Arms</strong> - Historic 16th-century pub right off the beach.</li><li><strong>The Square and Compass</strong> - Famous walker's pub (Worth Matravers).</li><li><strong>The Custom House</strong> - Over in Poole.</li><li><strong>The Poole Arms</strong> - Over in Poole.</li><li><strong>The Lord Nelson</strong> - Over in Poole.</li><li><strong>The Crown Hotel</strong> - Over in Poole.</li><li><strong>The Blue Boar</strong> - Over in Poole.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Pig - on the beach</strong> - Unbelievable 25-mile menu dining.</li><li><strong>Middle Beach Cafe</strong> - Excellent crab sandwiches.</li><li><strong>Knoll Beach Cafe</strong> - National Trust lunches.</li><li><strong>Rick Stein Sandbanks</strong> - Short trip across the channel.</li><li><strong>Guildhall Tavern</strong> - Over in Poole.</li><li><strong>Rockwater Village</strong> - Sandbanks.</li><li><strong>St Tropez Lounge</strong> - Poole.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Studland Nature Reserve</strong> - Sweeping sand dunes and heathland.</li><li><strong>Old Harry Rocks</strong> - Dramatic chalk sea stacks.</li><li><strong>Compton Acres Gardens</strong> - Beautiful gardens nearby.</li></ul></div></div>`
+            },
+            weymouth: { name: "Weymouth Harbour", lat: 50.610, lon: -2.440, isPort: true, isShallowBar: false, tideId: "0033", vhf: "CH 12", category: "Harbour", fuel: "Diesel Only",
+                marina: `• Weymouth Marina ${vhfBadge('80')} ${telLink('01305 767117')}<br>• Weymouth Town Pontoons ${vhfBadge('12')} ${telLink('01305 838423')}`, 
+                hazards: "Historic town bridge operates on fixed odd-hour schedules. Active commercial fishing vessels move frequently.", links: ["durlston", "portland_offshore", "portland_marina"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Red Lion</strong> - Over 100 rums and excellent ales.</li><li><strong>The Ship Inn</strong> - Overlooking the historic town bridge.</li><li><strong>The Boot Inn</strong> - Weymouth's oldest pub, historic atmosphere.</li><li><strong>The Black Dog</strong> - Classic dark wood tavern.</li><li><strong>The Kings Arms</strong> - Harbourside favorite.</li><li><strong>The Nothe Tavern</strong> - Great views near the fort.</li><li><strong>The Globe</strong> - Lively town pub.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Catch at The Old Fish Market</strong> - Michelin-featured seafood.</li><li><strong>Crab House Cafe</strong> - World class oysters and crab.</li><li><strong>Enzo</strong> - Authentic family Italian.</li><li><strong>Les Enfants Terribles</strong> - Excellent seafood bistro.</li><li><strong>Al Molo</strong> - Italian dining on the pier bandstand.</li><li><strong>Oliveto</strong> - Fantastic Mediterranean menu.</li><li><strong>Billy Winters</strong> - Beachside diner with a vibe.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Abbotsbury Subtropical Gardens</strong> - 18th-century rare plants (short drive).</li><li><strong>Nothe Fort</strong> - Victorian coastal defense labyrinth.</li><li><strong>Langham Wine Estate</strong> - Award-winning sparkling wines nearby.</li><li><strong>Weymouth Beach</strong> - Award winning sand sculptures.</li></ul></div></div>`
+            },
+            portland_marina: { name: "Portland Marina", lat: 50.563, lon: -2.447, isPort: true, isShallowBar: false, tideId: "0033", vhf: "CH 80", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Portland Marina ${vhfBadge('80')} ${telLink('01305 866190')}`, 
+                hazards: "Controlled ship channels inside Portland Harbour. Heavy wind shear during SW gales. Portland Race lies immediately to the south.", links: ["weymouth", "portland_offshore"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Cove House Inn</strong> - Epic views of Chesil Beach and storms.</li><li><strong>The Pulpit Inn</strong> - Rugged pub out at Portland Bill.</li><li><strong>The New Inn</strong> - Friendly local in Easton.</li><li><strong>The Eight Kings</strong> - Traditional Portland tavern.</li><li><strong>The Red Lion</strong> - Over in Weymouth.</li><li><strong>The Ship Inn</strong> - Over in Weymouth.</li><li><strong>The Boot Inn</strong> - Over in Weymouth.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Boat That Rocks</strong> - Great lively bistro directly overlooking the marina.</li><li><strong>Crab House Cafe</strong> - World class oysters nearby.</li><li><strong>Taste Cafe at Chesil</strong> - Great lunches.</li><li><strong>Catch at The Old Fish Market</strong> - Weymouth.</li><li><strong>Enzo</strong> - Weymouth Italian.</li><li><strong>Les Enfants Terribles</strong> - Weymouth.</li><li><strong>Al Molo</strong> - Weymouth.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Portland Bill Lighthouse</strong> - Iconic coastal marker.</li><li><strong>Portland Castle</strong> - Tudor artillery fort.</li><li><strong>Tout Quarry Sculpture Park</strong> - Hidden art in an old stone quarry.</li><li><strong>Abbotsbury Subtropical Gardens</strong> - Short drive along the coast.</li></ul></div></div>`
+            },
+            brixham: { name: "Brixham Marina", lat: 50.400, lon: -3.510, isPort: true, isShallowBar: false, tideId: "0025", vhf: "CH 14", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Brixham MDL Marina ${vhfBadge('80')} ${telLink('01803 882929')}`, 
+                hazards: "Extremely busy commercial fishing fleet operates 24/7. Long outer breakwater requires a wide berth on approach during easterly winds.", links: ["berry_head_offshore"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Prince William</strong> - Massive outdoor terrace overlooking the marina.</li><li><strong>The Blue Anchor</strong> - Historic, maritime charm.</li><li><strong>The Golden Lion</strong> - Classic local alehouse.</li><li><strong>The Manor Inn</strong> - Traditional pub food.</li><li><strong>The Crown & Anchor</strong> - Quayside views.</li><li><strong>The Smugglers Haunt</strong> - Nautical themed tavern.</li><li><strong>The Sprat & Mackerel</strong> - Right next to the fish market.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Rockfish Brixham</strong> - Celebrated seafood by the market.</li><li><strong>Beamers Seafood</strong> - Elegant harbourside dining.</li><li><strong>Shoals Restaurant on the Lido</strong> - Epic views over the bay.</li><li><strong>Liberty Cocktail Bar & Tea Parlour</strong> - Quirky and delicious.</li><li><strong>The Cow Shed</strong> - Excellent steaks and burgers.</li><li><strong>Albero</strong> - Quality Mediterranean.</li><li><strong>The Seahorse</strong> - Short ferry ride to Dartmouth.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Coleton Fishacre Gardens</strong> - 1920s country retreat with tropical gardens.</li><li><strong>Berry Head Nature Reserve</strong> - Historic forts and rare wildlife.</li><li><strong>Golden Hind Replica</strong> - Sir Francis Drake's iconic ship.</li><li><strong>Greenway House</strong> - Agatha Christie's holiday home nearby.</li></ul></div></div>`
+            },
+            dartmouth: { name: "Dartmouth Harbour", lat: 50.350, lon: -3.570, isPort: true, isShallowBar: false, tideId: "0023", vhf: "CH 11", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Dart Marina ${vhfBadge('80')} ${telLink('01803 837161')}<br>• Noss on Dart Marina ${vhfBadge('80')} ${telLink('01803 839087')}<br>• Darthaven Marina ${vhfBadge('80')} ${telLink('01803 752545')}`, 
+                hazards: "Avoid the Homestone and Mew Stone off the river mouth. Strong ebb current against southerly winds generates overfalls.", links: ["totnes", "dittisham", "dartmouth_approach"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Cherub Inn</strong> - Dartmouth's oldest building (1380), Tudor history.</li><li><strong>The Floating Bridge</strong> - Lively maritime pub next to the ferry.</li><li><strong>The Seven Stars</strong> - Oldest pub in Dartmouth.</li><li><strong>The George & Dragon</strong> - Great local atmosphere.</li><li><strong>The Royal Castle</strong> - Historic coaching inn on the quay.</li><li><strong>The Dartmouth Arms</strong> - Near the lower ferry.</li><li><strong>The Dolphin</strong> - Classic sailor's hangout.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Seahorse</strong> - Mitch Tonks' legendary Italian seafood.</li><li><strong>Kendricks</strong> - Famous for ribs and steaks.</li><li><strong>Taylor's Restaurant</strong> - Elegant dining with harbor views.</li><li><strong>Rockfish</strong> - Premium family seafood.</li><li><strong>The Angel</strong> - Multi-award winning fine dining.</li><li><strong>Andria</strong> - Incredible modern tapas.</li><li><strong>Bushell's Riverside</strong> - Waterside fresh local catch.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Sandridge Barton (Sharpham Wine)</strong> - Tender upriver for wine tastings.</li><li><strong>Coleton Fishacre Gardens</strong> - Lush tropical National Trust garden.</li><li><strong>Dartmouth Castle</strong> - Defending the river mouth for 600 years.</li><li><strong>Britannia Royal Naval College</strong> - Historic architecture.</li></ul></div></div>`
+            },
+            dittisham: { name: "Dittisham (River Dart)", lat: 50.385, lon: -3.595, isPort: true, isShallowBar: false, tideId: "0023", vhf: "CH 11", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Visitor mooring buoys managed by Dart Harbour ${vhfBadge('11')}.`, hazards: "Strong river currents. Use designated visitor buoys. Watch for the pink ferry crossing to Greenway.", links: ["dartmouth", "totnes"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Ferry Boat Inn (FBI)</strong> - Iconic pink pub right on the water's edge.</li><li><strong>The Maltsters Arms</strong> - Upriver at Bow Creek, owned by Keith Floyd once.</li><li><strong>Watermans Arms</strong> - Classic pub up at Bow Bridge.</li><li><strong>The Cherub Inn</strong> - Down in Dartmouth.</li><li><strong>The Floating Bridge</strong> - Down in Dartmouth.</li><li><strong>The Seven Stars</strong> - Down in Dartmouth.</li><li><strong>The Red Lion</strong> - Local pub.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Anchorstone Cafe</strong> - Outstanding river-edge seafood (crab/oysters).</li><li><strong>Sharpham Vineyard Kitchen</strong> - Alfresco dining upriver.</li><li><strong>The Seahorse</strong> - Dartmouth.</li><li><strong>Kendricks</strong> - Dartmouth.</li><li><strong>Taylor's Restaurant</strong> - Dartmouth.</li><li><strong>Rockfish</strong> - Dartmouth.</li><li><strong>The Angel</strong> - Dartmouth fine dining.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Greenway House & Gardens</strong> - Agatha Christie's holiday home, glorious woodland gardens.</li><li><strong>Sandridge Barton Vineyard</strong> - Short trip for local wine flights.</li><li><strong>River Dart Trails</strong> - Excellent wooded coastal hiking.</li></ul></div></div>`
+            },
+            totnes: { name: "Totnes (Upper Dart)", lat: 50.430, lon: -3.680, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0023C", vhf: "CH 11", category: "Harbour", fuel: "No Fuel",
+                marina: `• Baltic Wharf Totnes ${telLink('01803 866162')}`, hazards: "Highly tidal upper river passage. The channel dries out completely in some stretches. Plan transit strictly for High Water.", links: ["dittisham"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Bay Horse</strong> - Great local ales and courtyard.</li><li><strong>The Albert Inn</strong> - Microbrewery and historic pub.</li><li><strong>Steam Packet</strong> - Waterside pub just down the river.</li><li><strong>Royal Seven Stars</strong> - Historic hotel pub.</li><li><strong>King William</strong> - Traditional town pub.</li><li><strong>The Dartmouth Inn</strong> - Friendly local.</li><li><strong>Watermans Arms</strong> - Short drive/tender to Bow Bridge.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Rumour</strong> - Fantastic bistro food and wine.</li><li><strong>Gather</strong> - Foraged, highly rated fine dining.</li><li><strong>Ben's Wine & Tapas</strong> - Excellent local organic tapas.</li><li><strong>Pie Street</strong> - Gourmet pies and mash.</li><li><strong>Waterside Bistro</strong> - Great alfresco riverside dining.</li><li><strong>The Bull Inn</strong> - Award-winning organic ethical gastro-pub.</li><li><strong>Woods eXtra</strong> - Artisan deli and dining.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Dartington Hall Gardens</strong> - Listed heritage gardens and woodland.</li><li><strong>Totnes Castle</strong> - Classic Norman motte and bailey.</li><li><strong>Sharpham Vineyard</strong> - Short trip downriver for wine tasting.</li><li><strong>Berry Pomeroy Castle</strong> - Romantic ruined castle nearby.</li></ul></div></div>`
+            },
+            salcombe: { name: "Salcombe Harbour", lat: 50.230, lon: -3.770, isPort: true, isShallowBar: true, barDepth: 1.2, tideId: "0023", vhf: "CH 14", category: "Harbour", fuel: "Diesel Only",
+                marina: `• Salcombe Harbour Moorings ${vhfBadge('14')} ${telLink('01548 843791')}`, 
+                hazards: "THE SALCOMBE BAR: Highly dangerous breaking waves in any strong onshore southerly winds, especially on an ebb tide. Check bar status with HM.", links: ["prawle_point_offshore", "bolt_head_offshore"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Ferry Inn</strong> - Tiered coastal beer gardens right on the water.</li><li><strong>The Victoria Inn</strong> - Excellent child-friendly gastro pub with an extensive garden.</li><li><strong>The Fortescue</strong> - Classic high street tavern.</li><li><strong>The Kings Arms</strong> - Historic 15th-century inn.</li><li><strong>The Mill Club</strong> - Private club with visitor welcome.</li><li><strong>The Globe Inn</strong> - Great local ales.</li><li><strong>The Hope & Anchor</strong> - (Hope Cove) Amazing coastal pub nearby.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Winking Prawn</strong> - Iconic beachside BBQ and seafood.</li><li><strong>Dick and Wills</strong> - Premium waterside brasserie.</li><li><strong>Number Eight</strong> - High-end intimate dining.</li><li><strong>The Crab Shed</strong> - Famous for 100% local hand-picked crab.</li><li><strong>Captain Flint's</strong> - Great family pizza and pasta.</li><li><strong>South Sands Hotel Restaurant</strong> - Excellent sea views.</li><li><strong>Salcombe Harbour Hotel Dining</strong> - Luxury seafood.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Overbeck's Garden</strong> - National Trust tropical paradise on the cliffs.</li><li><strong>Salcombe Distilling Co.</strong> - Learn to distill your own gin.</li><li><strong>Snapes Point</strong> - Sweeping coastal headland walks.</li><li><strong>Salcombe Dairy</strong> - Legendary local ice cream.</li></ul></div></div>`
+            },
+            newtonferrers: { name: "Newton Ferrers", lat: 50.310, lon: -4.040, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0014", vhf: "CH 14", category: "Harbour", fuel: "No Fuel",
+                marina: `• River Yealm Moorings & Pontoons.`, hazards: "Shallow, shifting sandbar over the river mouth entrance. Deep draft vessels must time entry carefully.", links: ["plymouth_sound"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Ship Inn (Noss Mayo)</strong> - Pull your dinghy right up to the wall at high tide.</li><li><strong>The Swan Inn (Noss Mayo)</strong> - Delightful quiet pub across the creek.</li><li><strong>The Dolphin Inn</strong> - Classic Newton Ferrers local.</li><li><strong>The Fishermans Arms</strong> - Over in Plymouth.</li><li><strong>The Minerva Inn</strong> - Plymouth.</li><li><strong>The Dolphin Hotel</strong> - Plymouth.</li><li><strong>The Crown and Anchor</strong> - Plymouth.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Yealm</strong> - Fine dining in the village.</li><li><strong>The Waterfront</strong> - Plymouth.</li><li><strong>Positano</strong> - Plymouth.</li><li><strong>Barbican Kitchen</strong> - Plymouth.</li><li><strong>HonkyTonk Wine Library</strong> - Plymouth.</li><li><strong>The Box Kitchen</strong> - Plymouth.</li><li><strong>Fig Tree @ 36</strong> - Plymouth.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Mothecombe Beach & Gardens</strong> - Stunning private estate nearby.</li><li><strong>River Yealm Woods</strong> - Ancient oak woodlands dripping to the water.</li><li><strong>Saltram House</strong> - Huge National Trust estate a short drive away.</li></ul></div></div>`
+            },
+            bovisand_beach: { name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                marina: `• Sandy bay anchorage inside the eastern arm of Plymouth Sound.`, hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.", links: ["plymouth_sound"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Local Pubs (Via Tender/Walk)</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Eddystone Inn</strong> - Heybrook Bay (short coastal walk).</li><li><strong>The Mussel Inn</strong> - Downies.</li><li><strong>The Dolphin Hotel</strong> - Plymouth Barbican.</li><li><strong>The Minerva Inn</strong> - Plymouth.</li><li><strong>The Crown and Anchor</strong> - Plymouth.</li><li><strong>The Admiral MacBride</strong> - Plymouth.</li><li><strong>The Ship</strong> - Plymouth.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Bovisand Beach Cafe</strong> - Right on the cliff edge.</li><li><strong>The Waterfront</strong> - Plymouth.</li><li><strong>Positano</strong> - Plymouth.</li><li><strong>Barbican Kitchen</strong> - Plymouth.</li><li><strong>HonkyTonk Wine Library</strong> - Plymouth.</li><li><strong>Bonne Sante</strong> - Plymouth.</li><li><strong>Fig Tree @ 36</strong> - Plymouth.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Bovisand Fort</strong> - Historic Palmerston fort overlooking the sound.</li><li><strong>South West Coast Path</strong> - Exceptional coastal hiking directly from the beach.</li><li><strong>Mount Edgcumbe House & Gardens</strong> - Visible across the Sound.</li></ul></div></div>`
+            },
+            plymouth: { name: "Plymouth Sound", lat: 50.360, lon: -4.140, isPort: true, isShallowBar: false, tideId: "0014", vhf: "CH 14", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Mayflower Marina ${vhfBadge('80')} ${telLink('01752 556633')}<br>• Queen Anne's Battery ${vhfBadge('80')} ${telLink('01752 671142')}<br>• Sutton Harbour Marina ${vhfBadge('12')} ${telLink('01752 204702')}`, 
+                hazards: "Frequent naval, commercial, and submarine traffic. Strictly avoid the Naval exclusion zones.", links: ["plymouth_sound", "newtonferrers", "bovisand_beach"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Dolphin Hotel</strong> - Famous Beryl Cook pub, unpretentious and historic.</li><li><strong>The Minerva Inn</strong> - Plymouth's oldest pub (c. 1540), Tudor timber frame.</li><li><strong>The Crown and Anchor</strong> - Great local in the Barbican.</li><li><strong>The Admiral MacBride</strong> - Located right on the Mayflower Steps.</li><li><strong>The Ship</strong> - Classic Barbican alehouse.</li><li><strong>The Fishermans Arms</strong> - Hidden gem near the waterfront.</li><li><strong>The Blues Bar & Grill</strong> - Live music and great atmosphere.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Waterfront</strong> - Excellent terrace restaurant directly on the Hoe seafront.</li><li><strong>Positano</strong> - Authentic, bustling Italian in the city.</li><li><strong>Barbican Kitchen</strong> - High-end dining by the Tanner brothers.</li><li><strong>HonkyTonk Wine Library</strong> - Great wines and deli boards.</li><li><strong>The Box Kitchen</strong> - Modern dining in the museum.</li><li><strong>Bonne Sante</strong> - Healthy, vibrant dishes.</li><li><strong>Fig Tree @ 36</strong> - Award-winning neighborhood bistro.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Mount Edgcumbe House & Country Park</strong> - Take the foot ferry to these stunning formal gardens.</li><li><strong>Plymouth Gin Distillery</strong> - Historic tours and tastings.</li><li><strong>National Marine Aquarium</strong> - The UK's largest aquarium.</li><li><strong>The Hoe & Smeaton's Tower</strong> - Iconic lighthouse and sea views.</li></ul></div></div>`
+            },
+            fowey: { name: "Fowey Harbour", lat: 50.330, lon: -4.630, isPort: true, isShallowBar: false, tideId: "0014", vhf: "CH 12", category: "Harbour", fuel: "Diesel Only",
+                marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')}`, 
+                hazards: "High cliffs cause wind shadows and unpredictable gusts in the narrow entrance. Watch for clay cargo ships.", links: ["plymouth_sound", "dodman_offshore"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Ship Inn</strong> - 16th-century merchants' tavern, wood fires.</li><li><strong>The Lugger Inn</strong> - Historic pub on the quay.</li><li><strong>The King of Prussia</strong> - Old smugglers' haunt.</li><li><strong>The Safe Harbour</strong> - Excellent real ales.</li><li><strong>The Galleon Inn</strong> - Riverside views.</li><li><strong>The Old Ferry Inn (Bodinnick)</strong> - Just across the water.</li><li><strong>The Russell Inn (Polruan)</strong> - Short ferry ride over the estuary.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Pintxo</strong> - Outstanding authentic Spanish tapas and sherry bar.</li><li><strong>Fitzroy</strong> - Small plates and natural wines.</li><li><strong>Appleton's Bar & Restaurant</strong> - Michelin-rated Italian influence.</li><li><strong>The Old Quay House</strong> - Fine dining on the estuary.</li><li><strong>Havener's</strong> - Great quayside seafood.</li><li><strong>Sam's Fowey</strong> - Legendary burgers and local fish.</li><li><strong>Bufala</strong> - Premium sourdough pizzas.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Tregothnan Estate</strong> - Famous tea gardens (short trip).</li><li><strong>Lanhydrock Estate & Gardens</strong> - Magnificent Victorian country house.</li><li><strong>St Catherine's Castle</strong> - Henry VIII coastal fort ruins.</li><li><strong>Eden Project</strong> - World famous biomes just a short drive away.</li></ul></div></div>`
+            },
+            falmouth: { name: "Falmouth Harbour", lat: 50.150, lon: -5.060, isPort: true, isShallowBar: false, tideId: "0005", vhf: "CH 12", category: "Marina", fuel: "Diesel & Petrol",
+                marina: `• Falmouth Marina ${vhfBadge('80')} ${telLink('01326 316620')}<br>• Port Pendennis ${vhfBadge('80')} ${telLink('01326 211211')}<br>• Falmouth Haven ${vhfBadge('12')} ${telLink('01326 310990')}`, 
+                hazards: "Stay clear of the Black Rock inside the entrance. High volume of commercial shipping at anchor in Carrick Roads.", links: ["falmouth_bay", "stmawes"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Chain Locker</strong> - Legendary waterfront pub, historic stone beams.</li><li><strong>The Working Boat</strong> - Own private pontoon under the Greenbank Hotel.</li><li><strong>The Front</strong> - Famous real ale and cider cellar pub.</li><li><strong>The Star & Garter</strong> - Award winning gastro pub.</li><li><strong>The Seaview Inn</strong> - High up with great harbor views.</li><li><strong>The Boathouse</strong> - Independent pub with estuary views.</li><li><strong>The Moth & The Moon</strong> - Cozy, dark-wood alehouse.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Seafood Bar by Verdant</strong> - Superb fresh seafood and craft beer.</li><li><strong>Restaurant Mine</strong> - Intimate Cornish dining in a courtyard.</li><li><strong>Hooked on the Rocks</strong> - Cliffside seafood overlooking Swanpool.</li><li><strong>The Cove</strong> - Fine dining at Maenporth beach.</li><li><strong>The Greenbank</strong> - Classic hotel dining on the water.</li><li><strong>Star & Glamp</strong> - Excellent tapas.</li><li><strong>Culture Restaurant</strong> - Michelin Green Star nature-inspired menu.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Trebah Garden</strong> - Breathtaking subtropical ravine garden leading to a private beach.</li><li><strong>Glendurgan Garden</strong> - National Trust valley with a famous maze.</li><li><strong>Pendennis Castle</strong> - Massive Tudor fortress overlooking the sea.</li><li><strong>National Maritime Museum Cornwall</strong> - Interactive boating history.</li></ul></div></div>`
+            },
+            penzance: { name: "Penzance Harbour", lat: 50.110, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002", vhf: "CH 12", category: "Harbour", fuel: "Diesel Only",
+                marina: `• Penzance Wet Dock ${vhfBadge('12')} ${telLink('01736 366113')}`, 
+                hazards: "Wet dock access restricted to approx +/- 2 hours around high water. Watch out for Low Lee and Cressars rocks.", links: ["mounts_bay"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Turks Head</strong> - Penzance's oldest pub, historic smuggler tunnels.</li><li><strong>The Admiral Benbow</strong> - Incredibly quirky naval salvage decor.</li><li><strong>The Swordfish</strong> - Classic local tavern in Newlyn.</li><li><strong>The Dolphin Tavern</strong> - Supposedly where Sir Walter Raleigh smoked his first pipe.</li><li><strong>The Crown</strong> - Excellent real ales.</li><li><strong>The Union Hotel</strong> - Where Nelson's death was first announced.</li><li><strong>The Lamp & Whistle</strong> - Eclectic craft beer hub.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Shore</strong> - Bruce Rennie's exceptional seafood dining.</li><li><strong>Harris's Restaurant</strong> - Hidden gem, classic fine dining.</li><li><strong>The Bakehouse</strong> - Great steaks and seafood in a courtyard.</li><li><strong>Mackerel Sky Seafood Bar (Newlyn)</strong> - Unbelievable fresh tapas.</li><li><strong>Tolcarne Inn (Newlyn)</strong> - Michelin-rated historic gastro-pub.</li><li><strong>Fraser's Fish & Chips</strong> - Traditional seafront classic.</li><li><strong>Kota (Porthleven)</strong> - Award-winning Asian-fusion nearby.</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Tremenheere Sculpture Gardens</strong> - Subtropical planting and modern art installations.</li><li><strong>Morrab Gardens</strong> - Historic Victorian public garden with exotic plants.</li><li><strong>St Michael's Mount</strong> - Iconic tidal island castle.</li><li><strong>Polgoon Vineyard</strong> - Local Cornish wine and cider tastings.</li></ul></div></div>`
+            },
+            stmawes: { name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005", vhf: "CH 12", category: "Harbour", fuel: "No Fuel",
+                marina: `• Moorings managed by St Mawes Harbour ${vhfBadge('12')}.`, hazards: "Exposed to southerly and south-westerly swells. Avoid the shallow ledge off Castle Point.", links: ["falmouth", "falmouth_bay"],
+                offlineGuide: `<div class='space-y-4'><div><h4 class='text-amber-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-beer'></i> Top Local Pubs & Taverns</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Victory Inn</strong> - Traditional village pub, oldest in St Mawes.</li><li><strong>The Rising Sun</strong> - Great local ales and atmosphere.</li><li><strong>The Watch House</strong> - Casual drinks by the harbor.</li><li><strong>St Mawes Hotel Lower Deck</strong> - Lively harbor front bar.</li><li><strong>The Roseland Inn (Philleigh)</strong> - Short trip to a classic thatched pub.</li><li><strong>Plume of Feathers (Portscatho)</strong> - Nearby coastal tavern.</li><li><strong>The Chain Locker</strong> - Ferry ride over to Falmouth.</li></ul></div><div><h4 class='text-rose-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-utensils'></i> Restaurants & Bistros</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>The Idle Rocks</strong> - High-end terrace dining with excellent seafood.</li><li><strong>Hotel Tresanton</strong> - Olga Polizzi's famous Mediterranean-style dining.</li><li><strong>The Watch House</strong> - Great local crab and fish.</li><li><strong>St Mawes Hotel Restaurant</strong> - Stylish brasserie.</li><li><strong>The Hidden Hut (Portscatho)</strong> - Legendary outdoor feast nights nearby.</li><li><strong>Da Bara Bakery</strong> - Excellent breakfasts and pastries.</li><li><strong>The Seafood Bar by Verdant</strong> - Falmouth (via ferry).</li></ul></div><div><h4 class='text-emerald-400 font-bold mb-1.5 flex items-center gap-2'><i class='fas fa-tree'></i> Gardens, Vineyards & Attractions</h4><ul class='list-disc pl-5 text-slate-300 space-y-1 text-xs'><li><strong>Lamorran Gardens</strong> - Stunning Italianate subtropical gardens overlooking the bay.</li><li><strong>St Mawes Castle</strong> - Henry VIII's perfectly preserved coastal artillery fortress.</li><li><strong>St Just in Roseland Church</strong> - Incredibly beautiful creek-side church and gardens.</li></ul></div></div>`
+            },
+
+            // Transits
+            iow_east_offshore: { lat: 50.64, lon: -0.95, links: ["chichester_entrance", "bembridge", "solent_east_forts", "iow_south"] },
+            solent_east_forts: { lat: 50.73, lon: -1.05, links: ["portsmouth", "solent_mid", "seaview", "priory_bay"] },
+            solent_mid: { lat: 50.77, lon: -1.25, links: ["cowes", "lymington", "yarmouth", "beaulieu", "southampton", "needles_fairway", "stokes_bay", "king_quay", "osborne_bay", "newtown_creek"] },
+            needles_fairway: { lat: 50.63, lon: -1.60, links: ["poole_bay", "iow_south", "durlston", "start_point_offshore", "alum_bay"] },
+            poole_bay: { lat: 50.63, lon: -1.90, links: ["poole", "durlston", "studland"] },
+            durlston: { lat: 50.56, lon: -1.94, links: ["weymouth", "portland_offshore"] },
+            portland_offshore: { lat: 50.46, lon: -2.45, links: ["berry_head_offshore", "start_point_offshore", "iow_south"] },
+            berry_head_offshore: { lat: 50.40, lon: -3.44, links: ["brixham", "dartmouth_approach"] },
+            dartmouth_approach: { lat: 50.335, lon: -3.54, links: ["dartmouth", "start_point_offshore"] },
+            start_point_offshore: { lat: 50.20, lon: -3.60, links: ["prawle_point_offshore", "eddystone_transit", "falmouth_bay", "iow_south"] },
+            prawle_point_offshore: { lat: 50.18, lon: -3.70, links: ["salcombe", "bolt_head_offshore"] },
+            bolt_head_offshore: { lat: 50.19, lon: -3.78, links: ["salcombe", "plymouth_sound", "eddystone_transit"] },
+            plymouth_sound: { lat: 50.28, lon: -4.14, links: ["plymouth", "fowey", "eddystone_transit"] },
+            eddystone_transit: { lat: 50.185, lon: -4.26, links: ["dodman_offshore", "falmouth_bay"] },
+            dodman_offshore: { lat: 50.18, lon: -4.78, links: ["fowey", "falmouth_bay"] },
+            falmouth_bay: { lat: 50.115, lon: -5.01, links: ["falmouth", "stmawes", "lizard_point"] },
+            lizard_point: { lat: 49.93, lon: -5.20, links: ["mounts_bay", "iow_south"] },
+            mounts_bay: { lat: 49.95, lon: -5.45, links: ["penzance"] },
+            iow_south: { lat: 50.53, lon: -1.30, links: [] }
+        };
+
+        const solentPorts = ['portsmouth', 'cowes', 'lymington', 'yarmouth', 'bembridge', 'beaulieu', 'southampton', 'stokes_bay', 'seaview', 'priory_bay', 'king_quay', 'osborne_bay', 'newtown_creek'];
+
+        for (const key in mapNodes) {
+            if (!mapNodes[key].links) mapNodes[key].links = [];
+            mapNodes[key].links.forEach(nId => {
+                if (mapNodes[nId] && !mapNodes[nId].links) mapNodes[nId].links = [];
+                if (mapNodes[nId] && !mapNodes[nId].links.includes(key)) mapNodes[nId].links.push(key);
+            });
+        }
+
+        for (const portId in mapNodes) {
+            if (mapNodes[portId].isPort) {
+                depSelect.add(new Option(mapNodes[portId].name, portId));
+                destSelect.add(new Option(mapNodes[portId].name, portId));
+            }
+        }
+        depSelect.value = localStorage.getItem('almanac_ios_dep') || 'portsmouth';
+        destSelect.value = localStorage.getItem('almanac_ios_dest') || 'cowes';
+
+        function zoomIn() { zoomLevel = Math.min(zoomLevel * 1.3, 15.0); }
+        function zoomOut() { zoomLevel = Math.max(zoomLevel / 1.3, 0.8); }
+        
+        window.setDepartureToGPS = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        let closest = null; let minD = Infinity;
+                        Object.keys(mapNodes).forEach(id => {
+                            if (mapNodes[id].isPort) {
+                                const d = Math.hypot(position.coords.latitude - mapNodes[id].lat, position.coords.longitude - mapNodes[id].lon);
+                                if (d < minD) { minD = d; closest = id; }
+                            }
+                        });
+                        if (closest) { depSelect.value = closest; update(); panX=0; panY=0; }
+                    },
+                    (e) => console.warn("GPS Refused"), { enableHighAccuracy: true, timeout: 5000 }
+                );
+            }
+        };
+
+        function setRoutePreference(mode) {
+            activeRoutePreference = mode;
+            ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
+                document.getElementById(id).className = "ios-segment-btn flex-1 py-2 text-xs font-semibold text-slate-400";
+            });
+            const aId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
+            document.getElementById(aId).className = "ios-segment-btn ios-segment-active flex-1 py-2 text-xs font-bold";
+            update();
+        }
+
+        function getNeighbors(nodeId, startId, endId) {
+            let links = [...mapNodes[nodeId].links];
+            let runBypass = activeRoutePreference === 'offshore' || (activeRoutePreference === 'auto' && !solentPorts.includes(startId) && !solentPorts.includes(endId));
+            if (runBypass) {
+                if (nodeId === 'chichester_entrance') links = links.filter(l => l !== 'solent_east_forts');
+                if (nodeId === 'solent_east_forts') return [];
+                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid');
+            }
+            return links;
+        }
+
+        function calculateRoute(startId, endId) {
+            if (startId === endId) return { path: [startId], distance: 0 };
+            const distances = {}; const previous = {}; let queue = [];
+            for (const key in mapNodes) { distances[key] = key === startId ? 0 : Infinity; previous[key] = null; queue.push({ id: key, dist: distances[key] }); }
+            while (queue.length > 0) {
+                queue.sort((a, b) => a.dist - b.dist);
+                const current = queue.shift();
+                if (current.dist === Infinity || current.id === endId) break;
+                for (const nId of getNeighbors(current.id, startId, endId)) {
+                    if (!mapNodes[nId]) continue;
+                    const a = Math.sin((mapNodes[nId].lat-mapNodes[current.id].lat)*Math.PI/360)**2 + Math.cos(mapNodes[current.id].lat*Math.PI/180)*Math.cos(mapNodes[nId].lat*Math.PI/180)*Math.sin((mapNodes[nId].lon-mapNodes[current.id].lon)*Math.PI/360)**2;
+                    const d = 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    const alt = distances[current.id] + d;
+                    if (alt < distances[nId]) { distances[nId] = alt; previous[nId] = current.id; queue.find(q => q.id === nId).dist = alt; }
+                }
+            }
+            const path = []; let curr = endId;
+            while (curr) { path.unshift(curr); curr = previous[curr]; }
+            return { path: path[0] === startId ? path : [], distance: distances[endId] };
+        }
+
+        function toXY(lon, lat, w, h) {
+            let x = ((lon + 6.6) / 6.1) * w;
+            let y = (1 - ((lat - 49.7) / 1.3)) * h;
+            return { x: (x - w/2)*zoomLevel + w/2 + panX, y: (y - h/2)*zoomLevel + h/2 + panY };
+        }
+
+        function drawVectorMap(pathNodes) {
+            const r = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1;
+            canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+            const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+            
+            const grad = ctx.createRadialGradient(r.width/2, r.height/2, r.height/4, r.width/2, r.height/2, Math.max(r.width, r.height));
+            grad.addColorStop(0, '#0f172a'); grad.addColorStop(1, '#020617');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, r.width, r.height);
+
+            const buildLand = () => {
+                ctx.beginPath();
+                ctx.moveTo(toXY(coastline[0].lon, coastline[0].lat, r.width, r.height).x, toXY(coastline[0].lon, coastline[0].lat, r.width, r.height).y);
+                coastline.forEach(p => ctx.lineTo(toXY(p.lon, p.lat, r.width, r.height).x, toXY(p.lon, p.lat, r.width, r.height).y));
+                ctx.lineTo(toXY(1,52, r.width, r.height).x, toXY(1,52, r.width, r.height).y); ctx.lineTo(toXY(-8,52, r.width, r.height).x, toXY(-8,52, r.width, r.height).y);
+                ctx.closePath();
+                ctx.moveTo(toXY(iow[0].lon, iow[0].lat, r.width, r.height).x, toXY(iow[0].lon, iow[0].lat, r.width, r.height).y);
+                iow.forEach(p => ctx.lineTo(toXY(p.lon, p.lat, r.width, r.height).x, toXY(p.lon, p.lat, r.width, r.height).y));
+                ctx.closePath();
+            };
+
+            ctx.save(); buildLand(); ctx.shadowColor = 'rgba(56,189,248,0.3)'; ctx.shadowBlur = 30*zoomLevel; ctx.fillStyle = '#1e293b'; ctx.fill();
+            ctx.lineWidth = 3*zoomLevel; ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.stroke(); ctx.restore();
+            ctx.save(); buildLand(); ctx.fillStyle = '#0f172a'; ctx.fill(); ctx.restore();
+            ctx.save(); buildLand(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(16,185,129,0.4)'; ctx.stroke(); ctx.restore();
+
+            // Lighthouses (Sweeping / Pulsing)
+            lighthouses.forEach(lh => {
+                const pt = toXY(lh.lon, lh.lat, r.width, r.height);
+                const time = Date.now(); const p = (time % lh.period) / lh.period;
+                const activePulse = (p > 0.9 || p < 0.1);
+
+                ctx.save();
+                if (activePulse) { ctx.beginPath(); ctx.arc(pt.x, pt.y, 16*zoomLevel, 0, 2*Math.PI); ctx.fillStyle = lh.color; ctx.fill(); }
+                const sweepAngle = (time / 1200) % (2 * Math.PI);
+                ctx.beginPath(); ctx.moveTo(pt.x, pt.y);
+                if (lh.hasSector) {
+                    const actualAngle = lh.sectorStart + (Math.sin(time / 1000) + 1) / 2 * (lh.sectorEnd - lh.sectorStart);
+                    ctx.arc(pt.x, pt.y, 50*zoomLevel, actualAngle - 0.2, actualAngle + 0.2);
+                } else {
+                    ctx.arc(pt.x, pt.y, 50*zoomLevel, sweepAngle - 0.25, sweepAngle + 0.25);
+                }
+                ctx.closePath();
+                ctx.fillStyle = activePulse ? lh.color : "rgba(255, 255, 255, 0.05)"; ctx.fill();
+                ctx.beginPath(); ctx.arc(pt.x, pt.y, 3, 0, 2*Math.PI); ctx.fillStyle = '#a855f7'; ctx.fill(); ctx.restore();
+            });
+
+            // Draw Ports and Name Tags
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            let fontSize = Math.max(9, Math.min(12, 8 * Math.sqrt(zoomLevel)));
+            ctx.font = `600 ${fontSize}px -apple-system, sans-serif`;
+
+            for (const key in mapNodes) {
+                if (mapNodes[key].isPort) {
+                    const pt = toXY(mapNodes[key].lon, mapNodes[key].lat, r.width, r.height);
+                    
+                    if (!pathNodes || !pathNodes.includes(key)) {
+                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 3.5, 0, 2*Math.PI);
+                        ctx.fillStyle = 'rgba(100, 116, 139, 0.6)';
+                        ctx.fill();
+                    }
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                    ctx.shadowBlur = 4;
+                    let shortName = mapNodes[key].name.split(' (')[0].replace(' Harbour', '').replace(' Entrance', '');
+                    ctx.fillText(shortName, pt.x + 7, pt.y);
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            // Path Track
+            if (pathNodes && pathNodes.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(toXY(mapNodes[pathNodes[0]].lon, mapNodes[pathNodes[0]].lat, r.width, r.height).x, toXY(mapNodes[pathNodes[0]].lon, mapNodes[pathNodes[0]].lat, r.width, r.height).y);
+                pathNodes.forEach(id => ctx.lineTo(toXY(mapNodes[id].lon, mapNodes[id].lat, r.width, r.height).x, toXY(mapNodes[id].lon, mapNodes[id].lat, r.width, r.height).y));
+                ctx.lineWidth = 3; ctx.strokeStyle = '#34d399'; ctx.setLineDash([5,5]); ctx.stroke(); ctx.setLineDash([]);
+                pathNodes.forEach((id, i) => {
+                    const pt = toXY(mapNodes[id].lon, mapNodes[id].lat, r.width, r.height);
+                    ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, 7);
+                    ctx.fillStyle = i===0 ? '#3b82f6' : (i===pathNodes.length-1 ? '#10b981' : '#64748b');
+                    ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+                });
+            }
+        }
+
+        function update() {
+            const route = calculateRoute(depSelect.value, destSelect.value);
+            currentRoutePath = route.path;
+            const destNode = mapNodes[destSelect.value];
+            
+            document.getElementById('distanceOutput').innerHTML = `${route.distance.toFixed(1)}<span class="text-3xl text-slate-500 font-medium ml-1">NM</span>`;
+            const speed = parseFloat(speedSlider.value); 
+            const t = route.distance / speed;
+            document.getElementById('timeOutput').innerText = `${Math.floor(t)} hrs ${Math.round((t-Math.floor(t))*60)} mins`;
+
+            document.getElementById('portName').innerText = destNode.name;
+            document.getElementById('vhfChannel').innerHTML = `<i class="fas fa-broadcast-tower mr-1"></i>${destNode.vhf}`;
+            document.getElementById('harborCategory').innerText = destNode.category;
+            document.getElementById('marinaInfo').innerHTML = destNode.marina;
+            document.getElementById('hazardInfo').innerHTML = destNode.hazards || "No immediate pilotage hazards logged for this location.";
+            document.getElementById('tideLink').href = destNode.tideId ? `https://easytide.admiralty.co.uk/?PortID=${destNode.tideId}` : "#";
+            document.getElementById('weatherLink').href = `https://www.windy.com/${destNode.lat}/${destNode.lon}?${destNode.lat},${destNode.lon},11`;
+
+            document.getElementById('navilyLink').href = `https://www.navily.com/carte?lat=${destNode.lat}&lng=${destNode.lon}&z=13`;
+            document.getElementById('eoceanicLink').href = `https://eoceanic.com/search?q=${encodeURIComponent(destNode.name)}`;
+            document.getElementById('googleMapsLink').href = `https://www.google.com/maps/search/?api=1&query=${destNode.lat},${destNode.lon}`;
+
+            // Required Personalization Date injected
+            document.getElementById('tideContextBanner').innerHTML = `<i class="far fa-calendar-alt text-blue-400"></i><span class="text-white hidden sm:inline">Wednesday, June 3, 2026 - </span><span class="text-white sm:hidden">Jun 3, '26 - </span><span class="text-blue-300 ml-1 font-bold truncate max-w-[150px] sm:max-w-[200px]">${destNode.name}</span>`;
+
+            const fuelChip = document.getElementById('fuelAvailable');
+            if (destNode.fuel && destNode.fuel !== "No Fuel") {
+                fuelChip.innerHTML = `<span class="px-3 py-1.5 rounded-full border border-emerald-500/30 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 shadow-inner flex items-center gap-1.5 whitespace-nowrap"><i class="fas fa-gas-pump animate-pulse"></i> ${destNode.fuel}</span>`;
+            } else {
+                fuelChip.innerHTML = `<span class="px-3 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-slate-400 bg-black/40 shadow-inner flex items-center gap-1.5 whitespace-nowrap"><i class="fas fa-ban"></i> No Fuel</span>`;
+            }
+
+            const alertBox = document.getElementById('depthAlertBox');
+            if (destNode.isShallowBar && destNode.barDepth < 1.5) {
+                alertBox.className = "rounded-[1.5rem] p-5 flex items-start gap-4 fade-in alert-danger shrink-0";
+                document.getElementById('depthAlertTitle').innerText = "Shallow Bar Alert";
+                document.getElementById('depthAlertTitle').className = "text-sm font-bold text-rose-400 tracking-wide";
+                document.getElementById('depthAlertDesc').innerHTML = `Destination contains a shallow entry bar with charted depth of <span class='text-white font-bold'>${destNode.barDepth}m</span>. Ensure tidal clearance.`;
+                document.getElementById('depthAlertIcon').className = "fas fa-exclamation-triangle text-2xl text-rose-500 animate-bounce";
+                document.getElementById('depthAlertIconBg').className = "w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0 border border-rose-500/20";
+            } else {
+                alertBox.className = "rounded-[1.5rem] p-5 flex items-start gap-4 fade-in alert-safe shrink-0";
+                document.getElementById('depthAlertTitle').innerText = "Deep Water Safe";
+                document.getElementById('depthAlertTitle').className = "text-sm font-bold text-emerald-400 tracking-wide";
+                document.getElementById('depthAlertDesc').innerHTML = "No major entry bars detected. Draft clearances are generally adequate.";
+                document.getElementById('depthAlertIcon').className = "fas fa-check-circle text-2xl text-emerald-400";
+                document.getElementById('depthAlertIconBg').className = "w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20";
+            }
+
+            document.getElementById('aiGuideContainer').classList.add('hidden');
+            document.getElementById('aiGuideContainer').classList.remove('fade-in');
+        }
+
+        function renderLoop() { drawVectorMap(currentRoutePath); requestAnimationFrame(renderLoop); }
+
+        window.fetchAIPortGuide = function() {
+            const box = document.getElementById('aiGuideContainer');
+            box.classList.remove('hidden'); box.classList.add('fade-in');
+            box.innerHTML = mapNodes[destSelect.value].offlineGuide || '<p class="italic text-slate-400 p-4 text-center">No detailed AI guide database mapped for this port yet.</p>';
+        };
+
+        window.swapPorts = function() {
+            const t = depSelect.value; depSelect.value = destSelect.value; destSelect.value = t;
+            localStorage.setItem('almanac_ios_dep', depSelect.value); localStorage.setItem('almanac_ios_dest', destSelect.value);
+            update();
+        };
+
+        function handleTapSelect(clientX, clientY) {
+            const r = canvas.getBoundingClientRect();
+            const w = r.width; const h = r.height;
+            const cx = clientX - r.left; const cy = clientY - r.top;
+            const x = (cx - panX - w/2)/zoomLevel + w/2;
+            const y = (cy - panY - h/2)/zoomLevel + h/2;
+            const lon = -6.6 + (x/w)*6.1; const lat = 49.7 + (1 - y/h)*1.3;
+            
+            let closest = null; let minD = 0.15;
+            for (const key in mapNodes) {
+                if (!mapNodes[key].isPort) continue;
+                const d = Math.hypot(mapNodes[key].lon - lon, mapNodes[key].lat - lat);
+                if (d < minD) { minD = d; closest = key; }
+            }
+            if (closest && depSelect.value !== closest) {
+                destSelect.value = closest; localStorage.setItem('almanac_ios_dest', closest); update();
+            }
+        }
+
+        depSelect.addEventListener('change', () => { localStorage.setItem('almanac_ios_dep', depSelect.value); update(); });
+        destSelect.addEventListener('change', () => { localStorage.setItem('almanac_ios_dest', destSelect.value); update(); });
+        speedSlider.addEventListener('input', () => { speedLabel.innerText = parseFloat(speedSlider.value).toFixed(1) + " KTS"; update(); });
+
+        canvas.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - panX; startY = e.clientY - panY; dragDistance = 0; });
+        canvas.addEventListener('mousemove', (e) => { 
+            if (isDragging) { panX = e.clientX - startX; panY = e.clientY - startY; dragDistance += Math.hypot(e.clientX - startX - panX, e.clientY - startY - panY); } 
+            
+            const r = canvas.getBoundingClientRect();
+            const w = r.width; const h = r.height;
+            const cx = e.clientX - r.left; const cy = e.clientY - r.top;
+            const x = (cx - panX - w/2)/zoomLevel + w/2;
+            const y = (cy - panY - h/2)/zoomLevel + h/2;
+            const lon = (-6.6 + (x/w)*6.1).toFixed(3); const lat = (49.7 + (1 - y/h)*1.3).toFixed(3);
+            document.getElementById('coordinateReadout').innerText = `${lat}° N, ${lon}° W`;
+        });
+        window.addEventListener('mouseup', () => isDragging = false);
+        canvas.addEventListener('click', (e) => { if (dragDistance < 5) handleTapSelect(e.clientX, e.clientY); });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault(); const zf = 1.1; const oldZ = zoomLevel;
+            zoomLevel = e.deltaY < 0 ? Math.min(zoomLevel * zf, 15) : Math.max(zoomLevel / zf, 0.8);
+            const mx = e.clientX - canvas.getBoundingClientRect().left; const my = e.clientY - canvas.getBoundingClientRect().top;
+            panX = mx - (mx - panX) * (zoomLevel / oldZ); panY = my - (my - panY) * (zoomLevel / oldZ);
+        }, { passive: false });
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) { isTouchDragging = true; lastTouchX = e.touches[0].clientX; lastTouchY = e.touches[0].clientY; touchDragDistance = 0; }
+            else if (e.touches.length === 2) { isTouchDragging = false; tpCache = [e.touches[0], e.touches[1]]; }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isTouchDragging && e.touches.length === 1) {
+                panX += e.touches[0].clientX - lastTouchX; panY += e.touches[0].clientY - lastTouchY;
+                touchDragDistance += Math.hypot(e.touches[0].clientX - lastTouchX, e.touches[0].clientY - lastTouchY);
+                lastTouchX = e.touches[0].clientX; lastTouchY = e.touches[0].clientY;
+            } else if (e.touches.length === 2 && tpCache.length === 2) {
+                const oldDist = Math.hypot(tpCache[0].clientX - tpCache[1].clientX, tpCache[0].clientY - tpCache[1].clientY);
+                const newDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                const oldZ = zoomLevel; zoomLevel = Math.max(0.8, Math.min(15.0, zoomLevel * (newDist / oldDist)));
+                tpCache = [e.touches[0], e.touches[1]];
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (isTouchDragging && touchDragDistance < 10 && e.changedTouches.length > 0) handleTapSelect(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            isTouchDragging = false; tpCache = []; 
+        });
+
+        update(); renderLoop();
+    </script>
+</body>
+</html>
