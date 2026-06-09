@@ -283,6 +283,7 @@
                     <!-- Port Link Actions -->
                     <div class="space-y-2.5">
                         <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
+                            <!-- Populated with exact date and port by JS -->
                         </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
@@ -344,7 +345,7 @@
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
-        // Formatted date logic
+        // Formatted date logic (Persists exact date for personalized tide tracking)
         const currentDateRaw = new Date();
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateString = currentDateRaw.toLocaleDateString('en-GB', options);
@@ -383,7 +384,7 @@
         let currentRoutePath = [];
 
         // --- MAP DATA ARRAYS ---
-        // Expanded, fully calibrated Marine Node Graph Database with County/Regional eOceanic Link mappings
+        // Expanded, fully calibrated Marine Node Graph Database with updated land-avoidance nodes
         const mapNodes = {
             // ----- CHICHESTER (Solent / Hampshire) -----
             chichester_entrance: {
@@ -540,7 +541,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• National Trust protected estuary.<br>• Visitor moorings available inside. Eco-sensitive seagrass area.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Newtown')}`,
                 hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
-                links: ["solent_mid", "yarmouth"]
+                links: ["solent_mid", "solent_west", "yarmouth"]
             },
             // ----- LYMINGTON -----
             lymington: {
@@ -550,7 +551,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Lymington Yacht Haven ${vhfBadge('80')} ${telLink('01590 677071')} ${webLink('https://www.yachthavens.com/lymington', 'Yacht Haven')}<br>• Berthon Marina ${vhfBadge('80')} ${telLink('01590 673312')} ${webLink('https://www.berthonmarina.co.uk', 'Berthon')}<br><br>HM (Lymington): ${telLink('01590 672014')} ${webLink('https://www.lymingtonharbour.co.uk', 'Lymington Harbour')}<br>Email: ${emailLink('lymington@yachthavens.com')}`,
                 hazards: "Frequent Wightlink ferry operations share the narrow channel. Very shallow mud flats exist immediately outside the marked channel wooden posts.",
-                links: ["solent_mid", "needles_fairway"],
+                links: ["solent_west", "needles_fairway"],
                 offlineGuide: `
                     <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
                     <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
@@ -567,7 +568,7 @@
                 vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
                 marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
                 hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["solent_mid", "newtown_creek", "needles_fairway"]
+                links: ["solent_west", "newtown_creek", "needles_fairway"]
             },
             alum_bay: {
                 name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061",
@@ -850,10 +851,12 @@
             iow_south_coastal: { name: "St Catherine's Coastal Point (Optimal)", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "portland_offshore", "start_point_offshore", "berry_head_offshore", "durlston", "poole_bay"] }, 
             
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_entrance", "portsmouth", "solent_mid", "bembridge", "priory_bay", "seaview", "iow_east_offshore"] }, 
-            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton", "cowes", "osborne_bay", "king_quay", "newtown_creek", "lymington", "yarmouth", "needles_fairway"] },
             
-            // Needles Fairway
-            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_mid", "lymington", "yarmouth", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore"] },
+            // CORRECTED: Solent Curve and Needles Approach
+            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
+            solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington", "yarmouth", "needles_fairway"] },
+            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore", "lymington", "yarmouth"] },
+            
             poole_bay: { name: "Poole Bay Transit", lat: 50.630, lon: -1.900, isPort: false, links: ["poole", "studland", "needles_fairway", "durlston", "iow_south", "iow_south_coastal"] },
             
             // Durlston Bypass
@@ -876,12 +879,14 @@
 
             dodman_offshore: { name: "Dodman Point Offshore Corner", lat: 50.180, lon: -4.780, isPort: false, links: ["fowey", "falmouth_bay", "plymouth_sound", "eddystone_transit"] },
 
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["dodman_offshore", "falmouth", "helford", "portscatho", "lizard_point", "start_point_offshore", "stmawes", "eddystone_transit"] },
+            // CORRECTED: Falmouth, Manacles, Lizard, and Westbound clearances
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["dodman_offshore", "falmouth", "helford", "portscatho", "manacles_east", "start_point_offshore", "stmawes", "eddystone_transit"] },
+            manacles_east: { name: "The Manacles East Offset", lat: 50.040, lon: -4.980, isPort: false, links: ["falmouth_bay", "lizard_point"] },
+            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.930, lon: -5.200, isPort: false, links: ["manacles_east", "plymouth_sound", "mounts_bay", "iow_south", "eddystone_transit", "heading_west_bypass"] }, 
             
-            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.930, lon: -5.200, isPort: false, links: ["falmouth_bay", "plymouth_sound", "mounts_bay", "iow_south", "eddystone_transit"] }, 
             mounts_bay: { name: "Mounts Bay Passage", lat: 49.950, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end"] },
-            heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco", "lands_end"] },
-            lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco", "heading_west_bypass"] }
+            heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
+            lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
         };
 
         const solentPorts = [
@@ -1035,7 +1040,7 @@
             if (runBypass) {
                 if (nodeId === 'chichester_entrance') links = links.filter(l => l !== 'solent_east_forts');
                 if (nodeId === 'solent_east_forts') return [];
-                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid');
+                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid' && l !== 'solent_west');
                 if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
                 if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
                 if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
