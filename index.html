@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet CSS for Map Integration -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -34,9 +33,9 @@
             border-radius: 999px;
         }
 
-        /* Leaflet Custom UI overrides for Dark Theme */
+        /* Leaflet Custom UI overrides */
         .leaflet-container {
-            background-color: #060e1a !important;
+            background-color: #aad3df !important;
             font-family: inherit;
         }
         .leaflet-tooltip.custom-tooltip {
@@ -66,7 +65,6 @@
 
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
         
-        <!-- Premium Navigation Header -->
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-12 h-12 bg-blue-600/15 border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
@@ -88,8 +86,7 @@
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner">
-                    <!-- Date inserted by JS -->
-                </div>
+                    </div>
                 <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
@@ -99,7 +96,6 @@
         
         <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
             
-            <!-- DISTANCE & ETA DASHBOARD -->
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                 <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
@@ -110,7 +106,6 @@
                 </div>
                 <div id="speedLabel" class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 mb-1">Estimated Time @ 5.0 Knots</div>
                 
-                <!-- Speed Slider -->
                 <div class="flex items-center justify-center gap-3 mt-2 w-full max-w-[240px] mx-auto">
                     <span class="text-[10px] text-slate-500 font-bold">3 kn</span>
                     <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
@@ -122,9 +117,7 @@
                 </div>
             </div>
 
-            <!-- Smart Route Settings & Port Selectors -->
             <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
-                <!-- Routing Mode -->
                 <div>
                     <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
                     <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -140,9 +133,7 @@
                     </div>
                 </div>
 
-                <!-- Dropdowns with Interactive Swap Button -->
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
-                    <!-- Departure Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
                         <div class="relative">
@@ -152,14 +143,12 @@
                         </div>
                     </div>
 
-                    <!-- Swap Ports Button -->
                     <div class="flex justify-center pb-2 md:pb-3">
                         <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
                             <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
                         </button>
                     </div>
 
-                    <!-- Destination Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
                         <div class="relative">
@@ -171,10 +160,8 @@
                 </div>
             </div>
 
-            <!-- Main Interactive Screen Area -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
                 
-                <!-- OpenSeaMap Container -->
                 <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
@@ -184,10 +171,8 @@
                     </div>
                     
                     <div class="relative w-full z-10">
-                        <!-- Leaflet Div -->
-                        <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
+                        <div id="routingMap" class="w-full bg-[#aad3df] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
 
-                        <!-- Reset, Geolocation & Zoom Map Controls Dock -->
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400]">
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
                                 <i class="fas fa-plus text-blue-400"></i>
@@ -203,7 +188,6 @@
                             </button>
                         </div>
 
-                        <!-- Map Legend Overlay -->
                         <div class="absolute bottom-6 left-2 bg-slate-900/95 border border-slate-700 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
                             <div class="flex items-center gap-2"><span class="w-3.5 h-0.5 bg-emerald-500 block"></span> Route Track</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 block border border-white"></span> Port / Departure</div>
@@ -212,21 +196,17 @@
                         </div>
                     </div>
 
-                    <!-- Step-by-Step Route list -->
                     <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
                         <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
                             <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
                         </h3>
                         <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
-                            <!-- Populated dynamically with routing steps -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- Live Almanac & Harbor Master Panel -->
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
-                    <!-- Live Marine Forecast Panel -->
                     <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
                         <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
@@ -235,7 +215,6 @@
                         </div>
                     </div>
 
-                    <!-- Dynamic Depth Alert Panel -->
                     <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
                             <i id="depthAlertIcon" class="fas text-xl"></i>
@@ -246,7 +225,6 @@
                         </div>
                     </div>
 
-                    <!-- Main Port Info Panel -->
                     <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
                         <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
                             <div class="min-w-0">
@@ -280,11 +258,9 @@
                         </div>
                     </div>
 
-                    <!-- Port Link Actions -->
                     <div class="space-y-2.5">
                         <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
-                            <!-- Populated with exact date and port by JS -->
-                        </div>
+                            </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
                             <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
@@ -310,7 +286,6 @@
                             </a>
                         </div>
 
-                        <!-- AI Port Guide Button -->
                         <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
                             <i class="fas fa-info text-purple-200"></i>
                             <i class="fas fa-beer text-purple-200"></i>
@@ -324,17 +299,14 @@
                             <span>Port Guide</span>
                         </button>
 
-                        <!-- AI Port Guide Output Container -->
                         <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar">
-                            <!-- AI Content generated here -->
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Leaflet JS Library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
@@ -940,16 +912,16 @@
             // Add standard Leaflet attribution control to bottom right but compact
             L.control.attribution({position: 'bottomright', prefix: false}).addTo(map);
 
-            // 1. Base Map: CartoDB Dark Matter (Perfect for premium dark mode UI)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            // 1. Base Map: Standard OpenStreetMap (Green land, blue sea)
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">Carto</a>'
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
             // 2. Overlay: OpenSeaMap Seamarks
             L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: 'Seamarks &copy; <a href="http://www.openseamap.org">OpenSeaMap</a>'
+                attribution: 'Seamarks © <a href="http://www.openseamap.org">OpenSeaMap</a>'
             }).addTo(map);
 
             // Group layers for dynamic clearing
@@ -1524,4 +1496,3 @@
     </script>
 </body>
 </html>
-
