@@ -922,7 +922,7 @@
             update();
         }
 
-        ffunction getNeighbors(nodeId, startId, endId) {
+        function getNeighbors(nodeId, startId, endId) {
             const node = mapNodes[nodeId];
             if (!node) return [];
             let links = [...node.links];
