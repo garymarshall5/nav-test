@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -442,7 +441,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Open roadstead anchorage with gravel/shingle holding.<br>${webLink('https://www.gosport.gov.uk', 'Gosport Info')}`,
                 hazards: "Sits immediately adjacent to the Gosport deep-water shipping lanes. Strong tidal currents sweep parallel to the shoreline.",
-                links: ["portsmouth_approach", "solent_mid"]
+                links: ["solent_east_forts", "solent_mid"]
             },
             // ----- SOUTHAMPTON -----
             southampton: {
@@ -539,7 +538,7 @@
                 vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
                 marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
                 hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["solent_west", "newtown_creek", "lymington_approach", "needles_fairway"]
+                links: ["solent_west", "newtown_creek", "lymington_approach", "hurst_narrows"]
             },
             alum_bay: {
                 name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061",
@@ -548,7 +547,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• Temporary daytime anchorage under the multi-colored sand cliffs.`,
                 hazards: "Strong tidal flows coming from Hurst Narrows and the Needles. Strictly a fair-weather anchorage.",
-                links: ["needles_fairway"]
+                links: ["needles_fairway", "hurst_narrows"]
             },
             // ----- POOLE -----
             poole: {
@@ -643,7 +642,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• River Yealm Moorings & Ponto.<br><br>HM (Yealm Auth): ${telLink('01752 872533')} ${webLink('https://www.yealmharbourauthority.co.uk/', 'Yealm Harbour Authority')}<br>Email: ${emailLink('yealmharbourmaster@btconnect.com')}`,
                 hazards: "Very shallow entrance sandbar over the river mouth. Under-keel clearance is limited; deep draft yachts must time entry carefully with the rising tide.",
-                links: ["plymouth_sound"]
+                links: ["yealm_approach"]
             },
             bovisand_beach: {
                 name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014",
@@ -652,7 +651,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Sandy bay anchorage inside the eastern flank of Plymouth Sound breakwater.`,
                 hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.",
-                links: ["plymouth_sound"]
+                links: ["plymouth_sound", "yealm_approach"]
             },
             // ----- PLYMOUTH -----
             plymouth: {
@@ -672,7 +671,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Web')}<br>• Mixtow Marine ${telLink('01726 832204')} ${webLink('https://www.foweyharbour.co.uk', 'Mixtow')}<br><br>HM (Fowey): ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Harbour Authority')}<br>Email: ${emailLink('fhc@foweyharbour.co.uk')}`,
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
-                links: ["rame_head_transit", "dodman_offshore"]
+                links: ["fowey_approach"]
             },
             // ----- FALMOUTH -----
             falmouth: {
@@ -816,59 +815,61 @@
             // ----- APPROACH NODES (Tucked tightly into bays to hug the coast) -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.765, lon: -0.940, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
             bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.700, lon: -1.090, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore", "priory_bay", "seaview", "whitecliff_bay"] },
-            portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
+            portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
-            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
+            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "hurst_narrows"] },
             poole_approach: { name: "Swash Channel Approach", lat: 50.685, lon: -1.945, isPort: false, links: ["poole", "poole_bay", "studland"] },
-            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.615, lon: -2.445, isPort: false, links: ["weymouth", "portland_marina", "durlston", "portland_offshore"] },
+            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.615, lon: -2.445, isPort: false, links: ["weymouth", "portland_marina", "st_aldhelms_offshore", "portland_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
             falmouth_approach: { name: "Carrick Roads Approach", lat: 50.135, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor"] },
 
-            // ----- TRANSIT WAYPOINTS (Routing Graph Only - Moved closer to land) -----
+            // ----- NEW COASTAL OFFSET APPROACH NODES (Fixing Land-Clipping) -----
+            hurst_narrows: { name: "Hurst Narrows Transit", lat: 50.705, lon: -1.550, isPort: false, links: ["needles_fairway", "solent_west", "yarmouth", "lymington_approach"] },
+            swanage_bay_transit: { name: "Swanage Bay Transit", lat: 50.620, lon: -1.890, isPort: false, links: ["durlston", "poole_bay"] },
+            st_aldhelms_offshore: { name: "St Aldhelm's Head Offset", lat: 50.550, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach", "portland_offshore"] },
+            yealm_approach: { name: "Yealm Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["newtonferrers", "plymouth_sound", "bolt_head_offshore", "bovisand_beach"] },
+            fowey_approach: { name: "Fowey Approach", lat: 50.315, lon: -4.630, isPort: false, links: ["fowey", "rame_head_transit", "dodman_offshore"] },
+            runnel_stone_transit: { name: "Runnel Stone Transit", lat: 50.000, lon: -5.670, isPort: false, links: ["mounts_bay", "lands_end", "lizard_point"] },
+
+            // ----- TRANSIT WAYPOINTS (Routing Graph Only) -----
             iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.665, lon: -1.060, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
             iow_southeast: { name: "Sandown Bay Offshore", lat: 50.610, lon: -1.160, isPort: false, links: ["iow_east_offshore", "iow_south", "iow_south_coastal"] }, 
             
-            // South Wight Coastal Hugs (Direct link to Durlston added here to bypass the Solent securely)
             iow_south: { name: "St Catherine's Offshore Point (Safe)", lat: 50.550, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "durlston"] }, 
             iow_south_coastal: { name: "St Catherine's Coastal Point (Optimal)", lat: 50.575, lon: -1.295, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_south", "durlston"] }, 
             
-            solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
+            solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "stokes_bay", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
             
-            // Solent Curve and Needles Approach
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
-            solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
-            needles_fairway: { name: "Needles Safe Water", lat: 50.655, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "yarmouth"] },
+            solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "hurst_narrows", "beaulieu"] },
+            needles_fairway: { name: "Needles Safe Water", lat: 50.655, lon: -1.600, isPort: false, links: ["hurst_narrows", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston"] },
             
-            poole_bay: { name: "Poole Bay Transit", lat: 50.680, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "durlston"] },
+            poole_bay: { name: "Poole Bay Transit", lat: 50.680, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "swanage_bay_transit"] },
             
-            // Durlston Bypass
-            durlston: { name: "Durlston Ledge Bypass", lat: 50.590, lon: -1.945, isPort: false, links: ["poole_bay", "weymouth_approach", "portland_offshore", "needles_fairway"] },
+            durlston: { name: "Durlston Ledge Bypass", lat: 50.590, lon: -1.945, isPort: false, links: ["swanage_bay_transit", "st_aldhelms_offshore", "needles_fairway"] },
             
-            // Portland nearshore corner
-            portland_offshore: { name: "Portland Bill Coastal Safety Zone", lat: 50.505, lon: -2.450, isPort: false, links: ["durlston", "weymouth_approach", "portland_marina", "berry_head_offshore"] }, 
+            portland_offshore: { name: "Portland Bill Coastal Safety Zone", lat: 50.505, lon: -2.450, isPort: false, links: ["st_aldhelms_offshore", "weymouth_approach", "portland_marina", "berry_head_offshore"] }, 
             
             berry_head_offshore: { name: "Berry Head Coastal Safety Zone", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "start_point_offshore"] },
             dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.560, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
             
-            // West Country Hug Lines
             start_point_offshore: { name: "Start Point Safety Offset", lat: 50.215, lon: -3.635, isPort: false, links: ["dartmouth_approach", "berry_head_offshore", "prawle_point_offshore"] }, 
             prawle_point_offshore: { name: "Prawle Point Safety Offset", lat: 50.205, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.215, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "plymouth_sound", "rame_head_transit"] }, 
+            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.215, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "yealm_approach", "rame_head_transit"] }, 
             
-            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.320, lon: -4.140, isPort: false, links: ["bolt_head_offshore", "newtonferrers", "plymouth", "bovisand_beach", "rame_head_transit"] },
+            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.320, lon: -4.140, isPort: false, links: ["yealm_approach", "plymouth", "rame_head_transit"] },
             
-            rame_head_transit: { name: "Rame Head Coastal Passage", lat: 50.310, lon: -4.220, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey", "dodman_offshore"] },
+            rame_head_transit: { name: "Rame Head Coastal Passage", lat: 50.310, lon: -4.220, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey_approach", "dodman_offshore"] },
 
-            dodman_offshore: { name: "Dodman Point Coastal Corner", lat: 50.215, lon: -4.795, isPort: false, links: ["fowey", "falmouth_bay", "rame_head_transit"] },
+            dodman_offshore: { name: "Dodman Point Coastal Corner", lat: 50.215, lon: -4.795, isPort: false, links: ["fowey_approach", "falmouth_bay", "rame_head_transit"] },
 
-            // Falmouth, Manacles, Lizard, and Westbound clearances
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.125, lon: -5.020, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east"] },
             manacles_east: { name: "The Manacles East Offset", lat: 50.045, lon: -5.040, isPort: false, links: ["falmouth_bay", "lizard_point"] },
-            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.955, lon: -5.195, isPort: false, links: ["manacles_east", "mounts_bay", "heading_west_bypass", "lands_end"] }, 
+            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.955, lon: -5.195, isPort: false, links: ["manacles_east", "runnel_stone_transit", "heading_west_bypass"] }, 
             
-            mounts_bay: { name: "Mounts Bay Passage", lat: 50.020, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end"] },
+            mounts_bay: { name: "Mounts Bay Passage", lat: 50.020, lon: -5.450, isPort: false, links: ["runnel_stone_transit", "penzance"] },
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
-            lands_end: { name: "Longships Passage (Lands End)", lat: 50.065, lon: -5.730, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
+            lands_end: { name: "Longships Passage (Lands End)", lat: 50.065, lon: -5.730, isPort: false, links: ["runnel_stone_transit", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
         };
 
         const solentPorts = [
@@ -1020,13 +1021,13 @@
             }
             
             if (runBypass) {
-                // Ensure logic hits updated approach nodes to avoid interior Solent
                 if (nodeId === 'chichester_approach') links = links.filter(l => l !== 'solent_east_forts');
                 if (nodeId === 'solent_east_forts') return [];
-                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid' && l !== 'solent_west');
-                
-                // Bug fix: The lines preventing Needles Fairway connecting to Poole/Durlston/IoW South 
-                // have been removed, completely fixing the East-West graph severance causing the 'Infinity' bug.
+                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'hurst_narrows');
+                if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway');
             }
             return links;
         }
@@ -1496,5 +1497,3 @@
     </script>
 </body>
 </html>
-
-```
