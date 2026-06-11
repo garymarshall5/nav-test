@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet CSS for Map Integration -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -66,7 +65,6 @@
 
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
         
-        <!-- Premium Navigation Header -->
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-12 h-12 bg-blue-600/15 border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
@@ -88,8 +86,7 @@
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner">
-                    <!-- Date inserted by JS -->
-                </div>
+                    </div>
                 <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
@@ -99,7 +96,6 @@
         
         <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
             
-            <!-- DISTANCE & ETA DASHBOARD -->
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                 <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
@@ -110,7 +106,6 @@
                 </div>
                 <div id="speedLabel" class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 mb-1">Estimated Time @ 5.0 Knots</div>
                 
-                <!-- Speed Slider -->
                 <div class="flex items-center justify-center gap-3 mt-2 w-full max-w-[240px] mx-auto">
                     <span class="text-[10px] text-slate-500 font-bold">3 kn</span>
                     <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
@@ -122,9 +117,7 @@
                 </div>
             </div>
 
-            <!-- Smart Route Settings & Port Selectors -->
             <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
-                <!-- Routing Mode -->
                 <div>
                     <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
                     <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -140,9 +133,7 @@
                     </div>
                 </div>
 
-                <!-- Dropdowns with Interactive Swap Button -->
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
-                    <!-- Departure Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
                         <div class="relative">
@@ -152,14 +143,12 @@
                         </div>
                     </div>
 
-                    <!-- Swap Ports Button -->
                     <div class="flex justify-center pb-2 md:pb-3">
                         <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
                             <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
                         </button>
                     </div>
 
-                    <!-- Destination Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
                         <div class="relative">
@@ -171,10 +160,8 @@
                 </div>
             </div>
 
-            <!-- Main Interactive Screen Area -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
                 
-                <!-- OpenSeaMap Container -->
                 <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
@@ -184,10 +171,8 @@
                     </div>
                     
                     <div class="relative w-full z-10">
-                        <!-- Leaflet Div -->
                         <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
 
-                        <!-- Reset, Geolocation & Zoom Map Controls Dock -->
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400]">
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
                                 <i class="fas fa-plus text-blue-400"></i>
@@ -203,7 +188,6 @@
                             </button>
                         </div>
 
-                        <!-- Map Legend Overlay -->
                         <div class="absolute bottom-6 left-2 bg-slate-900/95 border border-slate-700 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
                             <div class="flex items-center gap-2"><span class="w-3.5 h-0.5 bg-emerald-500 block"></span> Route Track</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 block border border-white"></span> Port / Departure</div>
@@ -212,21 +196,17 @@
                         </div>
                     </div>
 
-                    <!-- Step-by-Step Route list -->
                     <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
                         <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
                             <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
                         </h3>
                         <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
-                            <!-- Populated dynamically with routing steps -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- Live Almanac & Harbor Master Panel -->
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
-                    <!-- Live Marine Forecast Panel -->
                     <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
                         <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
@@ -235,7 +215,6 @@
                         </div>
                     </div>
 
-                    <!-- Dynamic Depth Alert Panel -->
                     <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
                             <i id="depthAlertIcon" class="fas text-xl"></i>
@@ -246,7 +225,6 @@
                         </div>
                     </div>
 
-                    <!-- Main Port Info Panel -->
                     <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
                         <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
                             <div class="min-w-0">
@@ -280,11 +258,9 @@
                         </div>
                     </div>
 
-                    <!-- Port Link Actions -->
                     <div class="space-y-2.5">
                         <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
-                            <!-- Populated with exact date and port by JS -->
-                        </div>
+                            </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
                             <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
@@ -310,7 +286,6 @@
                             </a>
                         </div>
 
-                        <!-- AI Port Guide Button -->
                         <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
                             <i class="fas fa-info text-purple-200"></i>
                             <i class="fas fa-beer text-purple-200"></i>
@@ -324,17 +299,14 @@
                             <span>Port Guide</span>
                         </button>
 
-                        <!-- AI Port Guide Output Container -->
                         <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar">
-                            <!-- AI Content generated here -->
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Leaflet JS Library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
@@ -345,8 +317,8 @@
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
-        // Strictly enforcing the exact required Date per personalization constraints
-        const exactDate = "Tuesday, June 9, 2026";
+        // Strictly enforcing the exact required Date 
+        const exactDate = "Thursday, June 11, 2026";
         if (dateElement) {
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
@@ -382,9 +354,10 @@
         let currentRoutePath = [];
 
         // --- MAP DATA ARRAYS ---
-        // Expanded, fully calibrated Marine Node Graph Database with Approach Nodes to prevent land-clipping
+        // Nodes are ordered East to West so the dropdown populates in strict geographic order.
+        // Overland cutting is prevented by high-granularity transit nodes at the end.
         const mapNodes = {
-            // ----- CHICHESTER (Solent / Hampshire) -----
+            // ----- PORTS: STRICT EAST TO WEST GEOGRAPHICAL ORDER -----
             chichester_entrance: {
                 name: "Chichester Entrance", lat: 50.780, lon: -0.935, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0068",
                 vhf: "VHF CH 14 / 80", category: "Harbour", fuel: "Diesel & Petrol",
@@ -401,7 +374,6 @@
                     </ul>
                 `
             },
-            // ----- BEMBRIDGE -----
             bembridge: {
                 name: "Bembridge Harbour", lat: 50.693, lon: -1.100, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0064",
                 vhf: "VHF CH 80", category: "Harbour", fuel: "Diesel Only",
@@ -427,15 +399,6 @@
                 hazards: "Watch for shallow sands extending far offshore. Beware of recreational beachgoers during peak summer seasons.",
                 links: ["bembridge_approach", "solent_east_forts"]
             },
-            whitecliff_bay: {
-                name: "Whitecliff Bay (IOW)", lat: 50.665, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/whitecliff-bay/18431",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Anchorage only. Mud/Sand holding.<br>• Spectacular white chalk cliff surroundings.<br>${webLink('https://www.visitisleofwight.co.uk', 'IoW Tourism')}`,
-                hazards: "Entirely exposed to easterly and southerly swells. Guarded by the shallow rocky fingers of Bembridge Ledge to the north.",
-                links: ["bembridge_approach", "iow_east_offshore"]
-            },
             seaview: {
                 name: "Seaview (IOW)", lat: 50.725, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
                 vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
@@ -445,7 +408,15 @@
                 hazards: "Exposed anchorage to any northern or easterly winds. Strong tidal streams run through the nearby Solent channel.",
                 links: ["bembridge_approach", "solent_east_forts"]
             },
-            // ----- PORTSMOUTH -----
+            whitecliff_bay: {
+                name: "Whitecliff Bay (IOW)", lat: 50.665, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/mouillage/whitecliff-bay/18431",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                marina: `• Anchorage only. Mud/Sand holding.<br>• Spectacular white chalk cliff surroundings.<br>${webLink('https://www.visitisleofwight.co.uk', 'IoW Tourism')}`,
+                hazards: "Entirely exposed to easterly and southerly swells. Guarded by the shallow rocky fingers of Bembridge Ledge to the north.",
+                links: ["bembridge_approach", "iow_east_offshore"]
+            },
             portsmouth: {
                 name: "Portsmouth Harbour", lat: 50.795, lon: -1.108, isPort: true, isShallowBar: false, tideId: "0065",
                 vhf: "VHF CH 11 (KHM)", category: "Harbour", fuel: "Diesel & Petrol",
@@ -471,7 +442,6 @@
                 hazards: "Sits immediately adjacent to the Gosport deep-water shipping lanes. Strong tidal currents sweep parallel to the shoreline.",
                 links: ["portsmouth_approach", "solent_mid"]
             },
-            // ----- SOUTHAMPTON -----
             southampton: {
                 name: "Southampton", lat: 50.890, lon: -1.395, isPort: true, isShallowBar: false, tideId: "0060",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel & Petrol",
@@ -497,7 +467,6 @@
                 hazards: "Dolphin beacon marks the entrance. Keep within the withies. Shallow mudflats on either side of the winding channel.",
                 links: ["solent_west"]
             },
-            // ----- COWES -----
             cowes: {
                 name: "Cowes", lat: 50.760, lon: -1.295, isPort: true, isShallowBar: false, tideId: "0062",
                 vhf: "VHF CH 69", category: "Harbour", fuel: "Diesel & Petrol",
@@ -541,7 +510,6 @@
                 hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
                 links: ["solent_mid", "solent_west", "yarmouth"]
             },
-            // ----- LYMINGTON -----
             lymington: {
                 name: "Lymington", lat: 50.752, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044",
                 vhf: "VHF CH 66", category: "Marina", fuel: "Diesel & Petrol",
@@ -558,7 +526,6 @@
                     </ul>
                 `
             },
-            // ----- YARMOUTH -----
             yarmouth: {
                 name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061",
                 navily: "https://www.navily.com/carte/mouillage/20529",
@@ -577,7 +544,6 @@
                 hazards: "Strong tidal flows coming from Hurst Narrows and the Needles. Strictly a fair-weather anchorage.",
                 links: ["needles_fairway"]
             },
-            // ----- POOLE -----
             poole: {
                 name: "Poole Harbour", lat: 50.710, lon: -1.985, isPort: true, isShallowBar: false, tideId: "0036",
                 vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel & Petrol",
@@ -596,7 +562,6 @@
                 hazards: "Avoid Old Harry rocks and reef extending north-east. Exposed to north-easterly and easterly weather.",
                 links: ["poole_bay", "poole_approach"]
             },
-            // ----- WEYMOUTH -----
             weymouth: {
                 name: "Weymouth Harbour", lat: 50.610, lon: -2.455, isPort: true, isShallowBar: false, tideId: "0033",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -613,9 +578,8 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
                 marina: `• Portland Marina ${vhfBadge('80')} ${telLink('01305 866190')} ${webLink('https://www.boatfolk.co.uk/portland-marina', 'Portland Marina')}<br><br>HM (Portland Port): ${telLink('01305 824044')} ${webLink('https://www.portland-port.co.uk', 'Portland Port')}<br>Email: ${emailLink('portland@boatfolk.co.uk')}`,
                 hazards: "Portland Harbour controlled entrance ship channels (North and East Ship Channels). Strong wind shear in South-Westerly gales. To the south, beware of the violent overfalls of Portland Race.",
-                links: ["weymouth_approach", "portland_offshore"]
+                links: ["weymouth_approach"]
             },
-            // ----- BRIXHAM -----
             brixham: {
                 name: "Brixham", lat: 50.400, lon: -3.510, isPort: true, isShallowBar: false, tideId: "0025",
                 vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol",
@@ -625,7 +589,6 @@
                 hazards: "Massive active commercial fishing fleet moving 24/7. Long outer breakwater requires a wide berth on approach during easterlies.",
                 links: ["berry_head_offshore"]
             },
-            // ----- DARTMOUTH -----
             dartmouth: {
                 name: "Dartmouth", lat: 50.345, lon: -3.575, isPort: true, isShallowBar: false, tideId: "0023",
                 vhf: "VHF CH 11", category: "Harbour", fuel: "Diesel & Petrol",
@@ -653,7 +616,6 @@
                 hazards: "High-tidal upper river passage. The channel dries completely in multiple reaches. Ensure high water transit timing.",
                 links: ["dittisham"]
             },
-            // ----- SALCOMBE -----
             salcombe: {
                 name: "Salcombe Harbour", lat: 50.235, lon: -3.765, isPort: true, isShallowBar: true, barDepth: 1.2, tideId: "0023",
                 vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
@@ -670,7 +632,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• River Yealm Moorings & Ponto.<br><br>HM (Yealm Auth): ${telLink('01752 872533')} ${webLink('https://www.yealmharbourauthority.co.uk/', 'Yealm Harbour Authority')}<br>Email: ${emailLink('yealmharbourmaster@btconnect.com')}`,
                 hazards: "Very shallow entrance sandbar over the river mouth. Under-keel clearance is limited; deep draft yachts must time entry carefully with the rising tide.",
-                links: ["plymouth_sound"]
+                links: ["plymouth_sound_approach"]
             },
             bovisand_beach: {
                 name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014",
@@ -679,9 +641,8 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Sandy bay anchorage inside the eastern flank of Plymouth Sound breakwater.`,
                 hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.",
-                links: ["plymouth_sound"]
+                links: ["plymouth_sound_approach"]
             },
-            // ----- PLYMOUTH -----
             plymouth: {
                 name: "Plymouth Sound", lat: 50.364, lon: -4.130, isPort: true, isShallowBar: false, tideId: "0014",
                 vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol",
@@ -689,9 +650,8 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Mayflower Marina ${vhfBadge('80')} ${telLink('01752 556633')} ${webLink('https://www.mayflowermarina.co.uk', 'Mayflower')}<br>• Queen Anne's Battery ${vhfBadge('80')} ${telLink('01752 671142')} ${webLink('https://www.mdlmarinas.co.uk/qab', 'QAB MDL')}<br>• Sutton Harbour ${vhfBadge('12')} ${telLink('01752 204702')} ${webLink('https://www.suttonharbourmarina.com', 'Sutton Harbour')}<br><br>HM (QHM Plymouth): ${telLink('01752 665934')} ${webLink('https://www.royalnavy.mod.uk/qhm/plymouth', 'QHM Plymouth')}<br>Email: ${emailLink('plymouth@qhm.mod.uk')}`,
                 hazards: "Major military submarine and warship lanes. Navy ships take absolute priority. Keep strictly clear of moving exclusion zones.",
-                links: ["plymouth_sound"]
+                links: ["plymouth_sound_approach"]
             },
-            // ----- FOWEY -----
             fowey: {
                 name: "Fowey Harbour", lat: 50.332, lon: -4.632, isPort: true, isShallowBar: false, tideId: "0014",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -699,35 +659,16 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Web')}<br>• Mixtow Marine ${telLink('01726 832204')} ${webLink('https://www.foweyharbour.co.uk', 'Mixtow')}<br><br>HM (Fowey): ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Harbour Authority')}<br>Email: ${emailLink('fhc@foweyharbour.co.uk')}`,
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
-                links: ["plymouth_sound", "dodman_offshore"]
+                links: ["fowey_approach"]
             },
-            // ----- FALMOUTH -----
-            falmouth: {
-                name: "Falmouth", lat: 50.153, lon: -5.063, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 12", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/13119",
+            portscatho: {
+                name: "Portscatho", lat: 50.178, lon: -4.965, isPort: true, isShallowBar: false, tideId: "0005",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/mouillage/portscatho/18902",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Falmouth Marina ${vhfBadge('80')} ${telLink('01326 316620')} ${webLink('https://www.premiermarinas.com', 'Falmouth Premier')}<br>• Port Pendennis ${vhfBadge('80')} ${telLink('01326 211211')} ${webLink('https://www.portpendennis.com', 'Pendennis')}<br>• Falmouth Haven ${vhfBadge('12')} ${telLink('01326 310990')} ${webLink('https://www.falmouthhaven.co.uk', 'Falmouth Haven')}<br><br>HM (Falmouth): ${telLink('01326 312285')} ${webLink('https://www.falmouthharbour.co.uk', 'Falmouth Harbour')}<br>Email: ${emailLink('hm@falmouthharbour.co.uk')}`,
-                hazards: "Black Rock in the center of the outer entrance requires careful identification. High volume of commercial shipping anchoring in Carrick Roads.",
-                links: ["falmouth_approach", "penryn", "stmawes"]
-            },
-            penryn: {
-                name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/18901",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Penryn Port Moorings<br><br>HM (Truro & Penryn): ${telLink('01326 374254')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
-                hazards: "Highly tidal drying riverbed. Keep to marked pontoons. Yachts must be capable of drying out safely on mud to use inner berths.",
-                links: ["falmouth"]
-            },
-            stmawes: {
-                name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/48877",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• St Mawes Moorings<br><br>HM (St Mawes): ${telLink('01326 270553')} ${webLink('https://www.stmawesharbour.co.uk', 'St Mawes Harbour')}<br>Email: ${emailLink('stmawesharbour@btconnect.com')}`,
-                hazards: "Exposed to South-Westerly swells. Watch out for shallow rocky ledges near Castle Point.",
-                links: ["falmouth", "falmouth_approach"]
+                marina: `• Sand/Clay holding anchorage in the shelter of Gerrans Bay.`,
+                hazards: "Completely exposed to east and south-east winds which generate dangerous lee-shore breaking surf.",
+                links: ["falmouth_bay", "dodman_offshore"]
             },
             st_just: {
                 name: "St Just in Roseland", lat: 50.180, lon: -5.015, isPort: true, isShallowBar: false, tideId: "0005",
@@ -738,6 +679,15 @@
                 hazards: "Pool entrance is well hidden. Stay clear of the working boatyard slipways.",
                 links: ["stmawes", "falmouth"]
             },
+            stmawes: {
+                name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
+                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/carte/mouillage/48877",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• St Mawes Moorings<br><br>HM (St Mawes): ${telLink('01326 270553')} ${webLink('https://www.stmawesharbour.co.uk', 'St Mawes Harbour')}<br>Email: ${emailLink('stmawesharbour@btconnect.com')}`,
+                hazards: "Exposed to South-Westerly swells. Watch out for shallow rocky ledges near Castle Point.",
+                links: ["falmouth", "falmouth_approach"]
+            },
             mylor: {
                 name: "Mylor Yacht Harbour", lat: 50.175, lon: -5.050, isPort: true, isShallowBar: false, tideId: "0005",
                 vhf: "VHF CH 37/80", category: "Marina", fuel: "Diesel & Petrol",
@@ -746,6 +696,15 @@
                 marina: `• Mylor Marina ${vhfBadge('80')} ${telLink('01326 372121')} ${webLink('https://www.mylor.com', 'Mylor Yacht Harbour')}`,
                 hazards: "Beware of heavy racing fleets (working boats and dinghies) navigating through the moorings in summer.",
                 links: ["falmouth", "st_just", "falmouth_approach"]
+            },
+            penryn: {
+                name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
+                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/carte/mouillage/18901",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Penryn Port Moorings<br><br>HM (Truro & Penryn): ${telLink('01326 374254')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
+                hazards: "Highly tidal drying riverbed. Keep to marked pontoons. Yachts must be capable of drying out safely on mud to use inner berths.",
+                links: ["falmouth"]
             },
             malpas: {
                 name: "Malpas (River Fal)", lat: 50.245, lon: -5.035, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
@@ -765,6 +724,15 @@
                 hazards: "Extremely long tidal passage. Channel dries completely at low water. Accessible only with a well-timed high water passage.",
                 links: ["falmouth"]
             },
+            falmouth: {
+                name: "Falmouth", lat: 50.153, lon: -5.063, isPort: true, isShallowBar: false, tideId: "0005",
+                vhf: "VHF CH 12", category: "Marina", fuel: "Diesel & Petrol",
+                navily: "https://www.navily.com/carte/mouillage/13119",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Falmouth Marina ${vhfBadge('80')} ${telLink('01326 316620')} ${webLink('https://www.premiermarinas.com', 'Falmouth Premier')}<br>• Port Pendennis ${vhfBadge('80')} ${telLink('01326 211211')} ${webLink('https://www.portpendennis.com', 'Pendennis')}<br>• Falmouth Haven ${vhfBadge('12')} ${telLink('01326 310990')} ${webLink('https://www.falmouthhaven.co.uk', 'Falmouth Haven')}<br><br>HM (Falmouth): ${telLink('01326 312285')} ${webLink('https://www.falmouthharbour.co.uk', 'Falmouth Harbour')}<br>Email: ${emailLink('hm@falmouthharbour.co.uk')}`,
+                hazards: "Black Rock in the center of the outer entrance requires careful identification. High volume of commercial shipping anchoring in Carrick Roads.",
+                links: ["falmouth_approach", "penryn", "stmawes"]
+            },
             helford: {
                 name: "Helford River", lat: 50.100, lon: -5.120, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0004",
                 vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel",
@@ -783,16 +751,6 @@
                 hazards: "Almost completely dries at low water except for a few deep pools. Ancient oak trees overhang the channel—watch your mast!",
                 links: ["helford"]
             },
-            portscatho: {
-                name: "Portscatho", lat: 50.178, lon: -4.965, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/portscatho/18902",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Sand/Clay holding anchorage in the shelter of Gerrans Bay.`,
-                hazards: "Completely exposed to east and south-east winds which generate dangerous lee-shore breaking surf.",
-                links: ["falmouth_bay", "dodman_offshore"]
-            },
-            // ----- PENZANCE -----
             penzance: {
                 name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -802,7 +760,6 @@
                 hazards: "Tidal gate restricts wet dock access to roughly +/- 2 hours around HW. Cressars, Low Lee, and Gear Rock guard the bay approach.",
                 links: ["mounts_bay"]
             },
-            // ----- SCILLY -----
             scilly: {
                 name: "Isles of Scilly (St Mary's)", lat: 49.910, lon: -6.310, isPort: true, isShallowBar: false, tideId: "0001",
                 vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
@@ -840,62 +797,52 @@
                 links: ["lands_end"]
             },
 
-            // ----- APPROACH NODES (Preventing headland clipping inside tight bays) -----
+            // ----- APPROACH & COASTAL TRANSIT NODES (Preventing land clipping) -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
             bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.695, lon: -1.080, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore", "priory_bay", "seaview", "whitecliff_bay"] },
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
             lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
             poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland"] },
-            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "durlston", "portland_offshore"] },
+            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.210, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
             falmouth_approach: { name: "Carrick Roads Approach", lat: 50.130, lon: -5.030, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor"] },
+            fowey_approach: { name: "Fowey Approach", lat: 50.310, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore"] },
+            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.300, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "newtonferrers", "stoke_point_transit", "rame_head_transit", "eddystone_transit"] },
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.335, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
 
-            // ----- TRANSIT WAYPOINTS (Routing Graph Only) -----
+            // ----- WAYPOINTS & SHAPE NODES -----
             iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.640, lon: -0.950, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
             iow_southeast: { name: "Sandown Bay Offshore", lat: 50.570, lon: -1.100, isPort: false, links: ["iow_east_offshore", "iow_south", "iow_south_coastal"] }, 
-            
-            // South Wight Offshore Bypasses
-            iow_south: { name: "St Catherine's Offshore Point (Safe)", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "needles_fairway", "start_point_offshore", "berry_head_offshore", "lizard_point", "durlston", "poole_bay"] }, 
-            iow_south_coastal: { name: "St Catherine's Coastal Point (Optimal)", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "portland_offshore", "start_point_offshore", "berry_head_offshore", "durlston", "poole_bay"] }, 
-            
+            iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "needles_fairway", "start_point_offshore", "berry_head_offshore", "lizard_point", "durlston", "poole_bay"] }, 
+            iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "portland_offshore", "start_point_offshore", "berry_head_offshore", "durlston", "poole_bay", "iow_southwest_transit"] }, 
+            iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.575, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
-            
-            // Solent Curve and Needles Approach
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
-            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore", "yarmouth"] },
-            
+            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore", "yarmouth", "iow_southwest_transit"] },
             poole_bay: { name: "Poole Bay Transit", lat: 50.630, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south", "iow_south_coastal"] },
-            
-            // Durlston Bypass
-            durlston: { name: "Durlston Ledge Bypass", lat: 50.560, lon: -1.940, isPort: false, links: ["poole_bay", "weymouth_approach", "portland_offshore", "needles_fairway", "start_point_offshore", "iow_south", "iow_south_coastal"] },
-            
-            // Portland nearshore corner
-            portland_offshore: { name: "Portland Bill Offshore Safety Zone", lat: 50.460, lon: -2.450, isPort: false, links: ["durlston", "weymouth_approach", "portland_marina", "berry_head_offshore", "start_point_offshore", "iow_south", "iow_south_coastal"] }, 
-            
-            berry_head_offshore: { name: "Berry Head Offshore Safety Zone", lat: 50.400, lon: -3.440, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south", "iow_south_coastal"] },
-            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.335, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
-            
-            // West Country Offshore Safety Lines
+            durlston: { name: "Durlston Ledge Bypass", lat: 50.560, lon: -1.940, isPort: false, links: ["poole_bay", "st_albans_transit", "needles_fairway", "start_point_offshore", "iow_south", "iow_south_coastal", "portland_offshore"] },
+            st_albans_transit: { name: "St Albans Ledge Transit", lat: 50.550, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach"] },
+            portland_east_transit: { name: "Portland East Transit", lat: 50.530, lon: -2.400, isPort: false, links: ["weymouth_approach", "portland_offshore"] },
+            portland_offshore: { name: "Portland Bill Offshore Safety Zone", lat: 50.460, lon: -2.450, isPort: false, links: ["portland_east_transit", "durlston", "berry_head_offshore", "start_point_offshore", "iow_south", "iow_south_coastal"] }, 
+            berry_head_offshore: { name: "Berry Head Offshore Safety Zone", lat: 50.400, lon: -3.420, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south", "iow_south_coastal"] },
             start_point_offshore: { name: "Start Point Safety Offset", lat: 50.200, lon: -3.600, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "iow_south", "iow_south_coastal", "needles_fairway", "durlston", "eddystone_transit"] }, 
             prawle_point_offshore: { name: "Prawle Point Safety Offset", lat: 50.180, lon: -3.700, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.190, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "plymouth_sound", "eddystone_transit"] }, 
-            
-            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.280, lon: -4.140, isPort: false, links: ["bolt_head_offshore", "newtonferrers", "plymouth", "bovisand_beach", "fowey", "lizard_point", "eddystone_transit"] },
-            
-            eddystone_transit: { name: "Eddystone Passage", lat: 50.185, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound", "fowey", "dodman_offshore", "falmouth_bay", "lizard_point"] },
-
-            dodman_offshore: { name: "Dodman Point Offshore Corner", lat: 50.180, lon: -4.780, isPort: false, links: ["fowey", "falmouth_bay", "plymouth_sound", "eddystone_transit"] },
-
-            // Falmouth, Manacles, Lizard, and Westbound clearances
+            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.190, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bigbury_bay_transit", "eddystone_transit"] }, 
+            bigbury_bay_transit: { name: "Bigbury Bay Transit", lat: 50.250, lon: -3.950, isPort: false, links: ["bolt_head_offshore", "stoke_point_transit"] },
+            stoke_point_transit: { name: "Stoke Point Transit", lat: 50.280, lon: -4.050, isPort: false, links: ["bigbury_bay_transit", "plymouth_sound_approach"] },
+            rame_head_transit: { name: "Rame Head Transit", lat: 50.300, lon: -4.230, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit"] },
+            looe_bay_transit: { name: "Looe Bay Transit", lat: 50.320, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
+            eddystone_transit: { name: "Eddystone Passage", lat: 50.185, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound_approach", "dodman_offshore", "falmouth_bay", "lizard_point"] },
+            dodman_offshore: { name: "Dodman Point Offshore Corner", lat: 50.180, lon: -4.780, isPort: false, links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "portscatho"] },
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east", "start_point_offshore", "eddystone_transit"] },
             manacles_east: { name: "The Manacles East Offset", lat: 50.040, lon: -4.980, isPort: false, links: ["falmouth_bay", "lizard_point"] },
-            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.930, lon: -5.200, isPort: false, links: ["manacles_east", "plymouth_sound", "mounts_bay", "iow_south", "eddystone_transit", "heading_west_bypass"] }, 
-            
-            mounts_bay: { name: "Mounts Bay Passage", lat: 49.950, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end"] },
+            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.930, lon: -5.200, isPort: false, links: ["manacles_east", "mounts_bay", "iow_south", "eddystone_transit", "heading_west_bypass"] }, 
+            mounts_bay: { name: "Mounts Bay Passage", lat: 49.950, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end_south_transit"] },
+            lands_end_south_transit: { name: "Runnel Stone Transit", lat: 50.000, lon: -5.700, isPort: false, links: ["mounts_bay", "lands_end"] },
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
-            lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
+            lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "lands_end_south_transit", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
         };
 
         const solentPorts = [
@@ -943,13 +890,13 @@
             // 1. Base Map: CartoDB Dark Matter (Perfect for premium dark mode UI)
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 18,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">Carto</a>'
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> | <a href="https://carto.com/">Carto</a>'
             }).addTo(map);
 
             // 2. Overlay: OpenSeaMap Seamarks
             L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: 'Seamarks &copy; <a href="http://www.openseamap.org">OpenSeaMap</a>'
+                attribution: 'Seamarks © <a href="http://www.openseamap.org">OpenSeaMap</a>'
             }).addTo(map);
 
             // Group layers for dynamic clearing
@@ -1047,14 +994,15 @@
             }
             
             if (runBypass) {
-                // Ensure logic hits updated approach nodes to avoid interior Solent
+                // Extended bypass logic to ensure new transit nodes correctly route around the Solent when offshore
                 if (nodeId === 'chichester_approach') links = links.filter(l => l !== 'solent_east_forts');
                 if (nodeId === 'solent_east_forts') return [];
                 if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid' && l !== 'solent_west');
                 if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
                 if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
                 if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway' && l !== 'iow_southwest_transit');
+                if (nodeId === 'iow_southwest_transit') return [];
             }
             return links;
         }
@@ -1288,7 +1236,7 @@
             
             document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
 
-            // Personalization: Ensuring exact date and port information is always prominent
+            // Personalization: Exact Date context
             document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">` + exactDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
 
             // Trigger Live Weather Fetch
