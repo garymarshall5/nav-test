@@ -924,7 +924,7 @@
             update();
         }
 
-        function getNeighbors(nodeId, startId, endId) {
+        ffunction getNeighbors(nodeId, startId, endId) {
             const node = mapNodes[nodeId];
             if (!node) return [];
             let links = [...node.links];
@@ -940,15 +940,21 @@
                 if (!startIsSolent && !endIsSolent) runBypass = true;
             }
             
+            // Fix: Only severe the literal entrance points to the Solent. 
+            // Do NOT cut the coastal offshore nodes (like needles_fairway to iow_south_coastal).
             if (runBypass) {
-                if (nodeId === 'chichester_approach') links = links.filter(l => l !== 'solent_east_forts');
-                if (nodeId === 'solent_east_forts') return [];
-                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid' && l !== 'solent_west');
-                if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway' && l !== 'iow_southwest_transit');
-                if (nodeId === 'iow_southwest_transit') return [];
+                if (nodeId === 'chichester_approach' || nodeId === 'bembridge_approach' || nodeId === 'portsmouth_approach') {
+                    links = links.filter(l => l !== 'solent_east_forts');
+                }
+                if (nodeId === 'solent_east_forts') {
+                    links = links.filter(l => l !== 'chichester_approach' && l !== 'bembridge_approach' && l !== 'portsmouth_approach' && l !== 'iow_east_offshore' && l !== 'seaview' && l !== 'priory_bay');
+                }
+                if (nodeId === 'needles_fairway') {
+                    links = links.filter(l => l !== 'solent_west' && l !== 'solent_mid');
+                }
+                if (nodeId === 'solent_west') {
+                    links = links.filter(l => l !== 'needles_fairway');
+                }
             }
             return links;
         }
