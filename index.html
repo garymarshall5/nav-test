@@ -78,7 +78,7 @@
                 </style>
                 <div class="text-left">
                     <h1 class="font-black text-xl tracking-wider text-white uppercase flex items-center gap-1">
-                        Southwest Adventures
+                        Painkiller Almanac
                     </h1>
                     <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Hopefully useful information</p>
                 </div>
@@ -354,8 +354,7 @@
         let currentRoutePath = [];
 
         // --- MAP DATA ARRAYS ---
-        // Nodes are ordered East to West so the dropdown populates in strict geographic order.
-        // Overland cutting is prevented by high-granularity transit nodes at the end.
+        // Nodes are ordered strictly East to West geographically to guarantee the correct dropdown populating sequence.
         const mapNodes = {
             // ----- PORTS: STRICT EAST TO WEST GEOGRAPHICAL ORDER -----
             chichester_entrance: {
@@ -390,15 +389,6 @@
                     </ul>
                 `
             },
-            priory_bay: {
-                name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/priory-bay/18428",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Anchorage only. Sand/Mud holding.<br>• Beautiful shelter in Westerly/South-Westerly winds.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Info')}`,
-                hazards: "Watch for shallow sands extending far offshore. Beware of recreational beachgoers during peak summer seasons.",
-                links: ["bembridge_approach", "solent_east_forts"]
-            },
             seaview: {
                 name: "Seaview (IOW)", lat: 50.725, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
                 vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
@@ -416,6 +406,15 @@
                 marina: `• Anchorage only. Mud/Sand holding.<br>• Spectacular white chalk cliff surroundings.<br>${webLink('https://www.visitisleofwight.co.uk', 'IoW Tourism')}`,
                 hazards: "Entirely exposed to easterly and southerly swells. Guarded by the shallow rocky fingers of Bembridge Ledge to the north.",
                 links: ["bembridge_approach", "iow_east_offshore"]
+            },
+            priory_bay: {
+                name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/priory-bay/18428",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                marina: `• Anchorage only. Sand/Mud holding.<br>• Beautiful shelter in Westerly/South-Westerly winds.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Info')}`,
+                hazards: "Watch for shallow sands extending far offshore. Beware of recreational beachgoers during peak summer seasons.",
+                links: ["bembridge_approach", "solent_east_forts"]
             },
             portsmouth: {
                 name: "Portsmouth Harbour", lat: 50.795, lon: -1.108, isPort: true, isShallowBar: false, tideId: "0065",
@@ -442,6 +441,40 @@
                 hazards: "Sits immediately adjacent to the Gosport deep-water shipping lanes. Strong tidal currents sweep parallel to the shoreline.",
                 links: ["portsmouth_approach", "solent_mid"]
             },
+            king_quay: {
+                name: "King's Quay (IOW)", lat: 50.755, lon: -1.220, isPort: true, isShallowBar: false, tideId: "0062",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/mouillage/king-quay/18418",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                marina: `• Quiet, isolated creek anchorage off Osborne woods.<br>• Suitable only for shallow draft or drying vessels.`,
+                hazards: "Dries rapidly. Extremely narrow approach. Keep careful watch on depth charts.",
+                links: ["cowes", "solent_mid"]
+            },
+            osborne_bay: {
+                name: "Osborne Bay (IOW)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/mouillage/osborne-bay/18426",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                marina: `• Popular daytime sandy-bottom anchorage.<br>• Excellent shelter from Southern/Westerly winds.<br>${webLink('https://www.english-heritage.org.uk', 'Osborne House Info')}`,
+                hazards: "Can be highly crowded with vessels during summer. Keep clear of the historic royal beach boundaries.",
+                links: ["cowes", "solent_mid"]
+            },
+            cowes: {
+                name: "Cowes", lat: 50.760, lon: -1.295, isPort: true, isShallowBar: false, tideId: "0062",
+                vhf: "VHF CH 69", category: "Harbour", fuel: "Diesel & Petrol",
+                navily: "https://www.navily.com/carte/port/1713",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')} ${webLink('https://www.cowesyachthaven.com', 'Yacht Haven')}<br>• Shepards Marina ${vhfBadge('80')} ${telLink('01983 297821')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Shepards')}<br>• East Cowes Marina ${vhfBadge('80')} ${telLink('01983 293983')} ${webLink('https://www.deanreddyhoff.co.uk', 'East Cowes')}<br><br>HM (Cowes Harbour): ${telLink('01983 293952')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Cowes Harbour')}<br>Email: ${emailLink('chc@cowes.co.uk')}`,
+                hazards: "High-speed red-funnel ferries and commercial traffic. The Medina River chain ferry crosses continuously; sail-craft have NO right of way over it.",
+                links: ["solent_mid", "osborne_bay", "king_quay"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Pubs, Restaurants & Bistros 🍺🍽️</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li><strong>The Anchor</strong> ⭐ 4.5/5 - The ultimate Cowes yachting pub. Historic, lively, and packed with sailing memorabilia.</li>
+                        <li><strong>The Pier View</strong> ⭐ 4.4/5 - A classic sailor's favorite on the high street.</li>
+                    </ul>
+                `
+            },
             southampton: {
                 name: "Southampton", lat: 50.890, lon: -1.395, isPort: true, isShallowBar: false, tideId: "0060",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel & Petrol",
@@ -467,40 +500,6 @@
                 hazards: "Dolphin beacon marks the entrance. Keep within the withies. Shallow mudflats on either side of the winding channel.",
                 links: ["solent_west"]
             },
-            cowes: {
-                name: "Cowes", lat: 50.760, lon: -1.295, isPort: true, isShallowBar: false, tideId: "0062",
-                vhf: "VHF CH 69", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/1713",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')} ${webLink('https://www.cowesyachthaven.com', 'Yacht Haven')}<br>• Shepards Marina ${vhfBadge('80')} ${telLink('01983 297821')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Shepards')}<br>• East Cowes Marina ${vhfBadge('80')} ${telLink('01983 293983')} ${webLink('https://www.deanreddyhoff.co.uk', 'East Cowes')}<br><br>HM (Cowes Harbour): ${telLink('01983 293952')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Cowes Harbour')}<br>Email: ${emailLink('chc@cowes.co.uk')}`,
-                hazards: "High-speed red-funnel ferries and commercial traffic. The Medina River chain ferry crosses continuously; sail-craft have NO right of way over it.",
-                links: ["solent_mid", "osborne_bay", "king_quay"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Pubs, Restaurants & Bistros 🍺🍽️</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li><strong>The Anchor</strong> ⭐ 4.5/5 - The ultimate Cowes yachting pub. Historic, lively, and packed with sailing memorabilia.</li>
-                        <li><strong>The Pier View</strong> ⭐ 4.4/5 - A classic sailor's favorite on the high street.</li>
-                    </ul>
-                `
-            },
-            osborne_bay: {
-                name: "Osborne Bay (IOW)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/osborne-bay/18426",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Popular daytime sandy-bottom anchorage.<br>• Excellent shelter from Southern/Westerly winds.<br>${webLink('https://www.english-heritage.org.uk', 'Osborne House Info')}`,
-                hazards: "Can be highly crowded with vessels during summer. Keep clear of the historic royal beach boundaries.",
-                links: ["cowes", "solent_mid"]
-            },
-            king_quay: {
-                name: "King's Quay (IOW)", lat: 50.755, lon: -1.220, isPort: true, isShallowBar: false, tideId: "0062",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/king-quay/18418",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Quiet, isolated creek anchorage off Osborne woods.<br>• Suitable only for shallow draft or drying vessels.`,
-                hazards: "Dries rapidly. Extremely narrow approach. Keep careful watch on depth charts.",
-                links: ["cowes", "solent_mid"]
-            },
             newtown_creek: {
                 name: "Newtown Creek (IOW)", lat: 50.730, lon: -1.410, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0061",
                 vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
@@ -509,6 +508,15 @@
                 marina: `• National Trust protected estuary.<br>• Visitor moorings available inside. Eco-sensitive seagrass area.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Newtown')}`,
                 hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
                 links: ["solent_mid", "solent_west", "yarmouth"]
+            },
+            yarmouth: {
+                name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061",
+                navily: "https://www.navily.com/carte/mouillage/20529",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
+                vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
+                marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
+                hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
+                links: ["solent_west", "newtown_creek", "lymington_approach", "needles_fairway"]
             },
             lymington: {
                 name: "Lymington", lat: 50.752, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044",
@@ -526,15 +534,6 @@
                     </ul>
                 `
             },
-            yarmouth: {
-                name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061",
-                navily: "https://www.navily.com/carte/mouillage/20529",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
-                marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
-                hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["solent_west", "newtown_creek", "lymington_approach", "needles_fairway"]
-            },
             alum_bay: {
                 name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061",
                 vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
@@ -543,15 +542,6 @@
                 marina: `• Temporary daytime anchorage under the multi-colored sand cliffs.`,
                 hazards: "Strong tidal flows coming from Hurst Narrows and the Needles. Strictly a fair-weather anchorage.",
                 links: ["needles_fairway"]
-            },
-            poole: {
-                name: "Poole Harbour", lat: 50.710, lon: -1.985, isPort: true, isShallowBar: false, tideId: "0036",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/14121",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Poole Quay Boat Haven ${vhfBadge('80')} ${telLink('01202 649488')} ${webLink('https://www.poolequayboathaven.co.uk', 'Poole Quay')}<br>• Cobbs Quay ${vhfBadge('80')} ${telLink('01202 674751')} ${webLink('https://www.mdlmarinas.co.uk', 'Cobbs Quay')}<br>• Salterns Marina ${vhfBadge('80')} ${telLink('01202 709971')} ${webLink('https://www.salterns-marina.co.uk', 'Salterns')}<br><br>HM (Poole Auth): ${telLink('01202 440200')} ${webLink('https://www.phc.co.uk', 'Poole Harbour Commissioners')}<br>Email: ${emailLink('poolequayboathaven@phc.co.uk')}`,
-                hazards: "The Sandbanks chain ferry operates across the highly compressed narrow entrance. High speed commercial ferries use the Swash Channel.",
-                links: ["poole_approach"]
             },
             studland: {
                 name: "Studland Bay", lat: 50.640, lon: -1.940, isPort: true, isShallowBar: false, tideId: "0035",
@@ -562,14 +552,14 @@
                 hazards: "Avoid Old Harry rocks and reef extending north-east. Exposed to north-easterly and easterly weather.",
                 links: ["poole_bay", "poole_approach"]
             },
-            weymouth: {
-                name: "Weymouth Harbour", lat: 50.610, lon: -2.455, isPort: true, isShallowBar: false, tideId: "0033",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/carte/mouillage/44238",
+            poole: {
+                name: "Poole Harbour", lat: 50.710, lon: -1.985, isPort: true, isShallowBar: false, tideId: "0036",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel & Petrol",
+                navily: "https://www.navily.com/carte/mouillage/14121",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Weymouth Marina ${vhfBadge('80')} ${telLink('01305 767117')} ${webLink('https://www.boatfolk.co.uk/weymouth-marina', 'Weymouth Marina')}<br>• Weymouth Town Pontoons ${vhfBadge('12')} ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Town Pontoons')}<br><br>HM (Weymouth): ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Weymouth Harbour Office')}<br>Email: ${emailLink('weymouthharbour@dorsetcouncil.gov.uk')}`,
-                hazards: "The historic town bridge operates on fixed odd hours. Beware of active commercial fishing vessels and high seasonal yacht traffic.",
-                links: ["weymouth_approach"]
+                marina: `• Poole Quay Boat Haven ${vhfBadge('80')} ${telLink('01202 649488')} ${webLink('https://www.poolequayboathaven.co.uk', 'Poole Quay')}<br>• Cobbs Quay ${vhfBadge('80')} ${telLink('01202 674751')} ${webLink('https://www.mdlmarinas.co.uk', 'Cobbs Quay')}<br>• Salterns Marina ${vhfBadge('80')} ${telLink('01202 709971')} ${webLink('https://www.salterns-marina.co.uk', 'Salterns')}<br><br>HM (Poole Auth): ${telLink('01202 440200')} ${webLink('https://www.phc.co.uk', 'Poole Harbour Commissioners')}<br>Email: ${emailLink('poolequayboathaven@phc.co.uk')}`,
+                hazards: "The Sandbanks chain ferry operates across the highly compressed narrow entrance. High speed commercial ferries use the Swash Channel.",
+                links: ["poole_approach"]
             },
             portland_marina: {
                 name: "Portland Marina", lat: 50.568, lon: -2.452, isPort: true, isShallowBar: false, tideId: "0033",
@@ -578,6 +568,15 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
                 marina: `• Portland Marina ${vhfBadge('80')} ${telLink('01305 866190')} ${webLink('https://www.boatfolk.co.uk/portland-marina', 'Portland Marina')}<br><br>HM (Portland Port): ${telLink('01305 824044')} ${webLink('https://www.portland-port.co.uk', 'Portland Port')}<br>Email: ${emailLink('portland@boatfolk.co.uk')}`,
                 hazards: "Portland Harbour controlled entrance ship channels (North and East Ship Channels). Strong wind shear in South-Westerly gales. To the south, beware of the violent overfalls of Portland Race.",
+                links: ["weymouth_approach"]
+            },
+            weymouth: {
+                name: "Weymouth Harbour", lat: 50.610, lon: -2.455, isPort: true, isShallowBar: false, tideId: "0033",
+                vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
+                navily: "https://www.navily.com/carte/mouillage/44238",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
+                marina: `• Weymouth Marina ${vhfBadge('80')} ${telLink('01305 767117')} ${webLink('https://www.boatfolk.co.uk/weymouth-marina', 'Weymouth Marina')}<br>• Weymouth Town Pontoons ${vhfBadge('12')} ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Town Pontoons')}<br><br>HM (Weymouth): ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Weymouth Harbour Office')}<br>Email: ${emailLink('weymouthharbour@dorsetcouncil.gov.uk')}`,
+                hazards: "The historic town bridge operates on fixed odd hours. Beware of active commercial fishing vessels and high seasonal yacht traffic.",
                 links: ["weymouth_approach"]
             },
             brixham: {
@@ -670,15 +669,6 @@
                 hazards: "Completely exposed to east and south-east winds which generate dangerous lee-shore breaking surf.",
                 links: ["falmouth_bay", "dodman_offshore"]
             },
-            st_just: {
-                name: "St Just in Roseland", lat: 50.180, lon: -5.015, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/22026",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Deep water pool moorings and anchorage.<br>• Pasco's Boatyard: ${telLink('01326 270269')} ${webLink('http://www.pascosboatyard.co.uk', 'Pasco\'s')}`,
-                hazards: "Pool entrance is well hidden. Stay clear of the working boatyard slipways.",
-                links: ["stmawes", "falmouth"]
-            },
             stmawes: {
                 name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
@@ -688,23 +678,14 @@
                 hazards: "Exposed to South-Westerly swells. Watch out for shallow rocky ledges near Castle Point.",
                 links: ["falmouth", "falmouth_approach"]
             },
-            mylor: {
-                name: "Mylor Yacht Harbour", lat: 50.175, lon: -5.050, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 37/80", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/13120",
+            st_just: {
+                name: "St Just in Roseland", lat: 50.180, lon: -5.015, isPort: true, isShallowBar: false, tideId: "0005",
+                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/carte/mouillage/22026",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Mylor Marina ${vhfBadge('80')} ${telLink('01326 372121')} ${webLink('https://www.mylor.com', 'Mylor Yacht Harbour')}`,
-                hazards: "Beware of heavy racing fleets (working boats and dinghies) navigating through the moorings in summer.",
-                links: ["falmouth", "st_just", "falmouth_approach"]
-            },
-            penryn: {
-                name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/18901",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Penryn Port Moorings<br><br>HM (Truro & Penryn): ${telLink('01326 374254')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
-                hazards: "Highly tidal drying riverbed. Keep to marked pontoons. Yachts must be capable of drying out safely on mud to use inner berths.",
-                links: ["falmouth"]
+                marina: `• Deep water pool moorings and anchorage.<br>• Pasco's Boatyard: ${telLink('01326 270269')} ${webLink('http://www.pascosboatyard.co.uk', 'Pasco\'s')}`,
+                hazards: "Pool entrance is well hidden. Stay clear of the working boatyard slipways.",
+                links: ["stmawes", "falmouth"]
             },
             malpas: {
                 name: "Malpas (River Fal)", lat: 50.245, lon: -5.035, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
@@ -714,6 +695,15 @@
                 marina: `• Pontoon and River Moorings<br>• Access highly tidal. Keep to the deep water channel.`,
                 hazards: "Channel dries significantly. Strong tidal streams bend around the steep wooded banks.",
                 links: ["mylor", "truro"]
+            },
+            mylor: {
+                name: "Mylor Yacht Harbour", lat: 50.175, lon: -5.050, isPort: true, isShallowBar: false, tideId: "0005",
+                vhf: "VHF CH 37/80", category: "Marina", fuel: "Diesel & Petrol",
+                navily: "https://www.navily.com/carte/port/13120",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Mylor Marina ${vhfBadge('80')} ${telLink('01326 372121')} ${webLink('https://www.mylor.com', 'Mylor Yacht Harbour')}`,
+                hazards: "Beware of heavy racing fleets (working boats and dinghies) navigating through the moorings in summer.",
+                links: ["falmouth", "st_just", "falmouth_approach"]
             },
             truro: {
                 name: "Truro", lat: 50.260, lon: -5.050, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0005",
@@ -732,6 +722,15 @@
                 marina: `• Falmouth Marina ${vhfBadge('80')} ${telLink('01326 316620')} ${webLink('https://www.premiermarinas.com', 'Falmouth Premier')}<br>• Port Pendennis ${vhfBadge('80')} ${telLink('01326 211211')} ${webLink('https://www.portpendennis.com', 'Pendennis')}<br>• Falmouth Haven ${vhfBadge('12')} ${telLink('01326 310990')} ${webLink('https://www.falmouthhaven.co.uk', 'Falmouth Haven')}<br><br>HM (Falmouth): ${telLink('01326 312285')} ${webLink('https://www.falmouthharbour.co.uk', 'Falmouth Harbour')}<br>Email: ${emailLink('hm@falmouthharbour.co.uk')}`,
                 hazards: "Black Rock in the center of the outer entrance requires careful identification. High volume of commercial shipping anchoring in Carrick Roads.",
                 links: ["falmouth_approach", "penryn", "stmawes"]
+            },
+            penryn: {
+                name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
+                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/carte/mouillage/18901",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Penryn Port Moorings<br><br>HM (Truro & Penryn): ${telLink('01326 374254')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
+                hazards: "Highly tidal drying riverbed. Keep to marked pontoons. Yachts must be capable of drying out safely on mud to use inner berths.",
+                links: ["falmouth"]
             },
             helford: {
                 name: "Helford River", lat: 50.100, lon: -5.120, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0004",
@@ -760,24 +759,6 @@
                 hazards: "Tidal gate restricts wet dock access to roughly +/- 2 hours around HW. Cressars, Low Lee, and Gear Rock guard the bay approach.",
                 links: ["mounts_bay"]
             },
-            scilly: {
-                name: "Isles of Scilly (St Mary's)", lat: 49.910, lon: -6.310, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/mouillage/porthcressa/18920",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• St Mary's Moorings ${vhfBadge('14')} ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk', 'Scilly Isles Council')}<br><br>HM (St Mary's): ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk/docking', 'Harbour Authority')}<br>Email: ${emailLink('hm@scilly.gov.uk')}`,
-                hazards: "Wilderness navigation. Extremely complex granite reef networks (The Spanish Ledges, Bartholomew Ledges). Open Atlantic swell. Advanced pilotage is absolutely mandatory.",
-                links: ["lands_end"]
-            },
-            scilly_grimsby: {
-                name: "New Grimsby (Scilly)", lat: 49.957, lon: -6.347, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/new-grimsby-sound/18923",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Moorings available between Tresco and Bryher.<br>• HM: ${telLink('01720 422768')} ${webLink('https://www.tresco.co.uk', 'Tesco Island')}`,
-                hazards: "Highly confined channel. Dries out at the southern end. Strictly timed entries around high water required for deep drafts.",
-                links: ["lands_end"]
-            },
             scilly_helens: {
                 name: "St Helen's Pool (Scilly)", lat: 49.962, lon: -6.275, isPort: true, isShallowBar: false, tideId: "0001",
                 vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
@@ -785,6 +766,15 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Isolated wilderness anchorage on sand.`,
                 hazards: "Encircled by drying reefs. Requires precise navigation through the golden sand bars and rocky shoals.",
+                links: ["lands_end"]
+            },
+            scilly: {
+                name: "Isles of Scilly (St Mary's)", lat: 49.910, lon: -6.310, isPort: true, isShallowBar: false, tideId: "0001",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
+                navily: "https://www.navily.com/mouillage/porthcressa/18920",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• St Mary's Moorings ${vhfBadge('14')} ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk', 'Scilly Isles Council')}<br><br>HM (St Mary's): ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk/docking', 'Harbour Authority')}<br>Email: ${emailLink('hm@scilly.gov.uk')}`,
+                hazards: "Wilderness navigation. Extremely complex granite reef networks (The Spanish Ledges, Bartholomew Ledges). Open Atlantic swell. Advanced pilotage is absolutely mandatory.",
                 links: ["lands_end"]
             },
             scilly_tresco: {
@@ -796,6 +786,15 @@
                 hazards: "Exposed to south-easterly winds. Avoid the Crow Bar reef blocking the southern sound exit.",
                 links: ["lands_end"]
             },
+            scilly_grimsby: {
+                name: "New Grimsby (Scilly)", lat: 49.957, lon: -6.347, isPort: true, isShallowBar: false, tideId: "0001",
+                vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel",
+                navily: "https://www.navily.com/mouillage/new-grimsby-sound/18923",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Moorings available between Tresco and Bryher.<br>• HM: ${telLink('01720 422768')} ${webLink('https://www.tresco.co.uk', 'Tesco Island')}`,
+                hazards: "Highly confined channel. Dries out at the southern end. Strictly timed entries around high water required for deep drafts.",
+                links: ["lands_end"]
+            },
 
             // ----- APPROACH & COASTAL TRANSIT NODES (Preventing land clipping) -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
@@ -803,13 +802,26 @@
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
             lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
-            poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland"] },
-            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit"] },
+            
+            // Added direct needles_fairway and durlston links to eliminate Poole Bay dog-leg
+            poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
+            
+            // Added direct durlston and portland_offshore links to eliminate St Albans / Portland East dog-legs
+            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
+            
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.210, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
-            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.130, lon: -5.030, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor"] },
-            fowey_approach: { name: "Fowey Approach", lat: 50.310, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore"] },
-            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.300, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "newtonferrers", "stoke_point_transit", "rame_head_transit", "eddystone_transit"] },
-            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.335, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
+            
+            // Added dodman_offshore to connect directly across Falmouth bay
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.130, lon: -5.030, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor", "dodman_offshore"] },
+            
+            // Added direct fowey <-> plymouth connection to eliminate Looe Bay dog-leg
+            fowey_approach: { name: "Fowey Approach", lat: 50.310, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore", "plymouth_sound_approach"] },
+            
+            // Added fowey, bolt_head, and start_point to cross bays directly
+            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.300, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "newtonferrers", "stoke_point_transit", "rame_head_transit", "eddystone_transit", "fowey_approach", "bolt_head_offshore", "start_point_offshore"] },
+            
+            // Added portland_offshore to eliminate Lyme Bay coastal hugging
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.335, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore", "portland_offshore"] },
 
             // ----- WAYPOINTS & SHAPE NODES -----
             iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.640, lon: -0.950, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
@@ -820,27 +832,38 @@
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
-            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore", "yarmouth", "iow_southwest_transit"] },
+            needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "start_point_offshore", "yarmouth", "iow_southwest_transit", "poole_approach"] },
             poole_bay: { name: "Poole Bay Transit", lat: 50.630, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south", "iow_south_coastal"] },
-            durlston: { name: "Durlston Ledge Bypass", lat: 50.560, lon: -1.940, isPort: false, links: ["poole_bay", "st_albans_transit", "needles_fairway", "start_point_offshore", "iow_south", "iow_south_coastal", "portland_offshore"] },
+            
+            durlston: { name: "Durlston Ledge Bypass", lat: 50.560, lon: -1.940, isPort: false, links: ["poole_bay", "st_albans_transit", "needles_fairway", "start_point_offshore", "iow_south", "iow_south_coastal", "portland_offshore", "poole_approach", "weymouth_approach"] },
+            
             st_albans_transit: { name: "St Albans Ledge Transit", lat: 50.550, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach"] },
             portland_east_transit: { name: "Portland East Transit", lat: 50.530, lon: -2.400, isPort: false, links: ["weymouth_approach", "portland_offshore"] },
-            portland_offshore: { name: "Portland Bill Offshore Safety Zone", lat: 50.460, lon: -2.450, isPort: false, links: ["portland_east_transit", "durlston", "berry_head_offshore", "start_point_offshore", "iow_south", "iow_south_coastal"] }, 
+            
+            portland_offshore: { name: "Portland Bill Offshore Safety Zone", lat: 50.460, lon: -2.450, isPort: false, links: ["portland_east_transit", "durlston", "berry_head_offshore", "start_point_offshore", "iow_south", "iow_south_coastal", "weymouth_approach", "dartmouth_approach"] }, 
+            
             berry_head_offshore: { name: "Berry Head Offshore Safety Zone", lat: 50.400, lon: -3.420, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south", "iow_south_coastal"] },
-            start_point_offshore: { name: "Start Point Safety Offset", lat: 50.200, lon: -3.600, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "iow_south", "iow_south_coastal", "needles_fairway", "durlston", "eddystone_transit"] }, 
+            
+            start_point_offshore: { name: "Start Point Safety Offset", lat: 50.200, lon: -3.600, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "iow_south", "iow_south_coastal", "needles_fairway", "durlston", "eddystone_transit", "plymouth_sound_approach"] }, 
             prawle_point_offshore: { name: "Prawle Point Safety Offset", lat: 50.180, lon: -3.700, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.190, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bigbury_bay_transit", "eddystone_transit"] }, 
+            
+            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.190, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bigbury_bay_transit", "eddystone_transit", "plymouth_sound_approach"] }, 
+            
             bigbury_bay_transit: { name: "Bigbury Bay Transit", lat: 50.250, lon: -3.950, isPort: false, links: ["bolt_head_offshore", "stoke_point_transit"] },
             stoke_point_transit: { name: "Stoke Point Transit", lat: 50.280, lon: -4.050, isPort: false, links: ["bigbury_bay_transit", "plymouth_sound_approach"] },
             rame_head_transit: { name: "Rame Head Transit", lat: 50.300, lon: -4.230, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit"] },
             looe_bay_transit: { name: "Looe Bay Transit", lat: 50.320, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
             eddystone_transit: { name: "Eddystone Passage", lat: 50.185, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound_approach", "dodman_offshore", "falmouth_bay", "lizard_point"] },
-            dodman_offshore: { name: "Dodman Point Offshore Corner", lat: 50.180, lon: -4.780, isPort: false, links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "portscatho"] },
+            
+            dodman_offshore: { name: "Dodman Point Offshore Corner", lat: 50.180, lon: -4.780, isPort: false, links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "portscatho", "falmouth_approach"] },
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east", "start_point_offshore", "eddystone_transit"] },
             manacles_east: { name: "The Manacles East Offset", lat: 50.040, lon: -4.980, isPort: false, links: ["falmouth_bay", "lizard_point"] },
             lizard_point: { name: "Lizard Point Safety Offset", lat: 49.930, lon: -5.200, isPort: false, links: ["manacles_east", "mounts_bay", "iow_south", "eddystone_transit", "heading_west_bypass"] }, 
             mounts_bay: { name: "Mounts Bay Passage", lat: 49.950, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end_south_transit"] },
-            lands_end_south_transit: { name: "Runnel Stone Transit", lat: 50.000, lon: -5.700, isPort: false, links: ["mounts_bay", "lands_end"] },
+            
+            // Adjusted further south to safely clear Runnel Stone
+            lands_end_south_transit: { name: "Runnel Stone Transit", lat: 49.970, lon: -5.680, isPort: false, links: ["mounts_bay", "lands_end"] },
+            
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
             lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "lands_end_south_transit", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
         };
