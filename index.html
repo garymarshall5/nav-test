@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Leaflet CSS for Map Integration -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -65,28 +66,24 @@
 
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
         
+        <!-- Premium Navigation Header -->
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-12 h-12 bg-blue-600/15 border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
-                    <i class="fas fa-sailboat text-3xl text-blue-400 [animation:flip_2s_linear_infinite]"></i>
+                    <i class="fas fa-sailboat text-3xl text-blue-400"></i>
                 </div>
-                <style>
-                @keyframes flip {
-                    0% { transform: rotateY(0deg); }
-                    100% { transform: rotateY(360deg); }
-                }
-                </style>
                 <div class="text-left">
                     <h1 class="font-black text-xl tracking-wider text-white uppercase flex items-center gap-1">
-                        Southwest Adventures
+                        Painkiller Almanac
                     </h1>
-                    <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Hopefully useful information</p>
+                    <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Marine Navigation & Port Directory</p>
                 </div>
             </div>
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner">
-                    </div>
+                    <!-- Date inserted by JS -->
+                </div>
                 <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
@@ -96,6 +93,7 @@
         
         <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
             
+            <!-- DISTANCE & ETA DASHBOARD -->
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                 <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
@@ -106,6 +104,7 @@
                 </div>
                 <div id="speedLabel" class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 mb-1">Estimated Time @ 5.0 Knots</div>
                 
+                <!-- Speed Slider -->
                 <div class="flex items-center justify-center gap-3 mt-2 w-full max-w-[240px] mx-auto">
                     <span class="text-[10px] text-slate-500 font-bold">3 kn</span>
                     <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
@@ -117,7 +116,9 @@
                 </div>
             </div>
 
+            <!-- Smart Route Settings & Port Selectors -->
             <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
+                <!-- Routing Mode -->
                 <div>
                     <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
                     <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -133,7 +134,9 @@
                     </div>
                 </div>
 
+                <!-- Dropdowns with Interactive Swap Button -->
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
+                    <!-- Departure Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
                         <div class="relative">
@@ -143,12 +146,14 @@
                         </div>
                     </div>
 
+                    <!-- Swap Ports Button -->
                     <div class="flex justify-center pb-2 md:pb-3">
                         <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
                             <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
                         </button>
                     </div>
 
+                    <!-- Destination Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
                         <div class="relative">
@@ -160,19 +165,23 @@
                 </div>
             </div>
 
+            <!-- Main Interactive Screen Area -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
                 
+                <!-- OpenSeaMap Container -->
                 <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
+                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap Overlay</span>
                         <div id="coordinateReadout" class="text-[9px] font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 shadow-sm">
                             Cursor: --° N, --° W
                         </div>
                     </div>
                     
                     <div class="relative w-full z-10">
+                        <!-- Leaflet Div -->
                         <div id="routingMap" class="w-full bg-[#aad3df] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
 
+                        <!-- Reset, Geolocation & Zoom Map Controls Dock -->
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400]">
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
                                 <i class="fas fa-plus text-blue-400"></i>
@@ -188,6 +197,7 @@
                             </button>
                         </div>
 
+                        <!-- Map Legend Overlay -->
                         <div class="absolute bottom-6 left-2 bg-slate-900/95 border border-slate-700 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
                             <div class="flex items-center gap-2"><span class="w-3.5 h-0.5 bg-emerald-500 block"></span> Route Track</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 block border border-white"></span> Port / Departure</div>
@@ -196,17 +206,21 @@
                         </div>
                     </div>
 
+                    <!-- Step-by-Step Route list -->
                     <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
                         <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
                             <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
                         </h3>
                         <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
-                            </div>
+                            <!-- Populated dynamically with routing steps -->
+                        </div>
                     </div>
                 </div>
 
+                <!-- Live Almanac & Harbor Master Panel -->
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
+                    <!-- Live Marine Forecast Panel -->
                     <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
                         <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
@@ -215,6 +229,7 @@
                         </div>
                     </div>
 
+                    <!-- Dynamic Depth Alert Panel -->
                     <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
                             <i id="depthAlertIcon" class="fas text-xl"></i>
@@ -225,6 +240,7 @@
                         </div>
                     </div>
 
+                    <!-- Main Port Info Panel -->
                     <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
                         <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
                             <div class="min-w-0">
@@ -258,9 +274,11 @@
                         </div>
                     </div>
 
+                    <!-- Port Link Actions -->
                     <div class="space-y-2.5">
                         <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
-                            </div>
+                            <!-- Populated with exact date and port by JS -->
+                        </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
                             <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
@@ -286,6 +304,7 @@
                             </a>
                         </div>
 
+                        <!-- AI Port Guide Button -->
                         <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
                             <i class="fas fa-info text-purple-200"></i>
                             <i class="fas fa-beer text-purple-200"></i>
@@ -299,31 +318,31 @@
                             <span>Port Guide</span>
                         </button>
 
+                        <!-- AI Port Guide Output Container -->
                         <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar">
-                            </div>
+                            <!-- AI Content generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Leaflet JS Library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        // Global variables and elements
         const depSelect = document.getElementById('departure');
         const destSelect = document.getElementById('destination');
         const speedSlider = document.getElementById('speedSlider');
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
-        // Strictly enforcing the exact required Date per personalization constraints
         const exactDate = "Tuesday, June 9, 2026";
         if (dateElement) {
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
 
-        // Helper function to format phone numbers to active tel links
         function telLink(phone) {
             const rawPhone = phone.replace(/[^0-9]/g, '');
             return '<a href="tel:' + rawPhone + '" class="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-bold whitespace-nowrap bg-blue-900/20 px-1.5 py-0.5 rounded transition-colors active:bg-blue-900/50"><i class="fas fa-phone-alt text-[10px]"></i> ' + phone + '</a>';
@@ -339,39 +358,29 @@
         }
 
         function vhfBadge(channel) {
-            return '<span class="inline-flex items-center gap-1 text-sky-300 font-bold bg-sky-900/40 px-1.5 py-0.5 rounded border border-sky-500/30 text-[9px] mx-1" title="Call on VHF Channel ' + channel + '"><i class="fas fa-walkie-talkie"></i> Ch ' + channel + '</span>';
+            return '<span class="inline-flex items-center gap-1 text-sky-300 font-bold bg-sky-900/40 px-1.5 py-0.5 rounded border border-sky-500/30 text-[9px] mx-1"><i class="fas fa-walkie-talkie"></i> Ch ' + channel + '</span>';
         }
 
-        // Active Routing Preference
-        let activeRoutePreference = 'auto'; // 'auto', 'offshore', 'solent'
+        let activeRoutePreference = 'auto'; 
         let lastWeatherDestId = null;
 
-        // Leaflet Map Variables
         let map;
         let routeLayer;
         let staticMarkersLayer;
         let gpsMarker;
         let currentRoutePath = [];
 
-        // --- MAP DATA ARRAYS ---
-        // Expanded, fully calibrated Marine Node Graph Database with Approach Nodes to prevent land-clipping
+        // --- CALIBRATED MARINE NODE GRAPH DATABASE ---
         const mapNodes = {
-            // ----- CHICHESTER (Solent / Hampshire) -----
+            // ----- CHICHESTER -----
             chichester_entrance: {
                 name: "Chichester Entrance", lat: 50.780, lon: -0.935, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0068",
                 vhf: "VHF CH 14 / 80", category: "Harbour", fuel: "Diesel & Petrol",
                 navily: "https://www.navily.com/mouillage/chichester-channel/18403",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Chichester Marina ${vhfBadge('80')} ${telLink('01243 512731')} ${webLink('https://www.premiermarinas.com', 'Premier')}<br>• Birdham Pool Marina ${vhfBadge('80')} ${telLink('01243 512310')} ${webLink('https://www.castlemarinas.co.uk', 'Castle')}<br>• Sparkes Marina ${vhfBadge('80')} ${telLink('023 9246 3572')} ${webLink('https://www.mdlmarinas.co.uk', 'MDL')}<br>• Northney Marina ${vhfBadge('80')} ${telLink('023 9246 6321')} ${webLink('https://www.mdlmarinas.co.uk', 'MDL')}<br><br>HM (Chichester Auth): ${telLink('01243 512301')} ${webLink('https://www.conservancy.co.uk', 'Conservancy')}<br>Email: ${emailLink('harbourmaster@conservancy.co.uk')}`,
-                hazards: "Chichester Bar: Extremely hazardous shallow entrance bar. Breaking waves in southerly winds on the ebb tide. Access is highly tidal. High cross-current runs near the spit buoy.",
-                links: ["chichester_approach"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li>The Deck Cafe (Chichester Marina) - Superb harbourside breakfasts, lunches, and family treats.</li>
-                        <li>West Wittering Beach Cafe - Splendid local ice cream parlor right on the sandy bay entrance.</li>
-                    </ul>
-                `
+                marina: `• Chichester Marina ${vhfBadge('80')} ${telLink('01243 512731')}<br>• Birdham Pool Marina ${vhfBadge('80')} ${telLink('01243 512310')}<br>• Sparkes Marina ${vhfBadge('80')} ${telLink('023 9246 3572')}<br><br>HM: ${telLink('01243 512301')}`,
+                hazards: "Chichester Bar: Breaking waves in southerly winds on the ebb tide. Access is highly tidal.",
+                links: ["chichester_approach"]
             },
             // ----- BEMBRIDGE -----
             bembridge: {
@@ -379,493 +388,156 @@
                 vhf: "VHF CH 80", category: "Harbour", fuel: "Diesel Only",
                 navily: "https://www.navily.com/carte/port/2449",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Bembridge Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge')}<br>• Duver Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Duver')}<br><br>HM (Bembridge Harbour): ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge Web')}<br>Email: ${emailLink('office@bembridgeharbour.co.uk')}`,
-                hazards: "Extremely tidal entrance channel. The bar dries out. Approach from the north via the tide-dependent marked channel only. Avoid Bembridge Ledge to the east.",
-                links: ["bembridge_approach"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li>The Duver Cafe - Famous coastal breakfast, ice cream cones, and milkshakes.</li>
-                        <li>The Pilot Boat Diner - Superb child-friendly harbor dinners and dynamic dessert menus.</li>
-                    </ul>
-                `
+                marina: `• Bembridge Marina ${vhfBadge('80')} ${telLink('01983 872828')}<br>• Duver Marina ${vhfBadge('80')} ${telLink('01983 872828')}`,
+                hazards: "Extremely tidal channel. The bar dries out. Approach from the north via marked channel only.",
+                links: ["bembridge_approach"]
             },
             priory_bay: {
-                name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/priory-bay/18428",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Anchorage only. Sand/Mud holding.<br>• Beautiful shelter in Westerly/South-Westerly winds.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Info')}`,
-                hazards: "Watch for shallow sands extending far offshore. Beware of recreational beachgoers during peak summer seasons.",
-                links: ["bembridge_approach", "solent_east_forts"]
-            },
+                name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["bembridge_approach", "solent_east_forts"] },
             whitecliff_bay: {
-                name: "Whitecliff Bay (IOW)", lat: 50.665, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/whitecliff-bay/18431",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Anchorage only. Mud/Sand holding.<br>• Spectacular white chalk cliff surroundings.<br>${webLink('https://www.visitisleofwight.co.uk', 'IoW Tourism')}`,
-                hazards: "Entirely exposed to easterly and southerly swells. Guarded by the shallow rocky fingers of Bembridge Ledge to the north.",
-                links: ["bembridge_approach", "iow_east_offshore"]
-            },
+                name: "Whitecliff Bay (IOW)", lat: 50.665, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["bembridge_approach", "iow_east_offshore"] },
             seaview: {
-                name: "Seaview (IOW)", lat: 50.725, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/25709",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Seaview Yacht Club moorings ${vhfBadge('M1')} <br>• HM: ${telLink('01983 612536')} ${webLink('https://www.seaviewyachtclub.com', 'Seaview YC')}`,
-                hazards: "Exposed anchorage to any northern or easterly winds. Strong tidal streams run through the nearby Solent channel.",
-                links: ["bembridge_approach", "solent_east_forts"]
-            },
+                name: "Seaview (IOW)", lat: 50.725, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["bembridge_approach", "solent_east_forts"] },
+            
             // ----- PORTSMOUTH -----
             portsmouth: {
                 name: "Portsmouth Harbour", lat: 50.795, lon: -1.108, isPort: true, isShallowBar: false, tideId: "0065",
-                vhf: "VHF CH 11 (KHM)", category: "Harbour", fuel: "Diesel & Petrol",
+                vhf: "VHF CH 11", category: "Harbour", fuel: "Diesel & Petrol",
                 navily: "https://www.navily.com/port/haslar-marina/520",
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Haslar Marina ${vhfBadge('80')} ${telLink('023 9252 4811')} ${webLink('https://www.boatfolk.co.uk/haslar-marina', 'Haslar')}<br>• Gunwharf Quays ${vhfBadge('80')} ${telLink('023 9283 6732')} ${webLink('https://www.gunwharf-quays.com', 'Gunwharf')}<br>• Gosport Marina ${vhfBadge('80')} ${telLink('023 9252 4811')} ${webLink('https://www.premiermarinas.com', 'Gosport')}<br>• Port Solent ${vhfBadge('80')} ${telLink('023 9221 0765')} ${webLink('https://www.premiermarinas.com', 'Port Solent')}<br><br>KHM Office: ${telLink('023 9272 3124')} ${webLink('https://www.royalnavy.mod.uk/qhm/portsmouth', 'KHM Portsmouth')}<br>Email: ${emailLink('gosport@boatfolk.co.uk')}`,
-                hazards: "Heavy commercial ferry, fast catamaran, and Royal Navy warship movements. You MUST use the Small Boat Channel. Do not cross the Swashway without specific permission.",
-                links: ["portsmouth_approach"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li>The Lightship Haslar - Scenic floating restaurant on the harbor.</li>
-                        <li>Gunwharf Quay Eateries - Over 30 kid-friendly restaurants and bubble tea shops.</li>
-                    </ul>
-                `
+                marina: `• Haslar Marina ${vhfBadge('80')} ${telLink('023 9252 4811')}<br>• Gunwharf Quays ${vhfBadge('80')} ${telLink('023 9283 6732')}`,
+                hazards: "Heavy commercial & military movements. You MUST use the Small Boat Channel.",
+                links: ["portsmouth_approach"]
             },
-            stokes_bay: {
-                name: "Stokes Bay (Solent)", lat: 50.780, lon: -1.155, isPort: true, isShallowBar: false, tideId: "0065",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/stokes-bay/18412",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Open roadstead anchorage with gravel/shingle holding.<br>${webLink('https://www.gosport.gov.uk', 'Gosport Info')}`,
-                hazards: "Sits immediately adjacent to the Gosport deep-water shipping lanes. Strong tidal currents sweep parallel to the shoreline.",
-                links: ["solent_east_forts", "solent_mid"]
-            },
+            stokes_bay: { name: "Stokes Bay (Solent)", lat: 50.780, lon: -1.155, isPort: true, isShallowBar: false, tideId: "0065", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["solent_east_forts", "solent_mid"] },
+            
             // ----- SOUTHAMPTON -----
             southampton: {
                 name: "Southampton", lat: 50.890, lon: -1.395, isPort: true, isShallowBar: false, tideId: "0060",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/1713",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Ocean Village ${vhfBadge('80')} ${telLink('023 8022 9385')} ${webLink('https://www.mdlmarinas.co.uk', 'Ocean Village')}<br>• Shamrock Quay ${vhfBadge('80')} ${telLink('023 8022 4368')} ${webLink('https://www.mdlmarinas.co.uk', 'Shamrock')}<br>• Town Quay ${vhfBadge('80')} ${telLink('023 8023 4397')} ${webLink('https://www.townquay.com', 'Town Quay')}<br>• Hythe Marina ${vhfBadge('80')} ${telLink('023 8020 7073')} ${webLink('https://www.mdlmarinas.co.uk', 'Hythe')}<br><br>HM (Southampton VTS): ${telLink('023 8060 8208')} ${webLink('https://www.southamptonvts.co.uk', 'Southampton VTS')}<br>Email: ${emailLink('southamptonvts@abports.co.uk')}`,
-                hazards: "Moving Prohibited Zone (MPZ) strictly enforced around vessels >150m. Massive container ships and cruise liners cannot stop or turn inside the narrow channels.",
-                links: ["southampton_water"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li>Ocean Village Steakhouse - Modern dining overlooking the marina.</li>
-                        <li>Sprinkles Gelato - Spectacular dessert bar with over 50 ice cream flavors.</li>
-                    </ul>
-                `
+                marina: `• Ocean Village ${vhfBadge('80')} ${telLink('023 8022 9385')}`,
+                hazards: "Moving Prohibited Zone (MPZ) strictly enforced around large vessels.",
+                links: ["southampton_water"]
             },
-            beaulieu: {
-                name: "Beaulieu River", lat: 50.785, lon: -1.395, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0060",
-                vhf: "VHF CH 68", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/19597",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Buckler's Hard Yacht Harbour ${vhfBadge('68')} ${telLink('01590 616200')} ${webLink('https://www.beaulieuriver.co.uk', 'Beaulieu River')}<br><br>HM: ${telLink('01590 616200')} ${webLink('https://www.beaulieuriver.co.uk', 'Harbour Master')}`,
-                hazards: "Dolphin beacon marks the entrance. Keep within the withies. Shallow mudflats on either side of the winding channel.",
-                links: ["solent_west"]
-            },
+            beaulieu: { name: "Beaulieu River", lat: 50.785, lon: -1.395, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0060", vhf: "VHF CH 68", category: "Marina", fuel: "Diesel & Petrol", links: ["solent_west"] },
+            
             // ----- COWES -----
             cowes: {
                 name: "Cowes", lat: 50.760, lon: -1.295, isPort: true, isShallowBar: false, tideId: "0062",
                 vhf: "VHF CH 69", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/1713",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')} ${webLink('https://www.cowesyachthaven.com', 'Yacht Haven')}<br>• Shepards Marina ${vhfBadge('80')} ${telLink('01983 297821')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Shepards')}<br>• East Cowes Marina ${vhfBadge('80')} ${telLink('01983 293983')} ${webLink('https://www.deanreddyhoff.co.uk', 'East Cowes')}<br><br>HM (Cowes Harbour): ${telLink('01983 293952')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Cowes Harbour')}<br>Email: ${emailLink('chc@cowes.co.uk')}`,
-                hazards: "High-speed red-funnel ferries and commercial traffic. The Medina River chain ferry crosses continuously; sail-craft have NO right of way over it.",
-                links: ["solent_mid", "osborne_bay", "king_quay"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Pubs, Restaurants & Bistros 🍺🍽️</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li><strong>The Anchor</strong> ⭐ 4.5/5 - The ultimate Cowes yachting pub. Historic, lively, and packed with sailing memorabilia.</li>
-                        <li><strong>The Pier View</strong> ⭐ 4.4/5 - A classic sailor's favorite on the high street.</li>
-                    </ul>
-                `
+                marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')}`,
+                hazards: "High-speed ferries. Chain ferry crosses continuously; sail-craft have no right of way.",
+                links: ["solent_mid", "osborne_bay", "king_quay"]
             },
-            osborne_bay: {
-                name: "Osborne Bay (IOW)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/osborne-bay/18426",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Popular daytime sandy-bottom anchorage.<br>• Excellent shelter from Southern/Westerly winds.<br>${webLink('https://www.english-heritage.org.uk', 'Osborne House Info')}`,
-                hazards: "Can be highly crowded with vessels during summer. Keep clear of the historic royal beach boundaries.",
-                links: ["cowes", "solent_mid"]
-            },
-            king_quay: {
-                name: "King's Quay (IOW)", lat: 50.755, lon: -1.220, isPort: true, isShallowBar: false, tideId: "0062",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/king-quay/18418",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Quiet, isolated creek anchorage off Osborne woods.<br>• Suitable only for shallow draft or drying vessels.`,
-                hazards: "Dries rapidly. Extremely narrow approach. Keep careful watch on depth charts.",
-                links: ["cowes", "solent_mid"]
-            },
-            newtown_creek: {
-                name: "Newtown Creek (IOW)", lat: 50.730, lon: -1.410, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0061",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/26052",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• National Trust protected estuary.<br>• Visitor moorings available inside. Eco-sensitive seagrass area.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Newtown')}`,
-                hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
-                links: ["solent_mid", "solent_west", "yarmouth"]
-            },
+            osborne_bay: { name: "Osborne Bay (IOW)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["cowes", "solent_mid"] },
+            king_quay: { name: "King's Quay (IOW)", lat: 50.755, lon: -1.220, isPort: true, isShallowBar: false, tideId: "0062", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["cowes", "solent_mid"] },
+            newtown_creek: { name: "Newtown Creek (IOW)", lat: 50.730, lon: -1.410, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0061", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["solent_mid", "solent_west"] },
+            
             // ----- LYMINGTON -----
-            lymington: {
-                name: "Lymington", lat: 50.752, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044",
-                vhf: "VHF CH 66", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/2435",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
-                marina: `• Lymington Yacht Haven ${vhfBadge('80')} ${telLink('01590 677071')} ${webLink('https://www.yachthavens.com/lymington', 'Yacht Haven')}<br>• Berthon Marina ${vhfBadge('80')} ${telLink('01590 673312')} ${webLink('https://www.berthonmarina.co.uk', 'Berthon')}<br><br>HM (Lymington): ${telLink('01590 672014')} ${webLink('https://www.lymingtonharbour.co.uk', 'Lymington Harbour')}<br>Email: ${emailLink('lymington@yachthavens.com')}`,
-                hazards: "Frequent Wightlink ferry operations share the narrow channel. Very shallow mud flats exist immediately outside the marked channel wooden posts.",
-                links: ["lymington_approach"],
-                offlineGuide: `
-                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
-                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
-                        <li>The Haven Bar & Restaurant - Pan-island views and local fish dishes.</li>
-                        <li>Lymington Fudge & Gelato - Handcrafted fudge and dairy ice creams.</li>
-                    </ul>
-                `
-            },
+            lymington: { name: "Lymington", lat: 50.752, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044", vhf: "VHF CH 66", category: "Marina", fuel: "Diesel & Petrol", marina: `• Yacht Haven ${telLink('01590 677071')}`, hazards: "Wightlink ferry operations share narrow channel.", links: ["lymington_approach"] },
+            
             // ----- YARMOUTH -----
-            yarmouth: {
-                name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061",
-                navily: "https://www.navily.com/carte/mouillage/20529",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
-                marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
-                hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["solent_west", "newtown_creek", "lymington_approach", "hurst_narrows"]
-            },
-            alum_bay: {
-                name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/alum-bay/18408",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
-                marina: `• Temporary daytime anchorage under the multi-colored sand cliffs.`,
-                hazards: "Strong tidal flows coming from Hurst Narrows and the Needles. Strictly a fair-weather anchorage.",
-                links: ["needles_fairway", "hurst_narrows"]
-            },
+            yarmouth: { name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061", vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol", links: ["solent_west", "newtown_creek", "lymington_approach", "hurst_narrows"] },
+            alum_bay: { name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["needles_fairway", "hurst_narrows"] },
+            
             // ----- POOLE -----
-            poole: {
-                name: "Poole Harbour", lat: 50.710, lon: -1.985, isPort: true, isShallowBar: false, tideId: "0036",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/14121",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Poole Quay Boat Haven ${vhfBadge('80')} ${telLink('01202 649488')} ${webLink('https://www.poolequayboathaven.co.uk', 'Poole Quay')}<br>• Cobbs Quay ${vhfBadge('80')} ${telLink('01202 674751')} ${webLink('https://www.mdlmarinas.co.uk', 'Cobbs Quay')}<br>• Salterns Marina ${vhfBadge('80')} ${telLink('01202 709971')} ${webLink('https://www.salterns-marina.co.uk', 'Salterns')}<br><br>HM (Poole Auth): ${telLink('01202 440200')} ${webLink('https://www.phc.co.uk', 'Poole Harbour Commissioners')}<br>Email: ${emailLink('poolequayboathaven@phc.co.uk')}`,
-                hazards: "The Sandbanks chain ferry operates across the highly compressed narrow entrance. High speed commercial ferries use the Swash Channel.",
-                links: ["poole_approach"]
-            },
-            studland: {
-                name: "Studland Bay", lat: 50.640, lon: -1.940, isPort: true, isShallowBar: false, tideId: "0035",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/14121",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Sandy anchorage with voluntary no-anchor seagrass zones.<br>• Excellent shelter in SW/W winds.`,
-                hazards: "Avoid Old Harry rocks and reef extending north-east. Exposed to north-easterly and easterly weather.",
-                links: ["poole_bay", "poole_approach"]
-            },
-            // ----- WEYMOUTH -----
-            weymouth: {
-                name: "Weymouth Harbour", lat: 50.610, lon: -2.455, isPort: true, isShallowBar: false, tideId: "0033",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/carte/mouillage/44238",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Weymouth Marina ${vhfBadge('80')} ${telLink('01305 767117')} ${webLink('https://www.boatfolk.co.uk/weymouth-marina', 'Weymouth Marina')}<br>• Weymouth Town Pontoons ${vhfBadge('12')} ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Town Pontoons')}<br><br>HM (Weymouth): ${telLink('01305 838423')} ${webLink('https://www.weymouthharbour.co.uk', 'Weymouth Harbour Office')}<br>Email: ${emailLink('weymouthharbour@dorsetcouncil.gov.uk')}`,
-                hazards: "The historic town bridge operates on fixed odd hours. Beware of active commercial fishing vessels and high seasonal yacht traffic.",
-                links: ["weymouth_approach"]
-            },
-            portland_marina: {
-                name: "Portland Marina", lat: 50.568, lon: -2.452, isPort: true, isShallowBar: false, tideId: "0033",
-                vhf: "VHF CH 80", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/44238",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
-                marina: `• Portland Marina ${vhfBadge('80')} ${telLink('01305 866190')} ${webLink('https://www.boatfolk.co.uk/portland-marina', 'Portland Marina')}<br><br>HM (Portland Port): ${telLink('01305 824044')} ${webLink('https://www.portland-port.co.uk', 'Portland Port')}<br>Email: ${emailLink('portland@boatfolk.co.uk')}`,
-                hazards: "Portland Harbour controlled entrance ship channels (North and East Ship Channels). Strong wind shear in South-Westerly gales. To the south, beware of the violent overfalls of Portland Race.",
-                links: ["weymouth_approach", "portland_offshore"]
-            },
+            poole: { name: "Poole Harbour", lat: 50.710, lon: -1.985, isPort: true, isShallowBar: false, tideId: "0036", vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel & Petrol", links: ["poole_approach"] },
+            studland: { name: "Studland Bay", lat: 50.640, lon: -1.940, isPort: true, isShallowBar: false, tideId: "0035", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["poole_bay", "poole_approach"] },
+            
+            // ----- WEYMOUTH & PORTLAND -----
+            weymouth: { name: "Weymouth Harbour", lat: 50.610, lon: -2.455, isPort: true, isShallowBar: false, tideId: "0033", vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only", links: ["weymouth_approach"] },
+            portland_marina: { name: "Portland Marina", lat: 50.568, lon: -2.452, isPort: true, isShallowBar: false, tideId: "0033", vhf: "VHF CH 80", category: "Marina", fuel: "Diesel & Petrol", hazards: "Beware of the violent overfalls of Portland Race to the south.", links: ["weymouth_approach", "portland_bill_offshore"] },
+            
             // ----- BRIXHAM -----
-            brixham: {
-                name: "Brixham", lat: 50.400, lon: -3.510, isPort: true, isShallowBar: false, tideId: "0025",
-                vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/2053",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Brixham MDL Marina ${vhfBadge('80')} ${telLink('01803 882929')} ${webLink('https://www.mdlmarinas.co.uk/marinas/mdl-brixham-marina/marina-plan/', 'MDL Brixham')}<br><br>HM (Torbay Auth): ${telLink('01803 853321')} ${webLink('https://www.torbayharbours.co.uk', 'Torbay Harbours')}<br>Email: ${emailLink('brixham@mdlmarinas.co.uk')}`,
-                hazards: "Massive active commercial fishing fleet moving 24/7. Long outer breakwater requires a wide berth on approach during easterlies.",
-                links: ["berry_head_offshore"]
-            },
+            brixham: { name: "Brixham", lat: 50.400, lon: -3.510, isPort: true, isShallowBar: false, tideId: "0025", vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol", hazards: "Massive active fishing fleet moving 24/7.", links: ["berry_head_offshore"] },
+            
             // ----- DARTMOUTH -----
-            dartmouth: {
-                name: "Dartmouth", lat: 50.345, lon: -3.575, isPort: true, isShallowBar: false, tideId: "0023",
-                vhf: "VHF CH 11", category: "Harbour", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/251",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Dart Marina ${vhfBadge('80')} ${telLink('01803 837161')} ${webLink('https://www.dartmarina.com', 'Dart Marina')}<br>• Noss on Dart ${vhfBadge('80')} ${telLink('01803 839087')} ${webLink('https://www.premiermarinas.com', 'Noss on Dart')}<br>• Darthaven Marina ${vhfBadge('80')} ${telLink('01803 752545')} ${webLink('https://www.darthaven.co.uk', 'Darthaven')}<br><br>HM (Dart Auth): ${telLink('01803 832337')} ${webLink('https://www.dartharbour.org', 'Dart Harbour')}<br>Email: ${emailLink('info@dartharbour.org')}`,
-                hazards: "Beware of Homestone and Mew Stone off the rocky mouth. Ebb tide sweeping against south winds generates violent overfalls at the river mouth.",
-                links: ["dittisham", "dartmouth_approach"]
-            },
-            dittisham: {
-                name: "Dittisham (River Dart)", lat: 50.385, lon: -3.595, isPort: true, isShallowBar: false, tideId: "0023",
-                vhf: "VHF CH 11", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/22026",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Dart Harbour Visitor Moorings ${vhfBadge('11')} ${telLink('01803 832337')} ${webLink('https://www.dartharbour.org', 'Dart Harbour')}`,
-                hazards: "Strong river currents. Use designated visitor buoys. Watch for the pink ferry crossing to Greenway.",
-                links: ["dartmouth", "totnes"]
-            },
-            totnes: {
-                name: "Totnes", lat: 50.430, lon: -3.680, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0023C",
-                vhf: "VHF CH 11", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/45503",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Baltic Wharf Totnes ${telLink('01803 866162')} ${webLink('https://www.balticwharf.co.uk', 'Baltic Wharf')}<br><br>HM (Dart Auth): ${telLink('01803 832337')} ${webLink('https://www.dartharbour.org', 'Dart Harbour')}`,
-                hazards: "High-tidal upper river passage. The channel dries completely in multiple reaches. Ensure high water transit timing.",
-                links: ["dittisham"]
-            },
+            dartmouth: { name: "Dartmouth", lat: 50.345, lon: -3.575, isPort: true, isShallowBar: false, tideId: "0023", vhf: "VHF CH 11", category: "Harbour", fuel: "Diesel & Petrol", links: ["dittisham", "dartmouth_approach"] },
+            dittisham: { name: "Dittisham (River Dart)", lat: 50.385, lon: -3.595, isPort: true, isShallowBar: false, tideId: "0023", vhf: "VHF CH 11", category: "Anchorage", fuel: "No Fuel", links: ["dartmouth", "totnes"] },
+            totnes: { name: "Totnes", lat: 50.430, lon: -3.680, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0023C", vhf: "VHF CH 11", category: "Harbour", fuel: "No Fuel", links: ["dittisham"] },
+            
             // ----- SALCOMBE -----
-            salcombe: {
-                name: "Salcombe Harbour", lat: 50.235, lon: -3.765, isPort: true, isShallowBar: true, barDepth: 1.2, tideId: "0023",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/carte/port/16084",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Salcombe Harbour Moorings ${vhfBadge('14')} ${telLink('01548 843791')} ${webLink('https://www.salcombeharbour.co.uk', 'Salcombe Moorings')}<br><br>HM (Salcombe): ${telLink('01548 843791')} ${webLink('https://www.southhams.gov.uk/salcombe-harbour', 'Harbour Authority')}<br>Email: ${emailLink('salcombe.harbour@devon.gov.uk')}`,
-                hazards: "THE SALCOMBE BAR: Highly dangerous breaking waves in any strong onshore Southerly winds, especially on an ebb tide. Check bar status with HM before approach.",
-                links: ["salcombe_approach"]
-            },
-            newtonferrers: {
-                name: "Newton Ferrers (Yealm)", lat: 50.310, lon: -4.040, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0014",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/53603",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• River Yealm Moorings & Ponto.<br><br>HM (Yealm Auth): ${telLink('01752 872533')} ${webLink('https://www.yealmharbourauthority.co.uk/', 'Yealm Harbour Authority')}<br>Email: ${emailLink('yealmharbourmaster@btconnect.com')}`,
-                hazards: "Very shallow entrance sandbar over the river mouth. Under-keel clearance is limited; deep draft yachts must time entry carefully with the rising tide.",
-                links: ["yealm_approach"]
-            },
-            bovisand_beach: {
-                name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/25707",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Sandy bay anchorage inside the eastern flank of Plymouth Sound breakwater.`,
-                hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.",
-                links: ["plymouth_sound", "yealm_approach"]
-            },
+            salcombe: { name: "Salcombe Harbour", lat: 50.235, lon: -3.765, isPort: true, isShallowBar: true, barDepth: 1.2, tideId: "0023", vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only", hazards: "THE SALCOMBE BAR: Highly dangerous breaking waves in any strong onshore Southerly winds.", links: ["salcombe_approach"] },
+            newtonferrers: { name: "Newton Ferrers (Yealm)", lat: 50.310, lon: -4.040, isPort: true, isShallowBar: true, barDepth: 1.0, tideId: "0014", vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel", links: ["yealm_approach"] },
+            bovisand_beach: { name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["plymouth_sound", "yealm_approach"] },
+            
             // ----- PLYMOUTH -----
-            plymouth: {
-                name: "Plymouth Sound", lat: 50.364, lon: -4.130, isPort: true, isShallowBar: false, tideId: "0014",
-                vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/25707",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
-                marina: `• Mayflower Marina ${vhfBadge('80')} ${telLink('01752 556633')} ${webLink('https://www.mayflowermarina.co.uk', 'Mayflower')}<br>• Queen Anne's Battery ${vhfBadge('80')} ${telLink('01752 671142')} ${webLink('https://www.mdlmarinas.co.uk/qab', 'QAB MDL')}<br>• Sutton Harbour ${vhfBadge('12')} ${telLink('01752 204702')} ${webLink('https://www.suttonharbourmarina.com', 'Sutton Harbour')}<br><br>HM (QHM Plymouth): ${telLink('01752 665934')} ${webLink('https://www.royalnavy.mod.uk/qhm/plymouth', 'QHM Plymouth')}<br>Email: ${emailLink('plymouth@qhm.mod.uk')}`,
-                hazards: "Major military submarine and warship lanes. Navy ships take absolute priority. Keep strictly clear of moving exclusion zones.",
-                links: ["plymouth_sound"]
-            },
+            plymouth: { name: "Plymouth Sound", lat: 50.364, lon: -4.130, isPort: true, isShallowBar: false, tideId: "0014", vhf: "VHF CH 14", category: "Marina", fuel: "Diesel & Petrol", links: ["plymouth_sound"] },
+            
             // ----- FOWEY -----
-            fowey: {
-                name: "Fowey Harbour", lat: 50.332, lon: -4.632, isPort: true, isShallowBar: false, tideId: "0014",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/carte/mouillage/23296",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Web')}<br>• Mixtow Marine ${telLink('01726 832204')} ${webLink('https://www.foweyharbour.co.uk', 'Mixtow')}<br><br>HM (Fowey): ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Harbour Authority')}<br>Email: ${emailLink('fhc@foweyharbour.co.uk')}`,
-                hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
-                links: ["fowey_approach"]
-            },
+            fowey: { name: "Fowey Harbour", lat: 50.332, lon: -4.632, isPort: true, isShallowBar: false, tideId: "0014", vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only", links: ["fowey_approach"] },
+            
             // ----- FALMOUTH -----
-            falmouth: {
-                name: "Falmouth", lat: 50.153, lon: -5.063, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 12", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/mouillage/13119",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Falmouth Marina ${vhfBadge('80')} ${telLink('01326 316620')} ${webLink('https://www.premiermarinas.com', 'Falmouth Premier')}<br>• Port Pendennis ${vhfBadge('80')} ${telLink('01326 211211')} ${webLink('https://www.portpendennis.com', 'Pendennis')}<br>• Falmouth Haven ${vhfBadge('12')} ${telLink('01326 310990')} ${webLink('https://www.falmouthhaven.co.uk', 'Falmouth Haven')}<br><br>HM (Falmouth): ${telLink('01326 312285')} ${webLink('https://www.falmouthharbour.co.uk', 'Falmouth Harbour')}<br>Email: ${emailLink('hm@falmouthharbour.co.uk')}`,
-                hazards: "Black Rock in the center of the outer entrance requires careful identification. High volume of commercial shipping anchoring in Carrick Roads.",
-                links: ["falmouth_approach", "penryn", "stmawes"]
-            },
-            penryn: {
-                name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/18901",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Penryn Port Moorings<br><br>HM (Truro & Penryn): ${telLink('01326 374254')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
-                hazards: "Highly tidal drying riverbed. Keep to marked pontoons. Yachts must be capable of drying out safely on mud to use inner berths.",
-                links: ["falmouth"]
-            },
-            stmawes: {
-                name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/48877",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• St Mawes Moorings<br><br>HM (St Mawes): ${telLink('01326 270553')} ${webLink('https://www.stmawesharbour.co.uk', 'St Mawes Harbour')}<br>Email: ${emailLink('stmawesharbour@btconnect.com')}`,
-                hazards: "Exposed to South-Westerly swells. Watch out for shallow rocky ledges near Castle Point.",
-                links: ["falmouth", "falmouth_approach"]
-            },
-            st_just: {
-                name: "St Just in Roseland", lat: 50.180, lon: -5.015, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/22026",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Deep water pool moorings and anchorage.<br>• Pasco's Boatyard: ${telLink('01326 270269')} ${webLink('http://www.pascosboatyard.co.uk', 'Pasco\'s')}`,
-                hazards: "Pool entrance is well hidden. Stay clear of the working boatyard slipways.",
-                links: ["stmawes", "falmouth"]
-            },
-            mylor: {
-                name: "Mylor Yacht Harbour", lat: 50.175, lon: -5.050, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "VHF CH 37/80", category: "Marina", fuel: "Diesel & Petrol",
-                navily: "https://www.navily.com/carte/port/13120",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Mylor Marina ${vhfBadge('80')} ${telLink('01326 372121')} ${webLink('https://www.mylor.com', 'Mylor Yacht Harbour')}`,
-                hazards: "Beware of heavy racing fleets (working boats and dinghies) navigating through the moorings in summer.",
-                links: ["falmouth", "st_just", "falmouth_approach"]
-            },
-            malpas: {
-                name: "Malpas (River Fal)", lat: 50.245, lon: -5.035, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/18901",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Pontoon and River Moorings<br>• Access highly tidal. Keep to the deep water channel.`,
-                hazards: "Channel dries significantly. Strong tidal streams bend around the steep wooded banks.",
-                links: ["mylor", "truro"]
-            },
-            truro: {
-                name: "Truro", lat: 50.260, lon: -5.050, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0005",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/18901",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Port of Truro Quayside<br><br>HM (Truro Office): ${telLink('01872 272130')} ${webLink('https://www.cornwall.gov.uk', 'Cornwall Council')}<br>Email: ${emailLink('harbourmaster@cornwall.gov.uk')}`,
-                hazards: "Extremely long tidal passage. Channel dries completely at low water. Accessible only with a well-timed high water passage.",
-                links: ["falmouth"]
-            },
-            helford: {
-                name: "Helford River", lat: 50.100, lon: -5.120, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0004",
-                vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/48876",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Helford River Moorings ${telLink('01326 231575')} ${webLink('https://www.helfordrivermoorings.co.uk/', 'Helford River Moorings')}`,
-                hazards: "August Rock lies off the entrance. Shallow bar limits access at low water. Dense mooring buoy fields. Oyster bed restrictions apply.",
-                links: ["falmouth_bay", "frenchmans_creek"]
-            },
-            frenchmans_creek: {
-                name: "Frenchman's Creek", lat: 50.090, lon: -5.135, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0004",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/carte/mouillage/48876",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Deep wilderness creek anchorage on the south bank of the Helford.<br>• Suitable only for shallow draft or drying vessels.`,
-                hazards: "Almost completely dries at low water except for a few deep pools. Ancient oak trees overhang the channel—watch your mast!",
-                links: ["helford"]
-            },
-            portscatho: {
-                name: "Portscatho", lat: 50.178, lon: -4.965, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/portscatho/18902",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Sand/Clay holding anchorage in the shelter of Gerrans Bay.`,
-                hazards: "Completely exposed to east and south-east winds which generate dangerous lee-shore breaking surf.",
-                links: ["falmouth_bay", "dodman_offshore"]
-            },
-            // ----- PENZANCE -----
-            penzance: {
-                name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
-                vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/carte/port/16084",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Penzance Wet Dock ${vhfBadge('12')} ${telLink('01736 366113')} ${webLink('https://www.cornwall.gov.uk', 'Penzance Harbour')}<br>• Newlyn Marina ${vhfBadge('12')} ${telLink('01736 362523')} ${webLink('https://www.newlynharbour.ca.uk', 'Newlyn')}<br><br>HM (Penzance): ${telLink('01736 366113')} ${webLink('https://www.cornwall.gov.uk', 'Penzance Harbour')}<br>Email: ${emailLink('penzanceharbour@cornwall.gov.uk')}`,
-                hazards: "Tidal gate restricts wet dock access to roughly +/- 2 hours around HW. Cressars, Low Lee, and Gear Rock guard the bay approach.",
-                links: ["mounts_bay"]
-            },
-            // ----- SCILLY -----
-            scilly: {
-                name: "Isles of Scilly (St Mary's)", lat: 49.910, lon: -6.310, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/mouillage/porthcressa/18920",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• St Mary's Moorings ${vhfBadge('14')} ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk', 'Scilly Isles Council')}<br><br>HM (St Mary's): ${telLink('01720 422768')} ${webLink('https://www.scilly.gov.uk/docking', 'Harbour Authority')}<br>Email: ${emailLink('hm@scilly.gov.uk')}`,
-                hazards: "Wilderness navigation. Extremely complex granite reef networks (The Spanish Ledges, Bartholomew Ledges). Open Atlantic swell. Advanced pilotage is absolutely mandatory.",
-                links: ["lands_end"]
-            },
-            scilly_grimsby: {
-                name: "New Grimsby (Scilly)", lat: 49.957, lon: -6.347, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/new-grimsby-sound/18923",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Moorings available between Tresco and Bryher.<br>• HM: ${telLink('01720 422768')} ${webLink('https://www.tresco.co.uk', 'Tesco Island')}`,
-                hazards: "Highly confined channel. Dries out at the southern end. Strictly timed entries around high water required for deep drafts.",
-                links: ["lands_end"]
-            },
-            scilly_helens: {
-                name: "St Helen's Pool (Scilly)", lat: 49.962, lon: -6.275, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/st-helens-pool/18924",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Isolated wilderness anchorage on sand.`,
-                hazards: "Encircled by drying reefs. Requires precise navigation through the golden sand bars and rocky shoals.",
-                links: ["lands_end"]
-            },
-            scilly_tresco: {
-                name: "The Cove Tresco (Scilly)", lat: 49.948, lon: -6.320, isPort: true, isShallowBar: false, tideId: "0001",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/the-cove-tresco/18922",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Sandy beach anchorage on the south-east side of Tresco island.<br>${webLink('https://www.tresco.co.uk', 'Tesco Island')}`,
-                hazards: "Exposed to south-easterly winds. Avoid the Crow Bar reef blocking the southern sound exit.",
-                links: ["lands_end"]
-            },
+            falmouth: { name: "Falmouth", lat: 50.153, lon: -5.063, isPort: true, isShallowBar: false, tideId: "0005", vhf: "VHF CH 12", category: "Marina", fuel: "Diesel & Petrol", links: ["falmouth_approach", "penryn", "stmawes"] },
+            penryn: { name: "Penryn", lat: 50.160, lon: -5.100, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005", vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel", links: ["falmouth"] },
+            stmawes: { name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005", vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel", links: ["falmouth", "falmouth_approach"] },
+            st_just: { name: "St Just in Roseland", lat: 50.180, lon: -5.015, isPort: true, isShallowBar: false, tideId: "0005", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["stmawes", "falmouth"] },
+            mylor: { name: "Mylor Yacht Harbour", lat: 50.175, lon: -5.050, isPort: true, isShallowBar: false, tideId: "0005", vhf: "VHF CH 37/80", category: "Marina", fuel: "Diesel & Petrol", links: ["falmouth", "st_just", "falmouth_approach"] },
+            malpas: { name: "Malpas (River Fal)", lat: 50.245, lon: -5.035, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0005", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["mylor", "truro"] },
+            truro: { name: "Truro", lat: 50.260, lon: -5.050, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0005", vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel", links: ["falmouth"] },
+            helford: { name: "Helford River", lat: 50.100, lon: -5.120, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0004", vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel", links: ["falmouth_bay", "frenchmans_creek"] },
+            frenchmans_creek: { name: "Frenchman's Creek", lat: 50.090, lon: -5.135, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0004", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["helford"] },
+            portscatho: { name: "Portscatho", lat: 50.178, lon: -4.965, isPort: true, isShallowBar: false, tideId: "0005", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["falmouth_bay", "dodman_offshore"] },
+            
+            // ----- PENZANCE & SCILLY -----
+            penzance: { name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002", vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only", links: ["mounts_bay"] },
+            scilly: { name: "Isles of Scilly (St Mary's)", lat: 49.910, lon: -6.310, isPort: true, isShallowBar: false, tideId: "0001", vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only", links: ["lands_end"] },
+            scilly_grimsby: { name: "New Grimsby (Scilly)", lat: 49.957, lon: -6.347, isPort: true, isShallowBar: false, tideId: "0001", vhf: "VHF CH 14", category: "Anchorage", fuel: "No Fuel", links: ["lands_end"] },
+            scilly_helens: { name: "St Helen's Pool (Scilly)", lat: 49.962, lon: -6.275, isPort: true, isShallowBar: false, tideId: "0001", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["lands_end"] },
+            scilly_tresco: { name: "The Cove Tresco (Scilly)", lat: 49.948, lon: -6.320, isPort: true, isShallowBar: false, tideId: "0001", vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel", links: ["lands_end"] },
 
-            // ----- APPROACH NODES (Tucked tightly into bays to hug the coast) -----
+            // ----- GEOMETRIC APPROXIMATION LOCKS (Tucked tightly for harbor entry paths) -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.765, lon: -0.940, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
             bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.700, lon: -1.090, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore", "priory_bay", "seaview", "whitecliff_bay"] },
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
-            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "hurst_narrows"] },
+            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "hurst_narrows"] },
             poole_approach: { name: "Swash Channel Approach", lat: 50.685, lon: -1.945, isPort: false, links: ["poole", "poole_bay", "studland"] },
-            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.615, lon: -2.445, isPort: false, links: ["weymouth", "portland_marina", "st_aldhelms_offshore", "portland_offshore"] },
+            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.615, lon: -2.445, isPort: false, links: ["weymouth", "portland_marina", "st_aldhelms_offshore", "portland_bill_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
             falmouth_approach: { name: "Carrick Roads Approach", lat: 50.135, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor"] },
 
-            // ----- NEW COASTAL OFFSET APPROACH NODES (Fixing Land-Clipping) -----
+            // ----- COORD RECALIBRATION: COASTAL TRANSIT STAGES -----
             hurst_narrows: { name: "Hurst Narrows Transit", lat: 50.705, lon: -1.550, isPort: false, links: ["needles_fairway", "solent_west", "yarmouth", "lymington_approach"] },
             swanage_bay_transit: { name: "Swanage Bay Transit", lat: 50.620, lon: -1.890, isPort: false, links: ["durlston", "poole_bay"] },
-            st_aldhelms_offshore: { name: "St Aldhelm's Head Offset", lat: 50.550, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach", "portland_offshore"] },
+            st_aldhelms_offshore: { name: "St Aldhelm's Head Offset", lat: 50.540, lon: -2.050, isPort: false, links: ["durlston", "weymouth_approach", "portland_bill_offshore"] },
             yealm_approach: { name: "Yealm Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["newtonferrers", "plymouth_sound", "bolt_head_offshore", "bovisand_beach"] },
             fowey_approach: { name: "Fowey Approach", lat: 50.315, lon: -4.630, isPort: false, links: ["fowey", "rame_head_transit", "dodman_offshore"] },
-            runnel_stone_transit: { name: "Runnel Stone Transit", lat: 50.000, lon: -5.670, isPort: false, links: ["mounts_bay", "lands_end", "lizard_point"] },
+            runnel_stone_transit: { name: "Runnel Stone Transit", lat: 50.010, lon: -5.670, isPort: false, links: ["mounts_bay", "lands_end", "lizard_point"] },
 
-            // ----- TRANSIT WAYPOINTS (Routing Graph Only) -----
-            iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.665, lon: -1.060, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
-            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.610, lon: -1.160, isPort: false, links: ["iow_east_offshore", "iow_south", "iow_south_coastal"] }, 
-            
-            iow_south: { name: "St Catherine's Offshore Point (Safe)", lat: 50.550, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "durlston"] }, 
-            iow_south_coastal: { name: "St Catherine's Coastal Point (Optimal)", lat: 50.575, lon: -1.295, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_south", "durlston"] }, 
+            // ----- RECALIBRATED OFFSHORE TRANSIT HIGHWAYS -----
+            iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.670, lon: -1.030, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
+            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.580, lon: -1.100, isPort: false, links: ["iow_east_offshore", "ventnor_offshore"] }, 
+            ventnor_offshore: { name: "Ventnor Deep-Water Bypass", lat: 50.530, lon: -1.220, isPort: false, links: ["iow_southeast", "st_catherines_offshore"] }, // FIXED: Pushes past Ventnor cliffs safely
+            st_catherines_offshore: { name: "St Catherine's Offshore Point", lat: 50.510, lon: -1.310, isPort: false, links: ["ventnor_offshore", "needles_south_approach", "poole_bay"] }, 
             
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "stokes_bay", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
-            
-            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
+            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "hurst_narrows", "beaulieu"] },
-            needles_fairway: { name: "Needles Safe Water", lat: 50.655, lon: -1.600, isPort: false, links: ["hurst_narrows", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston"] },
             
-            poole_bay: { name: "Poole Bay Transit", lat: 50.680, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "swanage_bay_transit"] },
+            needles_south_approach: { name: "Needles South Highway Node", lat: 50.620, lon: -1.610, isPort: false, links: ["st_catherines_offshore", "needles_fairway", "poole_bay", "durlston"] },
+            needles_fairway: { name: "Needles Fairway Buoy", lat: 50.655, lon: -1.600, isPort: false, links: ["hurst_narrows", "alum_bay", "needles_south_approach"] },
             
-            durlston: { name: "Durlston Ledge Bypass", lat: 50.590, lon: -1.945, isPort: false, links: ["swanage_bay_transit", "st_aldhelms_offshore", "needles_fairway"] },
+            poole_bay: { name: "Poole Bay Transit", lat: 50.640, lon: -1.800, isPort: false, links: ["poole_approach", "needles_south_approach", "swanage_bay_transit", "st_catherines_offshore"] },
+            durlston: { name: "Durlston Ledge Bypass", lat: 50.570, lon: -1.920, isPort: false, links: ["swanage_bay_transit", "st_aldhelms_offshore", "needles_south_approach"] },
             
-            portland_offshore: { name: "Portland Bill Coastal Safety Zone", lat: 50.505, lon: -2.450, isPort: false, links: ["st_aldhelms_offshore", "weymouth_approach", "portland_marina", "berry_head_offshore"] }, 
+            portland_bill_offshore: { name: "Portland Bill Deep Highway", lat: 50.480, lon: -2.450, isPort: false, links: ["st_aldhelms_offshore", "weymouth_approach", "portland_marina", "lyme_bay_mid"] }, 
+            lyme_bay_mid: { name: "Lyme Bay Open-Sea Highway", lat: 50.420, lon: -2.950, isPort: false, links: ["portland_bill_offshore", "berry_head_offshore"] }, // FIXED: Clean crossing directly across Lyme bay
             
-            berry_head_offshore: { name: "Berry Head Coastal Safety Zone", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "start_point_offshore"] },
-            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.560, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
+            berry_head_offshore: { name: "Berry Head Coastal Safety Zone", lat: 50.400, lon: -3.460, isPort: false, links: ["brixham", "lyme_bay_mid", "dartmouth_approach", "start_point_offshore"] }, // FIXED: Prevents Brixham -> Dartmouth land clip
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
             
-            start_point_offshore: { name: "Start Point Safety Offset", lat: 50.215, lon: -3.635, isPort: false, links: ["dartmouth_approach", "berry_head_offshore", "prawle_point_offshore"] }, 
-            prawle_point_offshore: { name: "Prawle Point Safety Offset", lat: 50.205, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.215, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "yealm_approach", "rame_head_transit"] }, 
+            start_point_offshore: { name: "Start Point Offshore Corner", lat: 50.190, lon: -3.610, isPort: false, links: ["dartmouth_approach", "berry_head_offshore", "prawle_point_offshore"] }, 
+            prawle_point_offshore: { name: "Prawle Point Offshore", lat: 50.190, lon: -3.710, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
+            bolt_head_offshore: { name: "Bolt Head Deep Offset", lat: 50.200, lon: -3.800, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "yealm_approach", "rame_head_transit"] }, 
             
-            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.320, lon: -4.140, isPort: false, links: ["yealm_approach", "plymouth", "rame_head_transit"] },
-            
-            rame_head_transit: { name: "Rame Head Coastal Passage", lat: 50.310, lon: -4.220, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey_approach", "dodman_offshore"] },
+            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.280, lon: -4.130, isPort: false, links: ["yealm_approach", "plymouth", "rame_head_transit"] },
+            rame_head_transit: { name: "Rame Head Coastal Passage", lat: 50.290, lon: -4.230, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey_approach", "dodman_offshore"] },
+            dodman_offshore: { name: "Dodman Point Coastal Corner", lat: 50.190, lon: -4.780, isPort: false, links: ["fowey_approach", "falmouth_bay", "rame_head_transit"] },
 
-            dodman_offshore: { name: "Dodman Point Coastal Corner", lat: 50.215, lon: -4.795, isPort: false, links: ["fowey_approach", "falmouth_bay", "rame_head_transit"] },
-
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.125, lon: -5.020, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east"] },
-            manacles_east: { name: "The Manacles East Offset", lat: 50.045, lon: -5.040, isPort: false, links: ["falmouth_bay", "lizard_point"] },
-            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.955, lon: -5.195, isPort: false, links: ["manacles_east", "runnel_stone_transit", "heading_west_bypass"] }, 
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.120, lon: -5.000, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east"] },
+            manacles_east: { name: "The Manacles East Offset", lat: 50.040, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point"] },
+            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.940, lon: -5.195, isPort: false, links: ["manacles_east", "runnel_stone_transit", "heading_west_bypass"] }, 
             
             mounts_bay: { name: "Mounts Bay Passage", lat: 50.020, lon: -5.450, isPort: false, links: ["runnel_stone_transit", "penzance"] },
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
@@ -878,7 +550,7 @@
             'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
         ];
 
-        // Automatic programmatical graph bidirectionality setup
+        // Process bidirectional links
         for (const key in mapNodes) {
             if (!mapNodes[key].links) mapNodes[key].links = [];
             mapNodes[key].links.forEach(neighborId => {
@@ -891,7 +563,7 @@
             });
         }
 
-        // Populate dropdown selectors dynamically
+        // Dropdown Builders
         let depHtml = '';
         let destHtml = '';
         for (const portId in mapNodes) {
@@ -903,55 +575,36 @@
         depSelect.innerHTML = depHtml;
         destSelect.innerHTML = destHtml;
 
-        // --- MAP INITIALIZATION (OpenSeaMap & Leaflet) ---
         function initLeafletMap() {
-            // Setup Leaflet map with custom control placement
-            map = L.map('routingMap', {
-                zoomControl: false, // We use custom dock
-                attributionControl: false
-            }).setView([50.4, -3.5], 8);
-
-            // Add standard Leaflet attribution control to bottom right but compact
+            map = L.map('routingMap', { zoomControl: false, attributionControl: false }).setView([50.4, -3.5], 8);
             L.control.attribution({position: 'bottomright', prefix: false}).addTo(map);
 
-            // 1. Base Map: Standard OpenStreetMap (Green land, blue sea)
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
 
-            // 2. Overlay: OpenSeaMap Seamarks
             L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: 'Seamarks © <a href="http://www.openseamap.org">OpenSeaMap</a>'
             }).addTo(map);
 
-            // Group layers for dynamic clearing
             routeLayer = L.featureGroup().addTo(map);
             staticMarkersLayer = L.featureGroup().addTo(map);
 
-            // Coordinate Readout on Mouse Move
             map.on('mousemove', function(e) {
                 document.getElementById('coordinateReadout').innerHTML = `Cursor: ${e.latlng.lat.toFixed(4)}° N, ${Math.abs(e.latlng.lng).toFixed(4)}° W`;
             });
 
-            // Populate all static port markers
             for (const key in mapNodes) {
                 const node = mapNodes[key];
                 if (node.isPort) {
                     const color = node.isShallowBar ? '#f97316' : '#3b82f6';
                     const marker = L.circleMarker([node.lat, node.lon], {
-                        radius: 5,
-                        fillColor: color,
-                        color: '#ffffff',
-                        weight: 1.5,
-                        opacity: 1,
-                        fillOpacity: 0.8
+                        radius: 5, fillColor: color, color: '#ffffff', weight: 1.5, opacity: 1, fillOpacity: 0.8
                     }).addTo(staticMarkersLayer);
                     
                     marker.bindTooltip(node.name, { className: 'custom-tooltip', direction: 'top', offset: [0, -5] });
-                    
-                    // Click to set destination
                     marker.on('click', () => {
                         if (depSelect.value !== key) {
                             destSelect.value = key;
@@ -961,26 +614,13 @@
                 }
             }
 
-            // Map GPS Locator Handling
             map.on('locationfound', function(e) {
                 if(gpsMarker) map.removeLayer(gpsMarker);
-                gpsMarker = L.circleMarker(e.latlng, {
-                    radius: 8, 
-                    fillColor: '#22d3ee', 
-                    color: '#fff', 
-                    weight: 2, 
-                    fillOpacity: 1
-                }).addTo(map);
+                gpsMarker = L.circleMarker(e.latlng, { radius: 8, fillColor: '#22d3ee', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
                 gpsMarker.bindTooltip("MY POSITION (GPS)", {className: 'custom-tooltip text-cyan-300', permanent: true, direction: 'right'}).openTooltip();
-                document.getElementById('coordinateReadout').innerHTML = `<span class="text-cyan-400 font-bold"><i class="fas fa-compass"></i> My GPS: ` + e.latlng.lat.toFixed(4) + `°N, ` + Math.abs(e.latlng.lng).toFixed(4) + `°W</span>`;
-            });
-
-            map.on('locationerror', function(e) {
-                console.warn("GPS lock timed out or was refused: " + e.message);
             });
         }
 
-        // Custom Leaflet View Controls
         window.zoomInMap = function() { map.zoomIn(); };
         window.zoomOutMap = function() { map.zoomOut(); };
         window.findMyGPSLocation = function() { map.locate({setView: true, maxZoom: 14}); };
@@ -993,7 +633,6 @@
             }
         };
 
-        // --- ROUTING LOGIC ---
         function setRoutePreference(mode) {
             activeRoutePreference = mode;
             ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
@@ -1015,19 +654,13 @@
             } else if (activeRoutePreference === 'solent') {
                 runBypass = false;
             } else {
-                const startIsSolent = solentPorts.includes(startId);
-                const endIsSolent = solentPorts.includes(endId);
-                if (!startIsSolent && !endIsSolent) runBypass = true;
+                if (!solentPorts.includes(startId) && !solentPorts.includes(endId)) runBypass = true;
             }
             
             if (runBypass) {
                 if (nodeId === 'chichester_approach') links = links.filter(l => l !== 'solent_east_forts');
                 if (nodeId === 'solent_east_forts') return [];
                 if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'hurst_narrows');
-                if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
-                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway');
             }
             return links;
         }
@@ -1038,9 +671,7 @@
             const lat1 = coords1.lat * Math.PI / 180;
             const lon2 = coords2.lon * Math.PI / 180;
             const lat2 = coords2.lat * Math.PI / 180;
-            const dlon = lon2 - lon1;
-            const dlat = lat2 - lat1;
-            const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+            const a = Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin((lon2 - lon1) / 2) ** 2;
             return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
@@ -1059,14 +690,12 @@
             while (queue.length > 0) {
                 queue.sort((a, b) => a.dist - b.dist);
                 const current = queue.shift();
-                if (current.dist === Infinity) break;
-                if (current.id === endId) break;
+                if (current.dist === Infinity || current.id === endId) break;
 
                 const neighbors = getNeighbors(current.id, startId, endId);
                 for (const neighborId of neighbors) {
                     if (!mapNodes[neighborId]) continue;
-                    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-                    const alt = distances[current.id] + edgeDist;
+                    const alt = distances[current.id] + getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
 
                     if (alt < distances[neighborId]) {
                         distances[neighborId] = alt;
@@ -1086,7 +715,6 @@
             return { path: path[0] === startId ? path : [], distance: distances[endId] };
         }
 
-        // --- UI & LEAFLET SYNC ---
         function updateLeafletRoute(pathNodesArray) {
             routeLayer.clearLayers();
             currentRoutePath = pathNodesArray;
@@ -1094,45 +722,17 @@
             if (pathNodesArray && pathNodesArray.length > 0) {
                 const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
                 
-                // Draw Active Route Polyline
-                L.polyline(latlngs, {
-                    color: '#10b981',
-                    weight: 3.5,
-                    dashArray: '8, 8',
-                    opacity: 0.9
-                }).addTo(routeLayer);
+                L.polyline(latlngs, { color: '#10b981', weight: 3.5, dashArray: '8, 8', opacity: 0.9 }).addTo(routeLayer);
 
-                // Add Intermediate Waypoints
                 for (let i = 1; i < pathNodesArray.length - 1; i++) {
                     const wp = mapNodes[pathNodesArray[i]];
-                    L.circleMarker([wp.lat, wp.lon], { 
-                        radius: 4, 
-                        fillColor: '#cbd5e1', 
-                        color: '#1e293b', 
-                        weight: 1, 
-                        fillOpacity: 1 
-                    }).addTo(routeLayer);
+                    L.circleMarker([wp.lat, wp.lon], { radius: 4, fillColor: '#cbd5e1', color: '#1e293b', weight: 1, fillOpacity: 1 }).addTo(routeLayer);
                 }
-
-                // Add Start/End Highlighting Markers
-                const startNode = mapNodes[pathNodesArray[0]];
-                const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
 
                 if (pathNodesArray.length > 1) {
-                    L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
-                        .addTo(routeLayer)
-                        .bindTooltip("DEP", {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
-
-                    L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
-                        .addTo(routeLayer)
-                        .bindTooltip("DEST", {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
-                }
-
-                // Smoothly fit bounds
-                if (latlngs.length > 1) {
+                    L.circleMarker([mapNodes[pathNodesArray[0]].lat, mapNodes[pathNodesArray[0]].lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(routeLayer).bindTooltip("DEP", {permanent: true, direction: 'right', className: 'route-label text-blue-400'});
+                    L.circleMarker([mapNodes[pathNodesArray[pathNodesArray.length - 1]].lat, mapNodes[pathNodesArray[pathNodesArray.length - 1]].lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(routeLayer).bindTooltip("DEST", {permanent: true, direction: 'right', className: 'route-label text-emerald-400'});
                     map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
-                } else if (latlngs.length === 1) {
-                    map.flyTo(latlngs[0], 12, { duration: 1.5 });
                 }
             }
         }
@@ -1140,37 +740,22 @@
         function checkDepth(destNode) {
             const requiredDepth = 1.5; 
             const alertBox = document.getElementById('depthAlertBox');
-            const alertTitle = document.getElementById('depthAlertTitle');
-            const alertDesc = document.getElementById('depthAlertDesc');
-            const alertIcon = document.getElementById('depthAlertIcon');
-            const iconBg = document.getElementById('depthAlertIconBg');
-
             alertBox.classList.remove('hidden');
 
             if (destNode.isShallowBar) {
-                const barDepth = destNode.barDepth;
-                if (barDepth < requiredDepth) {
-                    alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-rose-950/20 border-rose-500/40 glow-rose";
-                    iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-500/20";
-                    alertIcon.className = "fas fa-triangle-exclamation text-rose-500";
-                    alertTitle.className = "text-xs font-black uppercase tracking-wider text-rose-400";
-                    alertTitle.innerText = "Shallow Bar Alert!";
-                    alertDesc.innerHTML = "Destination contains a shallow entry bar with charted depth of <span class='text-white font-bold'>" + barDepth + "m</span>. Required depth is <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>. Time entry closely with the rising tide.";
-                } else {
-                    alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-emerald-950/20 border-emerald-500/40 glow-emerald";
-                    iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-emerald-500/20";
-                    alertIcon.className = "fas fa-circle-check text-emerald-500";
-                    alertTitle.className = "text-xs font-black uppercase tracking-wider text-emerald-400";
-                    alertTitle.innerText = "Depth Clearance OK";
-                    alertDesc.innerHTML = "Estimated chart bar depth is <span class='text-white font-bold'>" + barDepth + "m</span>. Required depth is <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>. Stand clear during extreme low waters.";
+                if (destNode.barDepth < requiredDepth) {
+                    alertBox.className = "p-4 rounded-2xl border flex items-start gap-3 fade-in bg-rose-950/20 border-rose-500/40 glow-rose";
+                    document.getElementById('depthAlertIconBg').className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-rose-500/20";
+                    document.getElementById('depthAlertIcon').className = "fas fa-triangle-exclamation text-rose-500 text-xl";
+                    document.getElementById('depthAlertTitle').innerText = "Shallow Bar Alert!";
+                    document.getElementById('depthAlertDesc').innerHTML = `Bar depth ${destNode.barDepth}m drops below required ${requiredDepth}m draft limit. Transit timed closely with HW is required.`;
                 }
             } else {
-                alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-blue-950/20 border-blue-500/40 glow-blue";
-                iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-blue-500/20";
-                alertIcon.className = "fas fa-water text-blue-500";
-                alertTitle.className = "text-xs font-black uppercase tracking-wider text-blue-400";
-                alertTitle.innerText = "Deep Water Port";
-                alertDesc.innerHTML = "No major entry bars on record for this harbor. Deep channels provide safe under-keel clearances for the standard required depth of <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>.";
+                alertBox.className = "p-4 rounded-2xl border flex items-start gap-3 fade-in bg-blue-950/20 border-blue-500/40 glow-blue";
+                document.getElementById('depthAlertIconBg').className = "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-blue-500/20";
+                document.getElementById('depthAlertIcon').className = "fas fa-water text-blue-500 text-xl";
+                document.getElementById('depthAlertTitle').innerText = "Deep Water Port";
+                document.getElementById('depthAlertDesc').innerHTML = "No restricting entrance bars recorded. Under-keel clearance clear.";
             }
         }
 
@@ -1178,13 +763,11 @@
             const tempVal = depSelect.value;
             depSelect.value = destSelect.value;
             destSelect.value = tempVal;
-            localStorage.setItem('coastal_nav_departure', depSelect.value);
-            localStorage.setItem('coastal_nav_destination', destSelect.value);
             update();
         }
 
         function update() {
-            if (!map) return; // Map not initialized yet
+            if (!map) return;
             const depId = depSelect.value;
             const destId = destSelect.value;
             if (!depId || !destId) return;
@@ -1193,26 +776,10 @@
             const destNode = mapNodes[destId];
             
             document.getElementById('distanceOutput').innerText = route.distance.toFixed(1) + " NM";
-            
-            const speed = parseFloat(speedSlider.value); 
-            const timeHours = route.distance / speed;
+            const timeHours = route.distance / parseFloat(speedSlider.value);
             const hrs = Math.floor(timeHours);
             const mins = Math.round((timeHours - hrs) * 60);
-            let timeStr = "";
-            if (hrs > 0) timeStr += hrs + " hr" + (hrs !== 1 ? 's' : '') + " ";
-            timeStr += mins + " min" + (mins !== 1 ? 's' : '');
-            if (route.distance === 0) timeStr = "0 mins";
-            
-            document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + timeStr;
-
-            const badge = document.getElementById('routePreferenceBadge');
-            if (activeRoutePreference === 'offshore') {
-                badge.innerHTML = `<i class="fas fa-sailboat mr-1"></i> Forced Offshore Track Active`;
-            } else if (activeRoutePreference === 'solent') {
-                badge.innerHTML = `<i class="fas fa-water mr-1"></i> Forced Solent Passage Channel`;
-            } else {
-                badge.innerHTML = `<i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing`;
-            }
+            document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + (hrs > 0 ? `${hrs} hrs ` : '') + `${mins} mins`;
 
             updateLeafletRoute(route.path);
             checkDepth(destNode);
@@ -1220,280 +787,59 @@
             document.getElementById('portName').innerText = destNode.name;
             document.getElementById('vhfChannel').innerHTML = `<i class="fas fa-broadcast-tower mr-1.5"></i>` + destNode.vhf;
             document.getElementById('harborCategory').innerText = destNode.category;
+            document.getElementById('marinaInfo').innerHTML = destNode.marina || "Infrastructure contacts log listed inside Navily/eOceanic links.";
+            document.getElementById('hazardInfo').innerHTML = destNode.hazards || "Review general local updates prior to approach.";
 
-            const vhfInfoHTML = `<div class="mb-3 pb-2 border-b border-slate-700/50 flex items-center gap-2 text-sky-400 font-bold text-xs"><i class="fas fa-walkie-talkie text-sm"></i> <span>Primary VHF: <span class="text-white">${destNode.vhf}</span></span></div>`;
-            document.getElementById('marinaInfo').innerHTML = vhfInfoHTML + destNode.marina;
+            document.getElementById('weatherLink').href = `https://www.windy.com/${destNode.lat}/${destNode.lon}`;
+            document.getElementById('tideLink').href = `https://easytide.admiralty.co.uk/?PortID=${destNode.tideId}`;
+            document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">${exactDate}</span> for <span class="text-white">${destNode.name.toUpperCase()}</span>`;
 
-            document.getElementById('hazardInfo').innerHTML = destNode.hazards;
-
-            const fuelChip = document.getElementById('fuelAvailable');
-            if (destNode.fuel && destNode.fuel !== "No Fuel") {
-                fuelChip.className = "text-[9px] font-black uppercase px-2.5 py-1 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/10 shadow-[0_0_10px_rgba(16,185,129,0.15)] flex items-center gap-1";
-                fuelChip.innerHTML = `<i class="fas fa-gas-pump text-emerald-400 animate-pulse"></i> ` + destNode.fuel;
-            } else {
-                fuelChip.className = "text-[9px] font-bold uppercase px-2.5 py-1 rounded-full border border-slate-800 text-slate-500 bg-slate-900/40 flex items-center gap-1 opacity-60";
-                fuelChip.innerHTML = `<i class="fas fa-ban"></i> No Fuel`;
-            }
-
-            document.getElementById('weatherLink').href = "https://www.windy.com/" + destNode.lat + "/" + destNode.lon + "?" + destNode.lat + "," + destNode.lon + ",11";
-            document.getElementById('tideLink').href = "https://easytide.admiralty.co.uk/?PortID=" + destNode.tideId;
-
-            if (destNode.navily) {
-                document.getElementById('navilyLink').href = destNode.navily;
-                document.getElementById('navilyLink').className = "flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(16,185,129,0.3)] text-[10px] text-center active:scale-95";
-                document.getElementById('navilyLink').innerHTML = `
-                    <svg class="w-5.5 h-5.5 drop-shadow-md pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Navily 
-                `;
-            } else {
-                document.getElementById('navilyLink').href = "https://www.navily.com/carte?lat=" + destNode.lat + "&lng=" + destNode.lon + "&z=13";
-                document.getElementById('navilyLink').className = "flex flex-col items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95";
-                document.getElementById('navilyLink').innerHTML = `
-                    <svg class="w-5.5 h-5.5 drop-shadow-md pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Navily Map
-                `;
-            }
-
-            const eoceanicLink = document.getElementById('eoceanicLink');
-            if (eoceanicLink) {
-                eoceanicLink.href = destNode.eoceanic || "https://eoceanic.com/search?q=" + encodeURIComponent(destNode.name);
-            }
-            
-            document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
-
-            // Personalization: Ensuring exact date and port information is always prominent
-            document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">` + exactDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
-
-            // Trigger Live Weather Fetch
             if (destId !== lastWeatherDestId) {
                 fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
                 lastWeatherDestId = destId;
             }
 
-            document.getElementById('aiGuideContainer').classList.add('hidden');
-            document.getElementById('aiGuideContainer').innerHTML = '';
-
             const passageList = document.getElementById('passageStagesList');
             passageList.innerHTML = '';
-            
-            if (route.path.length <= 1) {
-                passageList.innerHTML = `<p class="text-slate-400 text-[11px] font-medium p-2 italic text-center">Departure and destination are the same location.</p>`;
-            } else {
-                for(let i = 0; i < route.path.length - 1; i++) {
-                    const startNode = mapNodes[route.path[i]];
-                    const endNode = mapNodes[route.path[i+1]];
-                    const legDist = getHaversineDistance(startNode, endNode);
-                    
-                    const startName = startNode.name || startNode.id.replace(/_/g, ' ').toUpperCase();
-                    const endName = endNode.name || endNode.id.replace(/_/g, ' ').toUpperCase();
-                    
-                    passageList.innerHTML += `
-                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/50 flex items-center justify-between text-xs shadow-sm">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-slate-800 text-slate-300 font-bold w-6 h-6 flex items-center justify-center rounded-full text-[10px] shadow-inner font-mono">` + (i+1) + `</div>
-                                <span class="font-bold text-slate-100 text-[11px]">
-                                    ` + startName + ` 
-                                    <i class="fas fa-chevron-right text-[10px] text-emerald-500 mx-2"></i> 
-                                    ` + endName + `
-                                </span>
-                            </div>
-                            <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2.5 py-1.5 rounded-lg border border-blue-500/30">` + legDist.toFixed(1) + ` NM</span>
-                        </div>`;
-                }
+            for(let i = 0; i < route.path.length - 1; i++) {
+                const stepD = getHaversineDistance(mapNodes[route.path[i]], mapNodes[route.path[i+1]]);
+                passageList.innerHTML += `
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/50 flex items-center justify-between text-xs shadow-sm">
+                        <span class="font-bold text-slate-100">${mapNodes[route.path[i]].name || route.path[i]} <i class="fas fa-chevron-right text-emerald-500 mx-2"></i> ${mapNodes[route.path[i+1]].name || route.path[i+1]}</span>
+                        <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2 rounded">${stepD.toFixed(1)} NM</span>
+                    </div>`;
             }
         }
 
-        // Live Weather Engine
         async function fetchLocalWeather(lat, lon, destName) {
-            const panel = document.getElementById('inshoreForecastContent');
-            panel.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sky-400"></i><span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>`;
-            
             try {
                 const [weatherRes, marineRes] = await Promise.all([
-                    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code,surface_pressure&hourly=precipitation_probability,precipitation&wind_speed_unit=kn&timezone=auto`),
-                    fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,wave_period,wind_wave_height,swell_wave_height&timezone=auto`)
+                    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=kn&timezone=auto`),
+                    fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,wave_period&timezone=auto`)
                 ]);
+                const wData = await weatherRes.json();
+                const mData = await marineRes.json();
                 
-                const weatherData = await weatherRes.json();
-                const marineData = await marineRes.json();
-
-                const wmoCodes = {
-                    0: { text: "Clear", icon: "fa-sun", color: "text-yellow-400" },
-                    1: { text: "Mostly Clear", icon: "fa-sun", color: "text-yellow-400" },
-                    2: { text: "Partly Cloudy", icon: "fa-cloud-sun", color: "text-slate-300" },
-                    3: { text: "Overcast", icon: "fa-cloud", color: "text-slate-400" },
-                    45: { text: "Fog", icon: "fa-smog", color: "text-slate-400" },
-                    48: { text: "Rime Fog", icon: "fa-smog", color: "text-slate-400" },
-                    51: { text: "Light Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
-                    53: { text: "Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
-                    55: { text: "Dense Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
-                    61: { text: "Light Rain", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
-                    63: { text: "Rain", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
-                    65: { text: "Heavy Rain", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
-                    71: { text: "Light Snow", icon: "fa-snowflake", color: "text-white" },
-                    73: { text: "Snow", icon: "fa-snowflake", color: "text-white" },
-                    75: { text: "Heavy Snow", icon: "fa-snowflake", color: "text-white" },
-                    80: { text: "Rain Showers", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
-                    81: { text: "Heavy Showers", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
-                    82: { text: "Violent Showers", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
-                    95: { text: "Thunderstorm", icon: "fa-bolt", color: "text-yellow-500" }
-                };
-
-                const code = weatherData.current.weather_code;
-                const weatherInfo = wmoCodes[code] || { text: "Variable", icon: "fa-cloud", color: "text-slate-400" };
-                
-                const windKnots = Math.round(weatherData.current.wind_speed_10m);
-                const windDir = weatherData.current.wind_direction_10m;
-                const temp = Math.round(weatherData.current.temperature_2m);
-                const feelsLike = Math.round(weatherData.current.apparent_temperature);
-                const windGusts = Math.round(weatherData.current.wind_gusts_10m);
-                
-                const rawTime = weatherData.current.time;
-                const formattedTime = new Date(rawTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                const currentHourISO = weatherData.current.time; 
-                const hourlyIndex = weatherData.hourly.time.indexOf(currentHourISO);
-                const targetIndex = hourlyIndex !== -1 ? hourlyIndex : 0;
-                
-                const rainProb = weatherData.hourly.precipitation_probability[targetIndex] || 0;
-                const rainAmount = weatherData.hourly.precipitation[targetIndex] || 0;
-
-                const pressure = Math.round(weatherData.current.surface_pressure);
-                const windWave = marineData.current?.wind_wave_height || 0;
-                const swellWave = marineData.current?.swell_wave_height || 0;
-
-                let seaStateText = "Calm";
-                let seaStateColor = "text-sky-400";
-                if (windWave > 0.5 && windWave >= swellWave) {
-                    seaStateText = "Choppy";
-                    seaStateColor = "text-orange-400";
-                } else if (swellWave > 1.0 && swellWave > windWave) {
-                    seaStateText = "Rolling Swell";
-                    seaStateColor = "text-indigo-400";
-                } else if (windWave > 1.5 || swellWave > 2.0) {
-                    seaStateText = "Rough Rough";
-                    seaStateColor = "text-rose-400";
-                }
-
-                let waveHeight = marineData.current?.wave_height;
-                waveHeight = waveHeight !== undefined && waveHeight !== null ? waveHeight.toFixed(1) + "m" : "Calm";
-
-                let wavePeriod = marineData.current?.wave_period;
-                wavePeriod = wavePeriod !== undefined && wavePeriod !== null ? wavePeriod.toFixed(0) + "s" : "--";
-
-                const maxWindCheck = Math.max(windKnots, windGusts);
-                let windColor = "text-emerald-400";
-                if (maxWindCheck > 15) windColor = "text-yellow-400";
-                if (maxWindCheck > 21) windColor = "text-orange-500";
-                if (maxWindCheck > 33) windColor = "text-rose-500";
-
-                let rainColor = "text-slate-400";
-                if (rainProb > 20) rainColor = "text-sky-400";
-                if (rainProb > 60) rainColor = "text-blue-400";
-
-                panel.innerHTML = `
-                    <div class="flex items-center justify-between w-full flex-nowrap overflow-x-auto gap-4 py-1 fade-in">
-                        <div class="flex items-center gap-3 shrink-0 min-w-0">
-                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center shadow-inner border border-slate-700/50 shrink-0">
-                                <i class="fas ${weatherInfo.icon} ${weatherInfo.color} text-xl drop-shadow-md"></i>
-                            </div>
-                            <div class="whitespace-nowrap min-w-0">
-                                <div class="text-[9px] text-sky-400 font-bold uppercase tracking-widest flex items-center gap-1.5 whitespace-nowrap">
-                                    <i class="fas fa-clock text-sky-500/70"></i> As of ${formattedTime} ${destName ? `• ${destName}` : ''}
-                                </div>
-                                <div class="text-xs sm:text-sm text-white font-bold tracking-wide whitespace-nowrap flex items-center gap-2">
-                                    <span>${temp}°C <span class="text-[10px] text-slate-400 font-normal">(Feels ${feelsLike}°)</span>, ${weatherInfo.text}</span>
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-700/50 font-medium text-slate-400" title="Barometric Surface Pressure">
-                                        <i class="fas fa-tachometer-alt text-slate-500 mr-1"></i>${pressure} hPa
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-2 sm:gap-3 text-right shrink-0 flex-nowrap ml-auto">
-                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[60px] sm:min-w-[70px] shrink-0">
-                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Precip</div>
-                                <div class="text-[11px] sm:text-xs font-black ${rainColor} whitespace-nowrap" title="Precipitation depth: ${rainAmount}mm">
-                                    ${rainProb}% <span class="text-[9px] font-bold text-slate-400 ml-0.5">${rainAmount > 0 ? rainAmount.toFixed(1) + 'mm' : '0mm'}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[80px] sm:min-w-[90px] shrink-0">
-                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Wind</div>
-                                <div class="text-[11px] sm:text-xs font-black ${windColor} flex items-center gap-1.5 justify-end whitespace-nowrap" title="Wind from ${windDir}° with gusts up to ${windGusts} kn">
-                                    <span>${windKnots}<span class="text-[9px] font-bold text-slate-400">g</span>${windGusts} kn</span>
-                                    <i class="fas fa-arrow-down" style="transform: rotate(${windDir}deg)"></i>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[75px] sm:min-w-[85px] shrink-0">
-                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Waves</div>
-                                <div class="text-[11px] sm:text-xs font-black text-blue-400 whitespace-nowrap flex flex-col items-end" title="Wave Period: ${wavePeriod} | Wind Wave: ${windWave.toFixed(1)}m, Swell: ${swellWave.toFixed(1)}m">
-                                    <div>${waveHeight} <span class="text-[9px] font-bold text-slate-400 ml-0.5">${wavePeriod}</span></div>
-                                    <span class="text-[7px] uppercase tracking-wider font-extrabold ${seaStateColor} mt-0.5 leading-none">${seaStateText}</span>
-                                </div>
-                            </div>
-                        </div>
+                document.getElementById('inshoreForecastContent').innerHTML = `
+                    <div class="flex items-center justify-between w-full text-xs font-bold px-1 py-0.5">
+                        <span class="text-white"><i class="fas fa-wind text-sky-400 mr-1"></i> Wind: ${Math.round(wData.current.wind_speed_10m)} kn from ${wData.current.wind_direction_10m}°</span>
+                        <span class="text-blue-400"><i class="fas fa-water mr-1"></i> Sea Height: ${(mData.current?.wave_height || 0).toFixed(1)}m (${Math.round(mData.current?.wave_period || 0)}s)</span>
                     </div>`;
-                    
-            } catch (error) {
-                console.error("Error fetching marine weather:", error);
-                panel.innerHTML = `
-                    <div class="text-xs text-rose-400 font-semibold flex items-center gap-1.5 whitespace-nowrap">
-                        <i class="fas fa-exclamation-triangle"></i> Failed to load weather conditions.
-                    </div>`;
+            } catch (e) {
+                document.getElementById('inshoreForecastContent').innerHTML = `<span class="text-rose-400 text-xs">Live weather system feed temporarily offline.</span>`;
             }
         }
 
-        async function fetchAIPortGuide() {
-            const destNode = mapNodes[destSelect.value];
-            if (!destNode) return;
-            const container = document.getElementById('aiGuideContainer');
-            container.classList.remove('hidden');
-            
-            if (destNode.offlineGuide) {
-                container.innerHTML = `<div class="fade-in">` + destNode.offlineGuide + `</div>`;
-                return;
-            }
-
-            container.innerHTML = `<div class="flex items-center gap-2"><i class="fas fa-circle-notch fa-spin text-purple-400"></i> Generating AI local knowledge for ${destNode.name}...</div>`;
-            container.innerHTML = `<div class="text-amber-400">Offline guide unavailable for this port. Please check your internet connection for AI generations.</div>`;
-        }
-
-        // Setup initial state from localStorage or defaults
         window.onload = () => {
             initLeafletMap();
-
-            const savedDep = localStorage.getItem('coastal_nav_departure');
-            const savedDest = localStorage.getItem('coastal_nav_destination');
-            
-            if (savedDep && mapNodes[savedDep]) depSelect.value = savedDep;
-            else depSelect.value = 'plymouth';
-            
-            if (savedDest && mapNodes[savedDest]) destSelect.value = savedDest;
-            else destSelect.value = 'salcombe';
-            
-            // Allow map to render before calculating route offsets
-            setTimeout(() => {
-                update();
-            }, 300);
+            depSelect.value = 'brixham';
+            destSelect.value = 'dartmouth';
+            setTimeout(update, 300);
         };
 
-        depSelect.addEventListener('change', () => {
-            localStorage.setItem('coastal_nav_departure', depSelect.value);
-            update();
-        });
-        
-        destSelect.addEventListener('change', () => {
-            localStorage.setItem('coastal_nav_destination', destSelect.value);
-            update();
-        });
-        
-        speedSlider.addEventListener('input', () => {
-            document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
-            update(); // Retain instant ETA updates without redrawing map unnecessarily
-        });
-        
+        depSelect.addEventListener('change', update);
+        destSelect.addEventListener('change', update);
+        speedSlider.addEventListener('input', update);
     </script>
 </body>
 </html>
