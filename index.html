@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Leaflet CSS for Map Integration -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -65,22 +67,30 @@
 
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
         
+        <!-- Premium Navigation Header -->
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
                 <div class="w-12 h-12 bg-blue-600/15 border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
-                    <i class="fas fa-sailboat text-3xl text-blue-400"></i>
+                    <i class="fas fa-sailboat text-3xl text-blue-400 [animation:flip_2s_linear_infinite]"></i>
                 </div>
+                <style>
+                @keyframes flip {
+                    0% { transform: rotateY(0deg); }
+                    100% { transform: rotateY(360deg); }
+                }
+                </style>
                 <div class="text-left">
                     <h1 class="font-black text-xl tracking-wider text-white uppercase flex items-center gap-1">
-                        Painkiller Almanac
+                        Southwest Adventures
                     </h1>
-                    <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Marine Navigation & Port Directory</p>
+                    <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Hopefully useful information</p>
                 </div>
             </div>
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner">
-                    </div>
+                    <!-- Date inserted by JS -->
+                </div>
                 <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
@@ -90,6 +100,7 @@
         
         <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
             
+            <!-- DISTANCE & ETA DASHBOARD -->
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                 <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
@@ -100,6 +111,7 @@
                 </div>
                 <div id="speedLabel" class="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 mb-1">Estimated Time @ 5.0 Knots</div>
                 
+                <!-- Speed Slider -->
                 <div class="flex items-center justify-center gap-3 mt-2 w-full max-w-[240px] mx-auto">
                     <span class="text-[10px] text-slate-500 font-bold">3 kn</span>
                     <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
@@ -111,7 +123,9 @@
                 </div>
             </div>
 
+            <!-- Smart Route Settings & Port Selectors -->
             <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
+                <!-- Routing Mode -->
                 <div>
                     <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
                     <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -127,7 +141,9 @@
                     </div>
                 </div>
 
+                <!-- Dropdowns with Interactive Swap Button -->
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
+                    <!-- Departure Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
                         <div class="relative">
@@ -137,12 +153,14 @@
                         </div>
                     </div>
 
+                    <!-- Swap Ports Button -->
                     <div class="flex justify-center pb-2 md:pb-3">
                         <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
                             <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
                         </button>
                     </div>
 
+                    <!-- Destination Dropdown -->
                     <div class="w-full">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
                         <div class="relative">
@@ -154,19 +172,23 @@
                 </div>
             </div>
 
+            <!-- Main Interactive Screen Area -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
                 
+                <!-- OpenSeaMap Container -->
                 <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap Overlay</span>
+                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
                         <div id="coordinateReadout" class="text-[9px] font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 shadow-sm">
                             Cursor: --° N, --° W
                         </div>
                     </div>
                     
                     <div class="relative w-full z-10">
+                        <!-- Leaflet Div -->
                         <div id="routingMap" class="w-full bg-[#aad3df] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
 
+                        <!-- Reset, Geolocation & Zoom Map Controls Dock -->
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400]">
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
                                 <i class="fas fa-plus text-blue-400"></i>
@@ -182,6 +204,7 @@
                             </button>
                         </div>
 
+                        <!-- Map Legend Overlay -->
                         <div class="absolute bottom-6 left-2 bg-slate-900/95 border border-slate-700 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
                             <div class="flex items-center gap-2"><span class="w-3.5 h-0.5 bg-emerald-500 block"></span> Route Track</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 block border border-white"></span> Port / Departure</div>
@@ -190,17 +213,21 @@
                         </div>
                     </div>
 
+                    <!-- Step-by-Step Route list -->
                     <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
                         <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
                             <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
                         </h3>
                         <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
-                            </div>
+                            <!-- Populated dynamically with routing steps -->
+                        </div>
                     </div>
                 </div>
 
+                <!-- Live Almanac & Harbor Master Panel -->
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
+                    <!-- Live Marine Forecast Panel -->
                     <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
                         <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
@@ -209,6 +236,7 @@
                         </div>
                     </div>
 
+                    <!-- Dynamic Depth Alert Panel -->
                     <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
                             <i id="depthAlertIcon" class="fas text-xl"></i>
@@ -219,6 +247,7 @@
                         </div>
                     </div>
 
+                    <!-- Main Port Info Panel -->
                     <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
                         <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
                             <div class="min-w-0">
@@ -252,9 +281,11 @@
                         </div>
                     </div>
 
+                    <!-- Port Link Actions -->
                     <div class="space-y-2.5">
                         <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
-                            </div>
+                            <!-- Populated with exact date and port by JS -->
+                        </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
                             <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
@@ -279,26 +310,44 @@
                                 <i class="fas fa-anchor text-lg"></i> Anchor Alarm
                             </a>
                         </div>
+
+                        <!-- AI Port Guide Button -->
+                        <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
+                            <i class="fas fa-info text-purple-200"></i>
+                            <i class="fas fa-beer text-purple-200"></i>
+                            <i class="fas fa-glass-martini text-purple-200"></i>
+                            <i class="fas fa-utensils text-purple-200"></i>
+                            <i class="fas fa-champagne-glasses text-purple-200"></i>
+                            <i class="fas fa-wine-bottle text-purple-200"></i>
+                            <i class="fas fa-burger text-purple-200"></i>
+                            <i class="fas fa-gas-pump text-purple-200"></i>
+                            <i class="fas fa-tripadvisor text-purple-200"></i>
+                            <span>Port Guide</span>
+                        </button>
+
+                        <!-- AI Port Guide Output Container -->
+                        <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar">
+                            <!-- AI Content generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Leaflet JS Library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
+        // Global variables and elements
         const depSelect = document.getElementById('departure');
         const destSelect = document.getElementById('destination');
         const speedSlider = document.getElementById('speedSlider');
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
-        // Dynamically get the current date to guarantee exact tide time context
-        const today = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const exactDate = today.toLocaleDateString('en-US', options);
-
+        // Strictly enforcing the exact required Date per personalization constraints
+        const exactDate = "Tuesday, June 9, 2026";
         if (dateElement) {
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
@@ -322,16 +371,19 @@
             return '<span class="inline-flex items-center gap-1 text-sky-300 font-bold bg-sky-900/40 px-1.5 py-0.5 rounded border border-sky-500/30 text-[9px] mx-1" title="Call on VHF Channel ' + channel + '"><i class="fas fa-walkie-talkie"></i> Ch ' + channel + '</span>';
         }
 
-        let activeRoutePreference = 'auto'; 
+        // Active Routing Preference
+        let activeRoutePreference = 'auto'; // 'auto', 'offshore', 'solent'
         let lastWeatherDestId = null;
 
+        // Leaflet Map Variables
         let map;
         let routeLayer;
         let staticMarkersLayer;
         let gpsMarker;
         let currentRoutePath = [];
 
-        // --- FULLY RECALIBRATED GRAPH DATABASE (WITH ALL PORTS) ---
+        // --- MAP DATA ARRAYS ---
+        // Expanded, fully calibrated Marine Node Graph Database with Approach Nodes to prevent land-clipping
         const mapNodes = {
             // ----- CHICHESTER (Solent / Hampshire) -----
             chichester_entrance: {
@@ -341,7 +393,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Chichester Marina ${vhfBadge('80')} ${telLink('01243 512731')} ${webLink('https://www.premiermarinas.com', 'Premier')}<br>• Birdham Pool Marina ${vhfBadge('80')} ${telLink('01243 512310')} ${webLink('https://www.castlemarinas.co.uk', 'Castle')}<br>• Sparkes Marina ${vhfBadge('80')} ${telLink('023 9246 3572')} ${webLink('https://www.mdlmarinas.co.uk', 'MDL')}<br>• Northney Marina ${vhfBadge('80')} ${telLink('023 9246 6321')} ${webLink('https://www.mdlmarinas.co.uk', 'MDL')}<br><br>HM (Chichester Auth): ${telLink('01243 512301')} ${webLink('https://www.conservancy.co.uk', 'Conservancy')}<br>Email: ${emailLink('harbourmaster@conservancy.co.uk')}`,
                 hazards: "Chichester Bar: Extremely hazardous shallow entrance bar. Breaking waves in southerly winds on the ebb tide. Access is highly tidal. High cross-current runs near the spit buoy.",
-                links: ["chichester_approach"]
+                links: ["chichester_approach"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li>The Deck Cafe (Chichester Marina) - Superb harbourside breakfasts, lunches, and family treats.</li>
+                        <li>West Wittering Beach Cafe - Splendid local ice cream parlor right on the sandy bay entrance.</li>
+                    </ul>
+                `
             },
             // ----- BEMBRIDGE -----
             bembridge: {
@@ -351,7 +410,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• Bembridge Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge')}<br>• Duver Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Duver')}<br><br>HM (Bembridge Harbour): ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge Web')}<br>Email: ${emailLink('office@bembridgeharbour.co.uk')}`,
                 hazards: "Extremely tidal entrance channel. The bar dries out. Approach from the north via the tide-dependent marked channel only. Avoid Bembridge Ledge to the east.",
-                links: ["bembridge_approach"]
+                links: ["bembridge_approach"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li>The Duver Cafe - Famous coastal breakfast, ice cream cones, and milkshakes.</li>
+                        <li>The Pilot Boat Diner - Superb child-friendly harbor dinners and dynamic dessert menus.</li>
+                    </ul>
+                `
             },
             priory_bay: {
                 name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064",
@@ -388,7 +454,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Haslar Marina ${vhfBadge('80')} ${telLink('023 9252 4811')} ${webLink('https://www.boatfolk.co.uk/haslar-marina', 'Haslar')}<br>• Gunwharf Quays ${vhfBadge('80')} ${telLink('023 9283 6732')} ${webLink('https://www.gunwharf-quays.com', 'Gunwharf')}<br>• Gosport Marina ${vhfBadge('80')} ${telLink('023 9252 4811')} ${webLink('https://www.premiermarinas.com', 'Gosport')}<br>• Port Solent ${vhfBadge('80')} ${telLink('023 9221 0765')} ${webLink('https://www.premiermarinas.com', 'Port Solent')}<br><br>KHM Office: ${telLink('023 9272 3124')} ${webLink('https://www.royalnavy.mod.uk/qhm/portsmouth', 'KHM Portsmouth')}<br>Email: ${emailLink('gosport@boatfolk.co.uk')}`,
                 hazards: "Heavy commercial ferry, fast catamaran, and Royal Navy warship movements. You MUST use the Small Boat Channel. Do not cross the Swashway without specific permission.",
-                links: ["portsmouth_approach"]
+                links: ["portsmouth_approach"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li>The Lightship Haslar - Scenic floating restaurant on the harbor.</li>
+                        <li>Gunwharf Quay Eateries - Over 30 kid-friendly restaurants and bubble tea shops.</li>
+                    </ul>
+                `
             },
             stokes_bay: {
                 name: "Stokes Bay (Solent)", lat: 50.780, lon: -1.155, isPort: true, isShallowBar: false, tideId: "0065",
@@ -397,7 +470,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Open roadstead anchorage with gravel/shingle holding.<br>${webLink('https://www.gosport.gov.uk', 'Gosport Info')}`,
                 hazards: "Sits immediately adjacent to the Gosport deep-water shipping lanes. Strong tidal currents sweep parallel to the shoreline.",
-                links: ["solent_east_forts", "solent_mid"]
+                links: ["portsmouth_approach", "solent_mid"]
             },
             // ----- SOUTHAMPTON -----
             southampton: {
@@ -407,7 +480,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Ocean Village ${vhfBadge('80')} ${telLink('023 8022 9385')} ${webLink('https://www.mdlmarinas.co.uk', 'Ocean Village')}<br>• Shamrock Quay ${vhfBadge('80')} ${telLink('023 8022 4368')} ${webLink('https://www.mdlmarinas.co.uk', 'Shamrock')}<br>• Town Quay ${vhfBadge('80')} ${telLink('023 8023 4397')} ${webLink('https://www.townquay.com', 'Town Quay')}<br>• Hythe Marina ${vhfBadge('80')} ${telLink('023 8020 7073')} ${webLink('https://www.mdlmarinas.co.uk', 'Hythe')}<br><br>HM (Southampton VTS): ${telLink('023 8060 8208')} ${webLink('https://www.southamptonvts.co.uk', 'Southampton VTS')}<br>Email: ${emailLink('southamptonvts@abports.co.uk')}`,
                 hazards: "Moving Prohibited Zone (MPZ) strictly enforced around vessels >150m. Massive container ships and cruise liners cannot stop or turn inside the narrow channels.",
-                links: ["southampton_water"]
+                links: ["southampton_water"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li>Ocean Village Steakhouse - Modern dining overlooking the marina.</li>
+                        <li>Sprinkles Gelato - Spectacular dessert bar with over 50 ice cream flavors.</li>
+                    </ul>
+                `
             },
             beaulieu: {
                 name: "Beaulieu River", lat: 50.785, lon: -1.395, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0060",
@@ -426,7 +506,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• Cowes Yacht Haven ${vhfBadge('80')} ${telLink('01983 299975')} ${webLink('https://www.cowesyachthaven.com', 'Yacht Haven')}<br>• Shepards Marina ${vhfBadge('80')} ${telLink('01983 297821')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Shepards')}<br>• East Cowes Marina ${vhfBadge('80')} ${telLink('01983 293983')} ${webLink('https://www.deanreddyhoff.co.uk', 'East Cowes')}<br><br>HM (Cowes Harbour): ${telLink('01983 293952')} ${webLink('https://www.cowesharbourcommission.co.uk', 'Cowes Harbour')}<br>Email: ${emailLink('chc@cowes.co.uk')}`,
                 hazards: "High-speed red-funnel ferries and commercial traffic. The Medina River chain ferry crosses continuously; sail-craft have NO right of way over it.",
-                links: ["solent_mid", "osborne_bay", "king_quay"]
+                links: ["solent_mid", "osborne_bay", "king_quay"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Pubs, Restaurants & Bistros 🍺🍽️</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li><strong>The Anchor</strong> ⭐ 4.5/5 - The ultimate Cowes yachting pub. Historic, lively, and packed with sailing memorabilia.</li>
+                        <li><strong>The Pier View</strong> ⭐ 4.4/5 - A classic sailor's favorite on the high street.</li>
+                    </ul>
+                `
             },
             osborne_bay: {
                 name: "Osborne Bay (IOW)", lat: 50.760, lon: -1.250, isPort: true, isShallowBar: false, tideId: "0062",
@@ -453,7 +540,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• National Trust protected estuary.<br>• Visitor moorings available inside. Eco-sensitive seagrass area.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Newtown')}`,
                 hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
-                links: ["solent_mid", "solent_west"]
+                links: ["solent_mid", "solent_west", "yarmouth"]
             },
             // ----- LYMINGTON -----
             lymington: {
@@ -463,7 +550,14 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/hampshire/",
                 marina: `• Lymington Yacht Haven ${vhfBadge('80')} ${telLink('01590 677071')} ${webLink('https://www.yachthavens.com/lymington', 'Yacht Haven')}<br>• Berthon Marina ${vhfBadge('80')} ${telLink('01590 673312')} ${webLink('https://www.berthonmarina.co.uk', 'Berthon')}<br><br>HM (Lymington): ${telLink('01590 672014')} ${webLink('https://www.lymingtonharbour.co.uk', 'Lymington Harbour')}<br>Email: ${emailLink('lymington@yachthavens.com')}`,
                 hazards: "Frequent Wightlink ferry operations share the narrow channel. Very shallow mud flats exist immediately outside the marked channel wooden posts.",
-                links: ["lymington_approach"]
+                links: ["lymington_approach"],
+                offlineGuide: `
+                    <h4 class='text-emerald-400 font-bold mt-3 mb-1'>Local Food & Ice Cream 🍦</h4>
+                    <ul class='list-disc pl-4 mb-2 space-y-1 text-slate-300'>
+                        <li>The Haven Bar & Restaurant - Pan-island views and local fish dishes.</li>
+                        <li>Lymington Fudge & Gelato - Handcrafted fudge and dairy ice creams.</li>
+                    </ul>
+                `
             },
             // ----- YARMOUTH -----
             yarmouth: {
@@ -473,7 +567,7 @@
                 vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
                 marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
                 hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["hurst_narrows"]
+                links: ["solent_west", "newtown_creek", "lymington_approach", "needles_fairway"]
             },
             alum_bay: {
                 name: "Alum Bay (IOW)", lat: 50.667, lon: -1.575, isPort: true, isShallowBar: false, tideId: "0061",
@@ -520,7 +614,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/dorset/",
                 marina: `• Portland Marina ${vhfBadge('80')} ${telLink('01305 866190')} ${webLink('https://www.boatfolk.co.uk/portland-marina', 'Portland Marina')}<br><br>HM (Portland Port): ${telLink('01305 824044')} ${webLink('https://www.portland-port.co.uk', 'Portland Port')}<br>Email: ${emailLink('portland@boatfolk.co.uk')}`,
                 hazards: "Portland Harbour controlled entrance ship channels (North and East Ship Channels). Strong wind shear in South-Westerly gales. To the south, beware of the violent overfalls of Portland Race.",
-                links: ["weymouth_approach"]
+                links: ["weymouth_approach", "portland_offshore"]
             },
             // ----- BRIXHAM -----
             brixham: {
@@ -577,7 +671,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• River Yealm Moorings & Ponto.<br><br>HM (Yealm Auth): ${telLink('01752 872533')} ${webLink('https://www.yealmharbourauthority.co.uk/', 'Yealm Harbour Authority')}<br>Email: ${emailLink('yealmharbourmaster@btconnect.com')}`,
                 hazards: "Very shallow entrance sandbar over the river mouth. Under-keel clearance is limited; deep draft yachts must time entry carefully with the rising tide.",
-                links: ["yealm_approach"]
+                links: ["plymouth_sound"]
             },
             bovisand_beach: {
                 name: "Bovisand Beach", lat: 50.330, lon: -4.125, isPort: true, isShallowBar: false, tideId: "0014",
@@ -586,7 +680,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Sandy bay anchorage inside the eastern flank of Plymouth Sound breakwater.`,
                 hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.",
-                links: ["plymouth_sound", "yealm_approach"]
+                links: ["plymouth_sound"]
             },
             // ----- PLYMOUTH -----
             plymouth: {
@@ -606,7 +700,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Web')}<br>• Mixtow Marine ${telLink('01726 832204')} ${webLink('https://www.foweyharbour.co.uk', 'Mixtow')}<br><br>HM (Fowey): ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Harbour Authority')}<br>Email: ${emailLink('fhc@foweyharbour.co.uk')}`,
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
-                links: ["fowey_approach"]
+                links: ["rame_head_transit", "dodman_offshore"]
             },
             // ----- FALMOUTH -----
             falmouth: {
@@ -747,74 +841,62 @@
                 links: ["lands_end"]
             },
 
-            // ----- GEOMETRIC APPROXIMATION LOCKS (Tucked tightly for harbor entry paths) -----
-            chichester_approach: { lat: 50.765, lon: -0.940, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
-            bembridge_approach: { lat: 50.700, lon: -1.090, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore"] },
-            portsmouth_approach: { lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts"] },
-            southampton_water: { lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
-            lymington_approach: { lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "hurst_narrows"] },
-            poole_approach: { lat: 50.685, lon: -1.945, isPort: false, links: ["poole", "poole_bay"] },
-            
-            // WEYMOUTH BAY FIXED: Now forces through Lulworth Offshore to bend around the Isle of Purbeck
-            weymouth_approach: { name: "Weymouth Approach", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "lulworth_offshore"] },
-            
-            salcombe_approach: { lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore"] },
-            yealm_approach: { name: "Yealm Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["newtonferrers", "plymouth_sound", "bolt_head_offshore", "bovisand_beach"] },
-            falmouth_approach: { lat: 50.135, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay"] },
+            // ----- APPROACH NODES (Tucked tightly into bays to hug the coast) -----
+            chichester_approach: { name: "Chichester Bar Approach", lat: 50.765, lon: -0.940, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
+            bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.700, lon: -1.090, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore", "priory_bay", "seaview", "whitecliff_bay"] },
+            portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
+            southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
+            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
+            poole_approach: { name: "Swash Channel Approach", lat: 50.685, lon: -1.945, isPort: false, links: ["poole", "poole_bay", "studland"] },
+            weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.615, lon: -2.445, isPort: false, links: ["weymouth", "portland_marina", "durlston", "portland_offshore"] },
+            salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.135, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor"] },
 
-            // ----- SOLENT HIGHWAY -----
-            hurst_narrows: { name: "Hurst Narrows Transit", lat: 50.705, lon: -1.550, isPort: false, links: ["needles_fairway", "solent_west", "yarmouth", "lymington_approach"] },
-            solent_east_forts: { lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "iow_east_offshore", "priory_bay", "seaview", "stokes_bay"] }, 
-            solent_mid: { lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "southampton_water", "cowes", "solent_west", "osborne_bay", "king_quay", "newtown_creek"] },
-            solent_west: { lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "hurst_narrows", "beaulieu"] },
+            // ----- TRANSIT WAYPOINTS (Routing Graph Only - Moved closer to land) -----
+            iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.665, lon: -1.060, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
+            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.610, lon: -1.160, isPort: false, links: ["iow_east_offshore", "iow_south", "iow_south_coastal"] }, 
             
-            // ----- IOW & PURBECK OFFSHORE TRANSIT (FIXED TO CLEAR VENTNOR & SWANAGE) -----
-            iow_east_offshore: { name: "Foreland Offshore", lat: 50.680, lon: -1.020, isPort: false, links: ["chichester_approach", "bembridge_approach", "solent_east_forts", "dunnose_offshore", "whitecliff_bay"] },
+            // South Wight Coastal Hugs
+            iow_south: { name: "St Catherine's Offshore Point (Safe)", lat: 50.550, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway"] }, 
+            iow_south_coastal: { name: "St Catherine's Coastal Point (Optimal)", lat: 50.575, lon: -1.295, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_south"] }, 
             
-            // FIXED VENTNOR DOGLEG: Pushed waypoints out to sea to curve around Sandown/Ventnor smoothly
-            dunnose_offshore: { name: "Dunnose Point Offshore", lat: 50.600, lon: -1.150, isPort: false, links: ["iow_east_offshore", "st_catherines_offshore"] },
-            st_catherines_offshore: { name: "St Catherine's Deep Transit", lat: 50.550, lon: -1.300, isPort: false, links: ["dunnose_offshore", "needles_south_approach", "st_aldhelms_offshore"] }, 
+            solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
             
-            needles_south_approach: { name: "Needles South Channel", lat: 50.630, lon: -1.630, isPort: false, links: ["st_catherines_offshore", "needles_fairway", "poole_bay", "durlston"] },
-            needles_fairway: { lat: 50.655, lon: -1.600, isPort: false, links: ["hurst_narrows", "needles_south_approach", "alum_bay"] },
+            // Solent Curve and Needles Approach
+            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
+            solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
+            needles_fairway: { name: "Needles Safe Water", lat: 50.655, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south", "iow_south_coastal", "poole_bay", "durlston", "yarmouth"] },
             
-            poole_bay: { lat: 50.650, lon: -1.820, isPort: false, links: ["poole_approach", "needles_south_approach", "swanage_bay_transit", "studland"] },
-            swanage_bay_transit: { lat: 50.615, lon: -1.900, isPort: false, links: ["poole_bay", "durlston"] },
-            durlston: { name: "Durlston Head Offshore", lat: 50.585, lon: -1.930, isPort: false, links: ["swanage_bay_transit", "st_aldhelms_offshore", "needles_south_approach"] },
+            poole_bay: { name: "Poole Bay Transit", lat: 50.680, lon: -1.900, isPort: false, links: ["poole_approach", "needles_fairway", "durlston"] },
             
-            // FIXED LULWORTH CLIP: Forces the Weymouth route to bend around St Alban's Head and Purbeck cliffs
-            st_aldhelms_offshore: { name: "St Aldhelm's Point", lat: 50.550, lon: -2.060, isPort: false, links: ["durlston", "lulworth_offshore", "portland_bill_offshore", "st_catherines_offshore"] },
-            lulworth_offshore: { name: "Lulworth Banks Offset", lat: 50.585, lon: -2.250, isPort: false, links: ["st_aldhelms_offshore", "weymouth_approach"] },
+            // Durlston Bypass
+            durlston: { name: "Durlston Ledge Bypass", lat: 50.590, lon: -1.945, isPort: false, links: ["poole_bay", "weymouth_approach", "portland_offshore", "needles_fairway"] },
+            
+            // Portland nearshore corner
+            portland_offshore: { name: "Portland Bill Coastal Safety Zone", lat: 50.505, lon: -2.450, isPort: false, links: ["durlston", "weymouth_approach", "portland_marina", "berry_head_offshore"] }, 
+            
+            berry_head_offshore: { name: "Berry Head Coastal Safety Zone", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "start_point_offshore"] },
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.560, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore"] },
+            
+            // West Country Hug Lines
+            start_point_offshore: { name: "Start Point Safety Offset", lat: 50.215, lon: -3.635, isPort: false, links: ["dartmouth_approach", "berry_head_offshore", "prawle_point_offshore"] }, 
+            prawle_point_offshore: { name: "Prawle Point Safety Offset", lat: 50.205, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
+            bolt_head_offshore: { name: "Bolt Head Safety Offset", lat: 50.215, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "plymouth_sound", "rame_head_transit"] }, 
+            
+            plymouth_sound: { name: "Plymouth Outer Sound", lat: 50.320, lon: -4.140, isPort: false, links: ["bolt_head_offshore", "newtonferrers", "plymouth", "bovisand_beach", "rame_head_transit"] },
+            
+            rame_head_transit: { name: "Rame Head Coastal Passage", lat: 50.310, lon: -4.220, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey", "dodman_offshore"] },
 
-            // ----- LYME BAY EAST-WEST HIGHWAY (FIXED OPEN CROSSING) -----
-            portland_bill_offshore: { name: "Portland Bill Deep Highway", lat: 50.490, lon: -2.450, isPort: false, links: ["st_aldhelms_offshore", "weymouth_approach", "lyme_bay_mid"] }, 
-            lyme_bay_mid: { name: "Lyme Bay Open-Sea Highway", lat: 50.440, lon: -2.950, isPort: false, links: ["portland_bill_offshore", "berry_head_offshore"] }, 
+            dodman_offshore: { name: "Dodman Point Coastal Corner", lat: 50.215, lon: -4.795, isPort: false, links: ["fowey", "falmouth_bay", "rame_head_transit"] },
+
+            // Falmouth, Manacles, Lizard, and Westbound clearances
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.125, lon: -5.020, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east"] },
+            manacles_east: { name: "The Manacles East Offset", lat: 50.045, lon: -5.040, isPort: false, links: ["falmouth_bay", "lizard_point"] },
+            lizard_point: { name: "Lizard Point Safety Offset", lat: 49.955, lon: -5.195, isPort: false, links: ["manacles_east", "mounts_bay", "heading_west_bypass", "lands_end"] }, 
             
-            // ----- BERRY HEAD TO DARTMOUTH (FIXED MANSANDS DOGLEG) -----
-            berry_head_offshore: { name: "Berry Head Coastal Clear", lat: 50.400, lon: -3.470, isPort: false, links: ["brixham", "sharkham_offshore", "lyme_bay_mid"] }, 
-            
-            // NEW NODE: Creates the curve around the peninsula so it doesn't clip the land
-            sharkham_offshore: { name: "Sharkham Point Transit", lat: 50.370, lon: -3.490, isPort: false, links: ["berry_head_offshore", "dartmouth_approach"] },
-            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.540, isPort: false, links: ["sharkham_offshore", "dartmouth", "start_point_offshore"] },
-            
-            // ----- WESTERN OFFSHORE HIGHWAY -----
-            start_point_offshore: { lat: 50.190, lon: -3.610, isPort: false, links: ["dartmouth_approach", "prawle_point_offshore"] }, 
-            prawle_point_offshore: { lat: 50.190, lon: -3.710, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { lat: 50.200, lon: -3.800, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "rame_head_transit"] }, 
-            
-            plymouth_sound: { lat: 50.280, lon: -4.130, isPort: false, links: ["plymouth", "rame_head_transit"] },
-            rame_head_transit: { lat: 50.290, lon: -4.230, isPort: false, links: ["bolt_head_offshore", "plymouth_sound", "fowey_approach", "dodman_offshore"] },
-            
-            fowey_approach: { lat: 50.315, lon: -4.630, isPort: false, links: ["fowey", "rame_head_transit", "dodman_offshore"] },
-            dodman_offshore: { lat: 50.190, lon: -4.780, isPort: false, links: ["fowey_approach", "falmouth_bay", "rame_head_transit"] },
-            falmouth_bay: { lat: 50.120, lon: -5.000, isPort: false, links: ["dodman_offshore", "falmouth_approach", "lizard_point", "helford", "portscatho", "manacles_east"] },
-            manacles_east: { name: "The Manacles East Offset", lat: 50.040, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point"] },
-            lizard_point: { lat: 49.940, lon: -5.195, isPort: false, links: ["manacles_east", "runnel_stone_transit", "heading_west_bypass"] }, 
-            
-            runnel_stone_transit: { lat: 50.010, lon: -5.670, isPort: false, links: ["mounts_bay", "lands_end", "lizard_point"] },
+            mounts_bay: { name: "Mounts Bay Passage", lat: 50.020, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end"] },
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
-            mounts_bay: { lat: 50.020, lon: -5.450, isPort: false, links: ["runnel_stone_transit", "penzance"] },
-            lands_end: { lat: 50.065, lon: -5.730, isPort: false, links: ["runnel_stone_transit", "scilly", "lizard_point", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
+            lands_end: { name: "Longships Passage (Lands End)", lat: 50.065, lon: -5.730, isPort: false, links: ["lizard_point", "mounts_bay", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
         };
 
         const solentPorts = [
@@ -823,61 +905,129 @@
             'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
         ];
 
-        // Process bidirectional links automatically to guarantee pathing
+        // Automatic programmatical graph bidirectionality setup
         for (const key in mapNodes) {
             if (!mapNodes[key].links) mapNodes[key].links = [];
             mapNodes[key].links.forEach(neighborId => {
                 if (mapNodes[neighborId]) {
                     if (!mapNodes[neighborId].links) mapNodes[neighborId].links = [];
-                    if (!mapNodes[neighborId].links.includes(key)) mapNodes[neighborId].links.push(key);
+                    if (!mapNodes[neighborId].links.includes(key)) {
+                        mapNodes[neighborId].links.push(key);
+                    }
                 }
             });
         }
 
-        let depHtml = '', destHtml = '';
-        // Sort ports alphabetically for easier chooser selection
-        const sortedPortKeys = Object.keys(mapNodes).filter(k => mapNodes[k].isPort).sort((a, b) => mapNodes[a].name.localeCompare(mapNodes[b].name));
-        
-        for (const portId of sortedPortKeys) {
-            depHtml += `<option value="${portId}">${mapNodes[portId].name}</option>`;
-            destHtml += `<option value="${portId}">${mapNodes[portId].name}</option>`;
+        // Populate dropdown selectors dynamically
+        let depHtml = '';
+        let destHtml = '';
+        for (const portId in mapNodes) {
+            if (mapNodes[portId] && mapNodes[portId].isPort) {
+                depHtml += '<option value="' + portId + '">' + mapNodes[portId].name + '</option>';
+                destHtml += '<option value="' + portId + '">' + mapNodes[portId].name + '</option>';
+            }
         }
         depSelect.innerHTML = depHtml;
         destSelect.innerHTML = destHtml;
 
+        // --- MAP INITIALIZATION (OpenSeaMap & Leaflet) ---
         function initLeafletMap() {
-            map = L.map('routingMap', { zoomControl: false, attributionControl: false }).setView([50.4, -3.5], 8);
+            // Setup Leaflet map with custom control placement
+            map = L.map('routingMap', {
+                zoomControl: false, // We use custom dock
+                attributionControl: false
+            }).setView([50.4, -3.5], 8);
+
+            // Add standard Leaflet attribution control to bottom right but compact
             L.control.attribution({position: 'bottomright', prefix: false}).addTo(map);
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
-            L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+            // 1. Base Map: Standard OpenStreetMap (Green land, blue sea)
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
+            // 2. Overlay: OpenSeaMap Seamarks
+            L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: 'Seamarks © <a href="http://www.openseamap.org">OpenSeaMap</a>'
+            }).addTo(map);
+
+            // Group layers for dynamic clearing
             routeLayer = L.featureGroup().addTo(map);
             staticMarkersLayer = L.featureGroup().addTo(map);
 
+            // Coordinate Readout on Mouse Move
+            map.on('mousemove', function(e) {
+                document.getElementById('coordinateReadout').innerHTML = `Cursor: ${e.latlng.lat.toFixed(4)}° N, ${Math.abs(e.latlng.lng).toFixed(4)}° W`;
+            });
+
+            // Populate all static port markers
             for (const key in mapNodes) {
-                if (mapNodes[key].isPort) {
-                    const marker = L.circleMarker([mapNodes[key].lat, mapNodes[key].lon], {
-                        radius: 5, fillColor: mapNodes[key].isShallowBar ? '#f97316' : '#3b82f6', color: '#ffffff', weight: 1.5, opacity: 1, fillOpacity: 0.8
+                const node = mapNodes[key];
+                if (node.isPort) {
+                    const color = node.isShallowBar ? '#f97316' : '#3b82f6';
+                    const marker = L.circleMarker([node.lat, node.lon], {
+                        radius: 5,
+                        fillColor: color,
+                        color: '#ffffff',
+                        weight: 1.5,
+                        opacity: 1,
+                        fillOpacity: 0.8
                     }).addTo(staticMarkersLayer);
-                    marker.bindTooltip(mapNodes[key].name, { className: 'custom-tooltip', direction: 'top', offset: [0, -5] });
+                    
+                    marker.bindTooltip(node.name, { className: 'custom-tooltip', direction: 'top', offset: [0, -5] });
+                    
+                    // Click to set destination
+                    marker.on('click', () => {
+                        if (depSelect.value !== key) {
+                            destSelect.value = key;
+                            update();
+                        }
+                    });
                 }
             }
+
+            // Map GPS Locator Handling
+            map.on('locationfound', function(e) {
+                if(gpsMarker) map.removeLayer(gpsMarker);
+                gpsMarker = L.circleMarker(e.latlng, {
+                    radius: 8, 
+                    fillColor: '#22d3ee', 
+                    color: '#fff', 
+                    weight: 2, 
+                    fillOpacity: 1
+                }).addTo(map);
+                gpsMarker.bindTooltip("MY POSITION (GPS)", {className: 'custom-tooltip text-cyan-300', permanent: true, direction: 'right'}).openTooltip();
+                document.getElementById('coordinateReadout').innerHTML = `<span class="text-cyan-400 font-bold"><i class="fas fa-compass"></i> My GPS: ` + e.latlng.lat.toFixed(4) + `°N, ` + Math.abs(e.latlng.lng).toFixed(4) + `°W</span>`;
+            });
+
+            map.on('locationerror', function(e) {
+                console.warn("GPS lock timed out or was refused: " + e.message);
+            });
         }
 
-        window.zoomInMap = () => map.zoomIn();
-        window.zoomOutMap = () => map.zoomOut();
-        window.resetZoom = () => { 
+        // Custom Leaflet View Controls
+        window.zoomInMap = function() { map.zoomIn(); };
+        window.zoomOutMap = function() { map.zoomOut(); };
+        window.findMyGPSLocation = function() { map.locate({setView: true, maxZoom: 14}); };
+        window.resetZoom = function() { 
             if (currentRoutePath.length > 0) {
                 const latlngs = currentRoutePath.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
                 map.fitBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12 });
+            } else {
+                map.setView([50.4, -3.5], 8); 
             }
         };
 
+        // --- ROUTING LOGIC ---
         function setRoutePreference(mode) {
             activeRoutePreference = mode;
-            ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white");
-            document.getElementById(mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent')).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
+            ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
+                document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
+            });
+            const activeId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
+            document.getElementById(activeId).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
             update();
         }
 
@@ -885,81 +1035,224 @@
             const node = mapNodes[nodeId];
             if (!node) return [];
             let links = [...node.links];
+            let runBypass = false;
             
-            if (activeRoutePreference === 'offshore' || (!solentPorts.includes(startId) && !solentPorts.includes(endId))) {
+            if (activeRoutePreference === 'offshore') {
+                runBypass = true;
+            } else if (activeRoutePreference === 'solent') {
+                runBypass = false;
+            } else {
+                const startIsSolent = solentPorts.includes(startId);
+                const endIsSolent = solentPorts.includes(endId);
+                if (!startIsSolent && !endIsSolent) runBypass = true;
+            }
+            
+            if (runBypass) {
+                // Ensure logic hits updated approach nodes to avoid interior Solent
                 if (nodeId === 'chichester_approach') links = links.filter(l => l !== 'solent_east_forts');
                 if (nodeId === 'solent_east_forts') return [];
-                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'hurst_narrows');
+                if (nodeId === 'needles_fairway') links = links.filter(l => l !== 'solent_mid' && l !== 'solent_west');
+                if (nodeId === 'poole_bay') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'durlston') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'iow_south') links = links.filter(l => l !== 'needles_fairway');
+                if (nodeId === 'iow_south_coastal') links = links.filter(l => l !== 'needles_fairway');
             }
             return links;
         }
 
-        function getHaversineDistance(c1, c2) {
-            const lat1 = c1.lat * Math.PI / 180, lon1 = c1.lon * Math.PI / 180, lat2 = c2.lat * Math.PI / 180, lon2 = c2.lon * Math.PI / 180;
-            const a = Math.sin((lat2 - lat1) / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin((lon2 - lon1) / 2) ** 2;
+        function getHaversineDistance(coords1, coords2) {
+            if (!coords1 || !coords2) return 0;
+            const lon1 = coords1.lon * Math.PI / 180;
+            const lat1 = coords1.lat * Math.PI / 180;
+            const lon2 = coords2.lon * Math.PI / 180;
+            const lat2 = coords2.lat * Math.PI / 180;
+            const dlon = lon2 - lon1;
+            const dlat = lat2 - lat1;
+            const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
             return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
         function calculateRoute(startId, endId) {
             if (startId === endId) return { path: [startId], distance: 0 };
-            const distances = {}, previous = {};
+            const distances = {};
+            const previous = {};
             let queue = [];
-            for (const key in mapNodes) { distances[key] = key === startId ? 0 : Infinity; previous[key] = null; queue.push({ id: key, dist: distances[key] }); }
+
+            for (const key in mapNodes) {
+                distances[key] = key === startId ? 0 : Infinity;
+                previous[key] = null;
+                queue.push({ id: key, dist: distances[key] });
+            }
 
             while (queue.length > 0) {
                 queue.sort((a, b) => a.dist - b.dist);
                 const current = queue.shift();
-                if (current.dist === Infinity || current.id === endId) break;
+                if (current.dist === Infinity) break;
+                if (current.id === endId) break;
 
-                getNeighbors(current.id, startId, endId).forEach(neighborId => {
-                    if (!mapNodes[neighborId]) return;
-                    const alt = distances[current.id] + getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-                    if (alt < distances[neighborId]) { distances[neighborId] = alt; previous[neighborId] = current.id; const idx = queue.findIndex(q => q.id === neighborId); if (idx !== -1) queue[idx].dist = alt; }
-                });
+                const neighbors = getNeighbors(current.id, startId, endId);
+                for (const neighborId of neighbors) {
+                    if (!mapNodes[neighborId]) continue;
+                    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
+                    const alt = distances[current.id] + edgeDist;
+
+                    if (alt < distances[neighborId]) {
+                        distances[neighborId] = alt;
+                        previous[neighborId] = current.id;
+                        const idx = queue.findIndex(q => q.id === neighborId);
+                        if (idx !== -1) queue[idx].dist = alt;
+                    }
+                }
             }
-            const path = []; let curr = endId;
-            while (curr !== null) { path.unshift(curr); curr = previous[curr]; }
+
+            const path = [];
+            let curr = endId;
+            while (curr !== null) {
+                path.unshift(curr);
+                curr = previous[curr];
+            }
             return { path: path[0] === startId ? path : [], distance: distances[endId] };
         }
 
+        // --- UI & LEAFLET SYNC ---
         function updateLeafletRoute(pathNodesArray) {
             routeLayer.clearLayers();
             currentRoutePath = pathNodesArray;
-            if (pathNodesArray.length > 0) {
+
+            if (pathNodesArray && pathNodesArray.length > 0) {
                 const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
-                L.polyline(latlngs, { color: '#10b981', weight: 3.5, dashArray: '8, 8', opacity: 0.9 }).addTo(routeLayer);
+                
+                // Draw Active Route Polyline
+                L.polyline(latlngs, {
+                    color: '#10b981',
+                    weight: 3.5,
+                    dashArray: '8, 8',
+                    opacity: 0.9
+                }).addTo(routeLayer);
+
+                // Add Intermediate Waypoints
                 for (let i = 1; i < pathNodesArray.length - 1; i++) {
-                    L.circleMarker([mapNodes[pathNodesArray[i]].lat, mapNodes[pathNodesArray[i]].lon], { radius: 4, fillColor: '#cbd5e1', color: '#1e293b', weight: 1, fillOpacity: 1 }).addTo(routeLayer);
+                    const wp = mapNodes[pathNodesArray[i]];
+                    L.circleMarker([wp.lat, wp.lon], { 
+                        radius: 4, 
+                        fillColor: '#cbd5e1', 
+                        color: '#1e293b', 
+                        weight: 1, 
+                        fillOpacity: 1 
+                    }).addTo(routeLayer);
                 }
+
+                // Add Start/End Highlighting Markers
+                const startNode = mapNodes[pathNodesArray[0]];
+                const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
+
                 if (pathNodesArray.length > 1) {
-                    L.circleMarker(latlngs[0], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(routeLayer).bindTooltip("DEP", {permanent: true, direction: 'right', className: 'route-label text-blue-400'});
-                    L.circleMarker(latlngs[latlngs.length - 1], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(routeLayer).bindTooltip("DEST", {permanent: true, direction: 'right', className: 'route-label text-emerald-400'});
+                    L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
+                        .addTo(routeLayer)
+                        .bindTooltip("DEP", {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
+
+                    L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
+                        .addTo(routeLayer)
+                        .bindTooltip("DEST", {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
+                }
+
+                // Smoothly fit bounds
+                if (latlngs.length > 1) {
                     map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
+                } else if (latlngs.length === 1) {
+                    map.flyTo(latlngs[0], 12, { duration: 1.5 });
                 }
             }
         }
 
-        function swapPorts() { const temp = depSelect.value; depSelect.value = destSelect.value; destSelect.value = temp; update(); }
+        function checkDepth(destNode) {
+            const requiredDepth = 1.5; 
+            const alertBox = document.getElementById('depthAlertBox');
+            const alertTitle = document.getElementById('depthAlertTitle');
+            const alertDesc = document.getElementById('depthAlertDesc');
+            const alertIcon = document.getElementById('depthAlertIcon');
+            const iconBg = document.getElementById('depthAlertIconBg');
+
+            alertBox.classList.remove('hidden');
+
+            if (destNode.isShallowBar) {
+                const barDepth = destNode.barDepth;
+                if (barDepth < requiredDepth) {
+                    alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-rose-950/20 border-rose-500/40 glow-rose";
+                    iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-500/20";
+                    alertIcon.className = "fas fa-triangle-exclamation text-rose-500";
+                    alertTitle.className = "text-xs font-black uppercase tracking-wider text-rose-400";
+                    alertTitle.innerText = "Shallow Bar Alert!";
+                    alertDesc.innerHTML = "Destination contains a shallow entry bar with charted depth of <span class='text-white font-bold'>" + barDepth + "m</span>. Required depth is <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>. Time entry closely with the rising tide.";
+                } else {
+                    alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-emerald-950/20 border-emerald-500/40 glow-emerald";
+                    iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-emerald-500/20";
+                    alertIcon.className = "fas fa-circle-check text-emerald-500";
+                    alertTitle.className = "text-xs font-black uppercase tracking-wider text-emerald-400";
+                    alertTitle.innerText = "Depth Clearance OK";
+                    alertDesc.innerHTML = "Estimated chart bar depth is <span class='text-white font-bold'>" + barDepth + "m</span>. Required depth is <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>. Stand clear during extreme low waters.";
+                }
+            } else {
+                alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-blue-950/20 border-blue-500/40 glow-blue";
+                iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-blue-500/20";
+                alertIcon.className = "fas fa-water text-blue-500";
+                alertTitle.className = "text-xs font-black uppercase tracking-wider text-blue-400";
+                alertTitle.innerText = "Deep Water Port";
+                alertDesc.innerHTML = "No major entry bars on record for this harbor. Deep channels provide safe under-keel clearances for the standard required depth of <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>.";
+            }
+        }
+
+        function swapPorts() {
+            const tempVal = depSelect.value;
+            depSelect.value = destSelect.value;
+            destSelect.value = tempVal;
+            localStorage.setItem('coastal_nav_departure', depSelect.value);
+            localStorage.setItem('coastal_nav_destination', destSelect.value);
+            update();
+        }
 
         function update() {
-            if (!map || !depSelect.value || !destSelect.value) return;
-            const route = calculateRoute(depSelect.value, destSelect.value);
+            if (!map) return; // Map not initialized yet
+            const depId = depSelect.value;
+            const destId = destSelect.value;
+            if (!depId || !destId) return;
+
+            const route = calculateRoute(depId, destId);
+            const destNode = mapNodes[destId];
             
             document.getElementById('distanceOutput').innerText = route.distance.toFixed(1) + " NM";
-            const timeHours = route.distance / parseFloat(speedSlider.value);
-            document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + (Math.floor(timeHours) > 0 ? `${Math.floor(timeHours)} hrs ` : '') + `${Math.round((timeHours - Math.floor(timeHours)) * 60)} mins`;
+            
+            const speed = parseFloat(speedSlider.value); 
+            const timeHours = route.distance / speed;
+            const hrs = Math.floor(timeHours);
+            const mins = Math.round((timeHours - hrs) * 60);
+            let timeStr = "";
+            if (hrs > 0) timeStr += hrs + " hr" + (hrs !== 1 ? 's' : '') + " ";
+            timeStr += mins + " min" + (mins !== 1 ? 's' : '');
+            if (route.distance === 0) timeStr = "0 mins";
+            
+            document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + timeStr;
+
+            const badge = document.getElementById('routePreferenceBadge');
+            if (activeRoutePreference === 'offshore') {
+                badge.innerHTML = `<i class="fas fa-sailboat mr-1"></i> Forced Offshore Track Active`;
+            } else if (activeRoutePreference === 'solent') {
+                badge.innerHTML = `<i class="fas fa-water mr-1"></i> Forced Solent Passage Channel`;
+            } else {
+                badge.innerHTML = `<i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing`;
+            }
 
             updateLeafletRoute(route.path);
-            
-            const destNode = mapNodes[destSelect.value];
-            document.getElementById('portName').innerText = destNode.name || "Port";
-            document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">${exactDate}</span> for <span class="text-white">${destSelect.value.toUpperCase()}</span>`;
-            
-            // Populate Harbor Master and Marina Info
-            document.getElementById('vhfChannel').innerHTML = `<i class="fas fa-broadcast-tower mr-1.5"></i>` + (destNode.vhf || "VHF TBC");
-            document.getElementById('harborCategory').innerText = destNode.category || "Harbour";
-            document.getElementById('marinaInfo').innerHTML = destNode.marina || "Infrastructure contacts listed inside Navily/eOceanic links.";
-            document.getElementById('hazardInfo').innerHTML = destNode.hazards || "Review general local updates prior to approach.";
+            checkDepth(destNode);
+
+            document.getElementById('portName').innerText = destNode.name;
+            document.getElementById('vhfChannel').innerHTML = `<i class="fas fa-broadcast-tower mr-1.5"></i>` + destNode.vhf;
+            document.getElementById('harborCategory').innerText = destNode.category;
+
+            const vhfInfoHTML = `<div class="mb-3 pb-2 border-b border-slate-700/50 flex items-center gap-2 text-sky-400 font-bold text-xs"><i class="fas fa-walkie-talkie text-sm"></i> <span>Primary VHF: <span class="text-white">${destNode.vhf}</span></span></div>`;
+            document.getElementById('marinaInfo').innerHTML = vhfInfoHTML + destNode.marina;
+
+            document.getElementById('hazardInfo').innerHTML = destNode.hazards;
 
             const fuelChip = document.getElementById('fuelAvailable');
             if (destNode.fuel && destNode.fuel !== "No Fuel") {
@@ -970,27 +1263,265 @@
                 fuelChip.innerHTML = `<i class="fas fa-ban"></i> No Fuel`;
             }
 
+            document.getElementById('weatherLink').href = "https://www.windy.com/" + destNode.lat + "/" + destNode.lon + "?" + destNode.lat + "," + destNode.lon + ",11";
+            document.getElementById('tideLink').href = "https://easytide.admiralty.co.uk/?PortID=" + destNode.tideId;
+
+            if (destNode.navily) {
+                document.getElementById('navilyLink').href = destNode.navily;
+                document.getElementById('navilyLink').className = "flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(16,185,129,0.3)] text-[10px] text-center active:scale-95";
+                document.getElementById('navilyLink').innerHTML = `
+                    <svg class="w-5.5 h-5.5 drop-shadow-md pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Navily 
+                `;
+            } else {
+                document.getElementById('navilyLink').href = "https://www.navily.com/carte?lat=" + destNode.lat + "&lng=" + destNode.lon + "&z=13";
+                document.getElementById('navilyLink').className = "flex flex-col items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95";
+                document.getElementById('navilyLink').innerHTML = `
+                    <svg class="w-5.5 h-5.5 drop-shadow-md pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Navily Map
+                `;
+            }
+
+            const eoceanicLink = document.getElementById('eoceanicLink');
+            if (eoceanicLink) {
+                eoceanicLink.href = destNode.eoceanic || "https://eoceanic.com/search?q=" + encodeURIComponent(destNode.name);
+            }
+            
+            document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
+
+            // Personalization: Ensuring exact date and port information is always prominent
+            document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">` + exactDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
+
+            // Trigger Live Weather Fetch
+            if (destId !== lastWeatherDestId) {
+                fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
+                lastWeatherDestId = destId;
+            }
+
+            document.getElementById('aiGuideContainer').classList.add('hidden');
+            document.getElementById('aiGuideContainer').innerHTML = '';
+
             const passageList = document.getElementById('passageStagesList');
             passageList.innerHTML = '';
-            for(let i = 0; i < route.path.length - 1; i++) {
-                passageList.innerHTML += `
-                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/50 flex items-center justify-between text-xs shadow-sm">
-                        <span class="font-bold text-slate-100">${mapNodes[route.path[i]].name || route.path[i]} <i class="fas fa-chevron-right text-emerald-500 mx-2"></i> ${mapNodes[route.path[i+1]].name || route.path[i+1]}</span>
-                        <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2 rounded">${getHaversineDistance(mapNodes[route.path[i]], mapNodes[route.path[i+1]]).toFixed(1)} NM</span>
+            
+            if (route.path.length <= 1) {
+                passageList.innerHTML = `<p class="text-slate-400 text-[11px] font-medium p-2 italic text-center">Departure and destination are the same location.</p>`;
+            } else {
+                for(let i = 0; i < route.path.length - 1; i++) {
+                    const startNode = mapNodes[route.path[i]];
+                    const endNode = mapNodes[route.path[i+1]];
+                    const legDist = getHaversineDistance(startNode, endNode);
+                    
+                    const startName = startNode.name || startNode.id.replace(/_/g, ' ').toUpperCase();
+                    const endName = endNode.name || endNode.id.replace(/_/g, ' ').toUpperCase();
+                    
+                    passageList.innerHTML += `
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/50 flex items-center justify-between text-xs shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-slate-800 text-slate-300 font-bold w-6 h-6 flex items-center justify-center rounded-full text-[10px] shadow-inner font-mono">` + (i+1) + `</div>
+                                <span class="font-bold text-slate-100 text-[11px]">
+                                    ` + startName + ` 
+                                    <i class="fas fa-chevron-right text-[10px] text-emerald-500 mx-2"></i> 
+                                    ` + endName + `
+                                </span>
+                            </div>
+                            <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2.5 py-1.5 rounded-lg border border-blue-500/30">` + legDist.toFixed(1) + ` NM</span>
+                        </div>`;
+                }
+            }
+        }
+
+        // Live Weather Engine
+        async function fetchLocalWeather(lat, lon, destName) {
+            const panel = document.getElementById('inshoreForecastContent');
+            panel.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sky-400"></i><span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>`;
+            
+            try {
+                const [weatherRes, marineRes] = await Promise.all([
+                    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code,surface_pressure&hourly=precipitation_probability,precipitation&wind_speed_unit=kn&timezone=auto`),
+                    fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,wave_period,wind_wave_height,swell_wave_height&timezone=auto`)
+                ]);
+                
+                const weatherData = await weatherRes.json();
+                const marineData = await marineRes.json();
+
+                const wmoCodes = {
+                    0: { text: "Clear", icon: "fa-sun", color: "text-yellow-400" },
+                    1: { text: "Mostly Clear", icon: "fa-sun", color: "text-yellow-400" },
+                    2: { text: "Partly Cloudy", icon: "fa-cloud-sun", color: "text-slate-300" },
+                    3: { text: "Overcast", icon: "fa-cloud", color: "text-slate-400" },
+                    45: { text: "Fog", icon: "fa-smog", color: "text-slate-400" },
+                    48: { text: "Rime Fog", icon: "fa-smog", color: "text-slate-400" },
+                    51: { text: "Light Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
+                    53: { text: "Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
+                    55: { text: "Dense Drizzle", icon: "fa-cloud-rain", color: "text-sky-300" },
+                    61: { text: "Light Rain", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
+                    63: { text: "Rain", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
+                    65: { text: "Heavy Rain", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
+                    71: { text: "Light Snow", icon: "fa-snowflake", color: "text-white" },
+                    73: { text: "Snow", icon: "fa-snowflake", color: "text-white" },
+                    75: { text: "Heavy Snow", icon: "fa-snowflake", color: "text-white" },
+                    80: { text: "Rain Showers", icon: "fa-cloud-showers-heavy", color: "text-sky-400" },
+                    81: { text: "Heavy Showers", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
+                    82: { text: "Violent Showers", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
+                    95: { text: "Thunderstorm", icon: "fa-bolt", color: "text-yellow-500" }
+                };
+
+                const code = weatherData.current.weather_code;
+                const weatherInfo = wmoCodes[code] || { text: "Variable", icon: "fa-cloud", color: "text-slate-400" };
+                
+                const windKnots = Math.round(weatherData.current.wind_speed_10m);
+                const windDir = weatherData.current.wind_direction_10m;
+                const temp = Math.round(weatherData.current.temperature_2m);
+                const feelsLike = Math.round(weatherData.current.apparent_temperature);
+                const windGusts = Math.round(weatherData.current.wind_gusts_10m);
+                
+                const rawTime = weatherData.current.time;
+                const formattedTime = new Date(rawTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                const currentHourISO = weatherData.current.time; 
+                const hourlyIndex = weatherData.hourly.time.indexOf(currentHourISO);
+                const targetIndex = hourlyIndex !== -1 ? hourlyIndex : 0;
+                
+                const rainProb = weatherData.hourly.precipitation_probability[targetIndex] || 0;
+                const rainAmount = weatherData.hourly.precipitation[targetIndex] || 0;
+
+                const pressure = Math.round(weatherData.current.surface_pressure);
+                const windWave = marineData.current?.wind_wave_height || 0;
+                const swellWave = marineData.current?.swell_wave_height || 0;
+
+                let seaStateText = "Calm";
+                let seaStateColor = "text-sky-400";
+                if (windWave > 0.5 && windWave >= swellWave) {
+                    seaStateText = "Choppy";
+                    seaStateColor = "text-orange-400";
+                } else if (swellWave > 1.0 && swellWave > windWave) {
+                    seaStateText = "Rolling Swell";
+                    seaStateColor = "text-indigo-400";
+                } else if (windWave > 1.5 || swellWave > 2.0) {
+                    seaStateText = "Rough Rough";
+                    seaStateColor = "text-rose-400";
+                }
+
+                let waveHeight = marineData.current?.wave_height;
+                waveHeight = waveHeight !== undefined && waveHeight !== null ? waveHeight.toFixed(1) + "m" : "Calm";
+
+                let wavePeriod = marineData.current?.wave_period;
+                wavePeriod = wavePeriod !== undefined && wavePeriod !== null ? wavePeriod.toFixed(0) + "s" : "--";
+
+                const maxWindCheck = Math.max(windKnots, windGusts);
+                let windColor = "text-emerald-400";
+                if (maxWindCheck > 15) windColor = "text-yellow-400";
+                if (maxWindCheck > 21) windColor = "text-orange-500";
+                if (maxWindCheck > 33) windColor = "text-rose-500";
+
+                let rainColor = "text-slate-400";
+                if (rainProb > 20) rainColor = "text-sky-400";
+                if (rainProb > 60) rainColor = "text-blue-400";
+
+                panel.innerHTML = `
+                    <div class="flex items-center justify-between w-full flex-nowrap overflow-x-auto gap-4 py-1 fade-in">
+                        <div class="flex items-center gap-3 shrink-0 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center shadow-inner border border-slate-700/50 shrink-0">
+                                <i class="fas ${weatherInfo.icon} ${weatherInfo.color} text-xl drop-shadow-md"></i>
+                            </div>
+                            <div class="whitespace-nowrap min-w-0">
+                                <div class="text-[9px] text-sky-400 font-bold uppercase tracking-widest flex items-center gap-1.5 whitespace-nowrap">
+                                    <i class="fas fa-clock text-sky-500/70"></i> As of ${formattedTime} ${destName ? `• ${destName}` : ''}
+                                </div>
+                                <div class="text-xs sm:text-sm text-white font-bold tracking-wide whitespace-nowrap flex items-center gap-2">
+                                    <span>${temp}°C <span class="text-[10px] text-slate-400 font-normal">(Feels ${feelsLike}°)</span>, ${weatherInfo.text}</span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-700/50 font-medium text-slate-400" title="Barometric Surface Pressure">
+                                        <i class="fas fa-tachometer-alt text-slate-500 mr-1"></i>${pressure} hPa
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 sm:gap-3 text-right shrink-0 flex-nowrap ml-auto">
+                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[60px] sm:min-w-[70px] shrink-0">
+                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Precip</div>
+                                <div class="text-[11px] sm:text-xs font-black ${rainColor} whitespace-nowrap" title="Precipitation depth: ${rainAmount}mm">
+                                    ${rainProb}% <span class="text-[9px] font-bold text-slate-400 ml-0.5">${rainAmount > 0 ? rainAmount.toFixed(1) + 'mm' : '0mm'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[80px] sm:min-w-[90px] shrink-0">
+                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Wind</div>
+                                <div class="text-[11px] sm:text-xs font-black ${windColor} flex items-center gap-1.5 justify-end whitespace-nowrap" title="Wind from ${windDir}° with gusts up to ${windGusts} kn">
+                                    <span>${windKnots}<span class="text-[9px] font-bold text-slate-400">g</span>${windGusts} kn</span>
+                                    <i class="fas fa-arrow-down" style="transform: rotate(${windDir}deg)"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[75px] sm:min-w-[85px] shrink-0">
+                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Waves</div>
+                                <div class="text-[11px] sm:text-xs font-black text-blue-400 whitespace-nowrap flex flex-col items-end" title="Wave Period: ${wavePeriod} | Wind Wave: ${windWave.toFixed(1)}m, Swell: ${swellWave.toFixed(1)}m">
+                                    <div>${waveHeight} <span class="text-[9px] font-bold text-slate-400 ml-0.5">${wavePeriod}</span></div>
+                                    <span class="text-[7px] uppercase tracking-wider font-extrabold ${seaStateColor} mt-0.5 leading-none">${seaStateText}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    
+            } catch (error) {
+                console.error("Error fetching marine weather:", error);
+                panel.innerHTML = `
+                    <div class="text-xs text-rose-400 font-semibold flex items-center gap-1.5 whitespace-nowrap">
+                        <i class="fas fa-exclamation-triangle"></i> Failed to load weather conditions.
                     </div>`;
             }
         }
 
+        async function fetchAIPortGuide() {
+            const destNode = mapNodes[destSelect.value];
+            if (!destNode) return;
+            const container = document.getElementById('aiGuideContainer');
+            container.classList.remove('hidden');
+            
+            if (destNode.offlineGuide) {
+                container.innerHTML = `<div class="fade-in">` + destNode.offlineGuide + `</div>`;
+                return;
+            }
+
+            container.innerHTML = `<div class="flex items-center gap-2"><i class="fas fa-circle-notch fa-spin text-purple-400"></i> Generating AI local knowledge for ${destNode.name}...</div>`;
+            container.innerHTML = `<div class="text-amber-400">Offline guide unavailable for this port. Please check your internet connection for AI generations.</div>`;
+        }
+
+        // Setup initial state from localStorage or defaults
         window.onload = () => {
             initLeafletMap();
-            depSelect.value = 'brixham';
-            destSelect.value = 'dartmouth';
-            setTimeout(update, 300);
+
+            const savedDep = localStorage.getItem('coastal_nav_departure');
+            const savedDest = localStorage.getItem('coastal_nav_destination');
+            
+            if (savedDep && mapNodes[savedDep]) depSelect.value = savedDep;
+            else depSelect.value = 'plymouth';
+            
+            if (savedDest && mapNodes[savedDest]) destSelect.value = savedDest;
+            else destSelect.value = 'salcombe';
+            
+            // Allow map to render before calculating route offsets
+            setTimeout(() => {
+                update();
+            }, 300);
         };
 
-        depSelect.addEventListener('change', update);
-        destSelect.addEventListener('change', update);
-        speedSlider.addEventListener('input', update);
+        depSelect.addEventListener('change', () => {
+            localStorage.setItem('coastal_nav_departure', depSelect.value);
+            update();
+        });
+        
+        destSelect.addEventListener('change', () => {
+            localStorage.setItem('coastal_nav_destination', destSelect.value);
+            update();
+        });
+        
+        speedSlider.addEventListener('input', () => {
+            document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
+            update(); // Retain instant ETA updates without redrawing map unnecessarily
+        });
+        
     </script>
 </body>
 </html>
