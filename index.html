@@ -1,11 +1,4 @@
-Here is the corrected code. The "Infinity" routing error was caused by the `runBypass` filter logic in the `getNeighbors` function, which aggressively stripped `needles_fairway` from all surrounding offshore nodes, completely severing the East-West connection across Christchurch/Poole Bay when starting from a non-Solent port like Chichester.
 
-To fix this and satisfy your request for a direct, safe offshore route avoiding landmasses with a 1.5m draft, I have:
-
-1. Removed the bugged filtering lines that broke the graph.
-2. Linked `iow_south` and `iow_south_coastal` directly to `durlston`. This allows the routing algorithm to plot a direct straight-line course across the bay south of the Needles, rather than unnecessarily dragging the route north into the fairway before heading west.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
