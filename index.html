@@ -800,12 +800,13 @@
             lands_end_south_transit: { name: "Runnel Stone Transit", lat: 49.970, lon: -5.680, isPort: false, links: ["mounts_bay", "lands_end"] },
             heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
             lands_end: { name: "Longships Passage (Lands End)", lat: 50.050, lon: -5.780, isPort: false, links: ["lizard_point", "lands_end_south_transit", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
-        const solentPorts = [
+          };
+            const solentPorts = [
             'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
             'bembridge', 'stokes_bay', 'osborne_bay', 'king_quay', 
             'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
         ];
-        };
+      
 
         // Automatic programmatical graph bidirectionality setup
         for (const key in mapNodes) {
