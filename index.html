@@ -267,7 +267,7 @@
                                 <i class="fas fa-wind text-lg"></i> Windy
                             </a>
                             <a id="tideLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(79,70,229,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-water text-lg"></i> EasyTide
+                                <i oh class="fas fa-water text-lg"></i> EasyTide
                             </a>
                             <a id="navilyLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95">
                                 <i class="fas fa-binoculars text-lg"></i> Navily
@@ -1656,6 +1656,34 @@
         // Setup initial state from localStorage or defaults
         window.onload = () => {
             initLeafletMap();
+            const hourlyWaypoints = [
+                [50.570, -1.100], // 3 Hours
+                [50.525, -1.333], // 5 Hours
+                [50.510, -1.590], // 7 Hours
+                [50.500, -1.850], // 9 Hours
+                [50.470, -2.250], // 12 Hours
+                [50.450, -2.630], // 15 Hours
+                [50.430, -3.010]  // 18 Hours
+            ];
+
+            const hourLabels = [3, 5, 7, 9, 12, 15, 18];
+
+            hourlyWaypoints.forEach((coords, i) => {
+                L.circleMarker(coords, { 
+                    radius: 6, 
+                    fillColor: '#f43f5e', 
+                    color: '#fff', 
+                    weight: 2, 
+                    fillOpacity: 1 
+                })
+                .addTo(map) 
+                .bindTooltip(hourLabels[i] + " Hours", { 
+                    permanent: true, 
+                    direction: 'top', 
+                    className: 'custom-tooltip text-rose-400' 
+                })
+                .openTooltip();
+            });
 
             const savedDep = localStorage.getItem('coastal_nav_departure');
             const savedDest = localStorage.getItem('coastal_nav_destination');
@@ -1696,35 +1724,7 @@
             update(); 
         });
 
-        // ---> PASTE THE NEW CODE RIGHT HERE <---
-        const hourlyWaypoints = [
-            [50.570, -1.100], // 3 Hours
-            [50.525, -1.333], // 5 Hours
-            [50.510, -1.590], // 7 Hours
-            [50.500, -1.850], // 9 Hours
-            [50.470, -2.250], // 12 Hours
-            [50.450, -2.630], // 15 Hours
-            [50.430, -3.010]  // 18 Hours
-        ];
-
-        const hourLabels = [3, 5, 7, 9, 12, 15, 18];
-
-        hourlyWaypoints.forEach((coords, i) => {
-            L.circleMarker(coords, { 
-                radius: 6, 
-                fillColor: '#f43f5e', 
-                color: '#fff', 
-                weight: 2, 
-                fillOpacity: 1 
-            })
-            .addTo(map) 
-            .bindTooltip(hourLabels[i] + " Hours", { 
-                permanent: true, 
-                direction: 'top', 
-                className: 'custom-tooltip text-rose-400' 
-            })
-            .openTooltip();
-        });
+        
         
     </script>
 </body>
