@@ -1653,35 +1653,38 @@
             }, 150);
         }
 
-        // --- DYNAMIC ISOCHRONE RINGS ---
-            if (window.isochroneLayer) {
-                map.removeLayer(window.isochroneLayer);
-            }
-            window.isochroneLayer = L.featureGroup().addTo(map);
-            
-            const speedKnots = parseFloat(speedSlider.value);
-            const timeIntervals = [3, 5, 7, 9, 12, 15, 18];
-            const depNodeData = mapNodes[depId];
-            
-            timeIntervals.forEach(hour => {
-                // 1 Nautical Mile = 1852 meters. Leaflet draws circles in meters.
-                const radiusMeters = (speedKnots * hour) * 1852; 
-                
-                const ring = L.circle([depNodeData.lat, depNodeData.lon], {
-                    radius: radiusMeters,
-                    color: '#f43f5e',     // Rose color
-                    weight: 1.5,
-                    dashArray: '6, 6',    // Dashed line
-                    fillOpacity: 0.03,    // Very faint fill so you can still read the map
-                    fillColor: '#f43f5e'
-                }).addTo(window.isochroneLayer);
+        // Setup initial state from localStorage or defaults
+        window.onload = () => {
+            initLeafletMap();
+            const hourlyWaypoints = [
+                [50.570, -1.100], // 3h
+                [50.525, -1.333], // 5h
+                [50.510, -1.590], // 7h
+                [50.500, -1.850], // 9h
+                [50.470, -2.250], // 12h
+                [50.450, -2.630], // 15h
+                [50.430, -3.010]  // 18h
+            ];
 
-                // Adding a hover tooltip to the rings
-                ring.bindTooltip(`${hour} Hours @ ${speedKnots} kts`, { 
-                    sticky: true, // Follows your mouse when you hover over the ring
-                    className: 'custom-tooltip text-rose-400 border-rose-500/50' 
-                });
+            const hourLabels = [3, 5, 7, 9, 12, 15, 18];
+
+            hourlyWaypoints.forEach((coords, i) => {
+                L.circleMarker(coords, { 
+                    radius: 6, 
+                    fillColor: '#f43f5e', 
+                    color: '#fff', 
+                    weight: 2, 
+                    fillOpacity: 1 
+                })
+                .addTo(map) 
+                .bindTooltip(hourLabels[i] + " Hours", { 
+                    permanent: true, 
+                    direction: 'top', 
+                    className: 'custom-tooltip text-rose-400' 
+                })
+                .openTooltip();
             });
+
             const savedDep = localStorage.getItem('coastal_nav_departure');
             const savedDest = localStorage.getItem('coastal_nav_destination');
             
