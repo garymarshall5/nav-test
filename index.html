@@ -267,7 +267,7 @@
                                 <i class="fas fa-wind text-lg"></i> Windy
                             </a>
                             <a id="tideLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(79,70,229,0.3)] text-[10px] text-center active:scale-95">
-                                <i oh class="fas fa-water text-lg"></i> EasyTide
+                                <i class="fas fa-water text-lg"></i> EasyTide
                             </a>
                             <a id="navilyLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95">
                                 <i class="fas fa-binoculars text-lg"></i> Navily
@@ -940,8 +940,6 @@
                 if (!startIsSolent && !endIsSolent) runBypass = true;
             }
             
-            // Fix: Only severe the literal entrance points to the Solent. 
-            // Do NOT cut the coastal offshore nodes (like needles_fairway to iow_south_coastal).
             if (runBypass) {
                 if (nodeId === 'chichester_approach' || nodeId === 'bembridge_approach' || nodeId === 'portsmouth_approach') {
                     links = links.filter(l => l !== 'solent_east_forts');
@@ -1221,6 +1219,38 @@
                             <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2.5 py-1.5 rounded-lg border border-blue-500/30">` + legDist.toFixed(1) + ` NM</span>
                         </div>`;
                 }
+            }
+
+            // --- DYNAMIC ISOCHRONE RINGS ---
+            if (window.isochroneLayer) {
+                map.removeLayer(window.isochroneLayer);
+            }
+            window.isochroneLayer = L.featureGroup().addTo(map);
+            
+            const speedKnots = parseFloat(speedSlider.value);
+            const timeIntervals = [3, 5, 7, 9, 12, 15, 18];
+            const depNodeData = mapNodes[depId];
+            
+            if (depNodeData) {
+                timeIntervals.forEach(hour => {
+                    // 1 Nautical Mile = 1852 meters. Leaflet draws circles in meters.
+                    const radiusMeters = (speedKnots * hour) * 1852; 
+                    
+                    const ring = L.circle([depNodeData.lat, depNodeData.lon], {
+                        radius: radiusMeters,
+                        color: '#f43f5e',     // Rose color
+                        weight: 1.5,
+                        dashArray: '6, 6',    // Dashed line
+                        fillOpacity: 0.03,    // Very faint fill so you can still read the map
+                        fillColor: '#f43f5e'
+                    }).addTo(window.isochroneLayer);
+
+                    // Adding a hover tooltip to the rings
+                    ring.bindTooltip(`${hour} Hours @ ${speedKnots} kts`, { 
+                        sticky: true, // Follows your mouse when you hover over the ring
+                        className: 'custom-tooltip text-rose-400 border-rose-500/50' 
+                    });
+                });
             }
         }
 
@@ -1653,35 +1683,10 @@
             }, 150);
         }
 
-        // --- DYNAMIC ISOCHRONE RINGS ---
-            if (window.isochroneLayer) {
-                map.removeLayer(window.isochroneLayer);
-            }
-            window.isochroneLayer = L.featureGroup().addTo(map);
-            
-            const speedKnots = parseFloat(speedSlider.value);
-            const timeIntervals = [3, 5, 7, 9, 12, 15, 18];
-            const depNodeData = mapNodes[depId];
-            
-            timeIntervals.forEach(hour => {
-                // 1 Nautical Mile = 1852 meters. Leaflet draws circles in meters.
-                const radiusMeters = (speedKnots * hour) * 1852; 
-                
-                const ring = L.circle([depNodeData.lat, depNodeData.lon], {
-                    radius: radiusMeters,
-                    color: '#f43f5e',     // Rose color
-                    weight: 1.5,
-                    dashArray: '6, 6',    // Dashed line
-                    fillOpacity: 0.03,    // Very faint fill so you can still read the map
-                    fillColor: '#f43f5e'
-                }).addTo(window.isochroneLayer);
+        // --- WINDOW ONLOAD INITIALIZATION ---
+        window.onload = () => {
+            initLeafletMap();
 
-                // Adding a hover tooltip to the rings
-                ring.bindTooltip(`${hour} Hours @ ${speedKnots} kts`, { 
-                    sticky: true, // Follows your mouse when you hover over the ring
-                    className: 'custom-tooltip text-rose-400 border-rose-500/50' 
-                });
-            });
             const savedDep = localStorage.getItem('coastal_nav_departure');
             const savedDest = localStorage.getItem('coastal_nav_destination');
             
@@ -1696,6 +1701,7 @@
             }, 300);
         };
 
+        // --- EVENT LISTENERS ---
         depSelect.addEventListener('change', () => {
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             update();
@@ -1710,24 +1716,7 @@
             document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
             update(); 
         });
-        
-                destSelect.addEventListener('change', () => {
-            localStorage.setItem('coastal_nav_destination', destSelect.value);
-            update();
-        });
-        
-        speedSlider.addEventListener('input', () => {
-            document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
-            update(); 
-        });
 
-        
-        
-    </script>
-</body>
-</html>
-
-        
     </script>
 </body>
 </html>
