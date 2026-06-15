@@ -1221,38 +1221,59 @@
                 }
             }
 
-            // --- DYNAMIC ISOCHRONE RINGS ---
-            if (window.isochroneLayer) {
-                map.removeLayer(window.isochroneLayer);
+            // --- DYNAMIC TIME MARKERS ALONG ROUTE ---
+            if (window.timeMarkersLayer) {
+                map.removeLayer(window.timeMarkersLayer);
             }
-            window.isochroneLayer = L.featureGroup().addTo(map);
+            window.timeMarkersLayer = L.featureGroup().addTo(map);
             
             const speedKnots = parseFloat(speedSlider.value);
-            const timeIntervals = [3, 5, 7, 9, 12, 15, 18];
-            const depNodeData = mapNodes[depId];
-            
-            if (depNodeData) {
-                timeIntervals.forEach(hour => {
-                    // 1 Nautical Mile = 1852 meters. Leaflet draws circles in meters.
-                    const radiusMeters = (speedKnots * hour) * 1852; 
-                    
-                    const ring = L.circle([depNodeData.lat, depNodeData.lon], {
-                        radius: radiusMeters,
-                        color: '#f43f5e',     // Rose color
-                        weight: 1.5,
-                        dashArray: '6, 6',    // Dashed line
-                        fillOpacity: 0.03,    // Very faint fill so you can still read the map
-                        fillColor: '#f43f5e'
-                    }).addTo(window.isochroneLayer);
+            const timeIntervals = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+            let currentIntervalIndex = 0;
+            let targetDistance = timeIntervals[currentIntervalIndex] * speedKnots;
+            let cumulativeDistance = 0;
 
-                    // Adding a hover tooltip to the rings
-                    ring.bindTooltip(`${hour} Hours @ ${speedKnots} kts`, { 
-                        sticky: true, // Follows your mouse when you hover over the ring
-                        className: 'custom-tooltip text-rose-400 border-rose-500/50' 
-                    });
-                });
+            if (route.path.length > 1) {
+                for (let i = 0; i < route.path.length - 1; i++) {
+                    const p1 = mapNodes[route.path[i]];
+                    const p2 = mapNodes[route.path[i+1]];
+                    const segmentDist = getHaversineDistance(p1, p2);
+
+                    while (currentIntervalIndex < timeIntervals.length && cumulativeDistance + segmentDist >= targetDistance) {
+                        // Interpolate exact coordinates along the segment
+                        const remainingDist = targetDistance - cumulativeDistance;
+                        const ratio = remainingDist / segmentDist;
+                        const interpLat = p1.lat + (p2.lat - p1.lat) * ratio;
+                        const interpLon = p1.lon + (p2.lon - p1.lon) * ratio;
+
+                        const hourLabel = timeIntervals[currentIntervalIndex];
+                        
+                        // Create custom styling for the time marker
+                        const timeIcon = L.divIcon({
+                            className: 'clear-default-leaflet-bg',
+                            html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative">${hourLabel}h</div>`,
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        });
+                        
+                        L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
+                         .addTo(window.timeMarkersLayer)
+                         .bindTooltip(`${hourLabel} Hours @ ${speedKnots.toFixed(1)} kts`, {
+                             className: 'custom-tooltip text-rose-400 border-rose-500/50 font-bold',
+                             direction: 'top',
+                             offset: [0, -10]
+                         });
+
+                        currentIntervalIndex++;
+                        if (currentIntervalIndex < timeIntervals.length) {
+                            targetDistance = timeIntervals[currentIntervalIndex] * speedKnots;
+                        } else {
+                            break;
+                        }
+                    }
+                    cumulativeDistance += segmentDist;
+                }
             }
-        }
 
         // Live Weather Engine
         async function fetchLocalWeather(lat, lon, destName) {
