@@ -985,6 +985,7 @@
             const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
             return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
+        
 
         function calculateRoute(startId, endId, effectiveMode) {
     if (startId === endId) return { path: [startId], distance: 0 };
