@@ -328,10 +328,10 @@
             'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
         ];
 
-        // Solent 
+        // Solent Logic Engine 
         function isSolent(id) {
             return solentPorts.includes(id) || 
-                   ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
+                   ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach', 'chichester_approach', 'needles_fairway'].includes(id);
         }
 
         // Helper function to format phone numbers to active tel links
@@ -774,7 +774,7 @@
             poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
             weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
-            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.150, lon: -5.050, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "st_just_in_roseland","mylor"] },
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.150, lon: -5.050, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "st_just", "mylor"] },
             fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore"] },
             plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.315, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "mewstone_south_clearance", "rame_head_transit", "eddystone_transit"] },            
             dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.565, isPort: false, links: ["berry_head_offshore", "start_point_offshore", "portland_offshore"] },
@@ -927,14 +927,38 @@
             update();
         }
 
-        function getNeighbors(nodeId, startId, endId) {
+        // New Dynamic Routing Logic Evaluator
+        function determineRouteRouting(origin, destination, currentPreference) {
+            // 1. Absolute Override: User manually clicked Force Solent or Offshore
+            if (currentPreference === 'solent') return 'solent';
+            if (currentPreference === 'offshore') return 'offshore';
+
+            // 2. We are in 'Auto' mode. Check for Chichester.
+            const involvesChichester = (origin === 'chichester_entrance' || destination === 'chichester_entrance');
+            const targetLocation = (origin === 'chichester_entrance') ? destination : origin;
+
+            if (involvesChichester) {
+                // If the destination is inside the Solent, force Solent routing
+                if (solentPorts.includes(targetLocation)) {
+                    return 'solent';
+                } 
+                // Otherwise (Brixham, Weymouth, etc.), force Offshore south of IOW
+                else {
+                    return 'offshore';
+                }
+            }
+            // Default behavior for everything else
+            return 'auto';
+        }
+
+        function getNeighbors(nodeId, startId, endId, effectiveMode) {
             const node = mapNodes[nodeId];
             if (!node) return [];
 
             let links = [...node.links];
             
             // MODE: OFFSHORE - "The Highway"
-            if (activeRoutePreference === 'offshore') {
+            if (effectiveMode === 'offshore') {
                 return links.filter(linkId => {
                     const target = mapNodes[linkId];
                     return !target.isPort || linkId === endId || linkId === startId;
@@ -942,7 +966,7 @@
             }
 
             // MODE: SOLENT - "The Cage"
-            if (activeRoutePreference === 'solent') {
+            if (effectiveMode === 'solent') {
                 return links.filter(linkId => isSolent(linkId) || linkId === endId || linkId === startId);
             }
 
@@ -962,7 +986,7 @@
             return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
-        function calculateRoute(startId, endId) {
+        function calculateRoute(startId, endId, effectiveMode) {
             if (startId === endId) return { path: [startId], distance: 0 };
             const distances = {};
             const previous = {};
@@ -980,12 +1004,13 @@
                 if (current.dist === Infinity) break;
                 if (current.id === endId) break;
 
-                const neighbors = getNeighbors(current.id, startId, endId);
+                // Pass the effectiveMode down here
+                const neighbors = getNeighbors(current.id, startId, endId, effectiveMode);
                 for (const neighborId of neighbors) {
                     if (!mapNodes[neighborId]) continue;
                     
                     const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-                    const alt = distances[current.id] + edgeDist; // No penalties, just pure distance!
+                    const alt = distances[current.id] + edgeDist; 
 
                     if (alt < distances[neighborId]) {
                         distances[neighborId] = alt;
@@ -1104,7 +1129,9 @@
             const destId = destSelect.value;
             if (!depId || !destId) return;
 
-            const route = calculateRoute(depId, destId);
+            // Apply dynamic routing preference based on logic
+            const effectiveRoutingMode = determineRouteRouting(depId, destId, activeRoutePreference);
+            const route = calculateRoute(depId, destId, effectiveRoutingMode);
             const destNode = mapNodes[destId];
             
             document.getElementById('distanceOutput').innerText = route.distance.toFixed(1) + " NM";
@@ -1120,8 +1147,13 @@
             
             document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + timeStr;
 
+            // Dynamic UI feedback based on what the algorithm decided
             const badge = document.getElementById('routePreferenceBadge');
-            if (activeRoutePreference === 'offshore') {
+            if (effectiveRoutingMode === 'offshore' && activeRoutePreference === 'auto') {
+                badge.innerHTML = `<i class="fas fa-ship mr-1"></i> Auto-Detected Offshore Track`;
+            } else if (effectiveRoutingMode === 'solent' && activeRoutePreference === 'auto') {
+                badge.innerHTML = `<i class="fas fa-water mr-1"></i> Auto-Detected Solent Channel`;
+            } else if (activeRoutePreference === 'offshore') {
                 badge.innerHTML = `<i class="fas fa-sailboat mr-1"></i> Forced Offshore Track Active`;
             } else if (activeRoutePreference === 'solent') {
                 badge.innerHTML = `<i class="fas fa-water mr-1"></i> Forced Solent Passage Channel`;
