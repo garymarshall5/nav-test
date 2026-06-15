@@ -950,24 +950,28 @@ function getNeighbors(nodeId, startId, endId) {
     if (!node) return [];
 
     let links = [...node.links];
+    
+    // Helper to identify Solent nodes
+    const isSolent = (id) => solentPorts.includes(id) || 
+                          ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
 
-    // 1. HARD-LOCK: If Force Solent is on, we strip all exits from the Solent
+    // 1. FORCE SOLENT: If toggled, prohibit leaving the Solent once inside, 
+    // AND prioritize entering it from the start.
     if (activeRoutePreference === 'solent') {
-        const isSolent = solentPorts.includes(nodeId) || 
-                         ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach'].includes(nodeId);
-        
-        if (isSolent) {
-            // Keep only links that point to other Solent nodes
-            return links.filter(linkId => {
-                const targetNode = mapNodes[linkId];
-                return targetNode && (solentPorts.includes(linkId) || ['solent_east_forts', 'solent_mid', 'solent_west'].includes(linkId));
-            });
+        // If we are currently in a Solent node, we are not allowed to jump to offshore
+        if (isSolent(nodeId)) {
+            return links.filter(linkId => isSolent(linkId));
+        }
+        // If we are at the start node (e.g. Chichester), 
+        // we MUST pick a neighbor that leads into the Solent
+        if (nodeId === startId) {
+            return links.filter(linkId => isSolent(linkId));
         }
     }
 
-    // 2. EXCLUSION: If Offshore is on, we strip all Solent-internal links to force open water
+    // 2. OFFSHORE: If toggled, prohibit entering Solent nodes
     if (activeRoutePreference === 'offshore') {
-        return links.filter(linkId => !solentPorts.includes(linkId) && linkId !== 'solent_mid');
+        return links.filter(linkId => !isSolent(linkId));
     }
 
     return links;
