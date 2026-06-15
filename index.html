@@ -598,7 +598,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Sandy bay anchorage inside the eastern flank of Plymouth Sound breakwater.`,
                 hazards: "Avoid the rocky ledge of Bovisand fort. Watch for recreational swimmers near the shoreline.",
-                links: ["plymouth_sound_approach"]
+                links: ["yealm_approach"]
             },
             plymouth: {
                 name: "Plymouth Sound", lat: 50.364, lon: -4.130, isPort: true, isShallowBar: false, tideId: "0014",
@@ -786,7 +786,9 @@
             berry_head_offshore: { name: "Berry Head Clearance", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south"] },
             start_point_offshore: { name: "Start Point Clearance", lat: 50.210, lon: -3.620, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "eddystone_transit", "plymouth_sound_approach"] }, 
             prawle_point_offshore: { name: "Prawle Point Clearance", lat: 50.200, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "plymouth_sound_approach", "eddystone_transit"] }, 
+            bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bolt_tail_clearance", "eddystone_transit"] }, 
+            bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
+            yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "plymouth_sound_approach"] },
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit"] },
             looe_bay_transit: { name: "Looe Bay Transit", lat: 50.330, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound_approach", "dodman_offshore", "falmouth_bay", "lizard_point"] },
