@@ -951,25 +951,27 @@ function getNeighbors(nodeId, startId, endId) {
 
     let links = [...node.links];
 
-    // Define categories
-    const isSolentNode = solentPorts.includes(nodeId) || 
-                         ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(nodeId);
-
+    // 1. HARD-LOCK: If Force Solent is on, we strip all exits from the Solent
     if (activeRoutePreference === 'solent') {
-        // VETO: If we are in the Solent, do NOT allow jumps to offshore waypoints
-        // Only allow transit through known Solent-safe nodes
-        return links.filter(id => !['eddystone_transit', 'iow_south', 'portland_offshore', 'berry_head_offshore'].includes(id));
+        const isSolent = solentPorts.includes(nodeId) || 
+                         ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach'].includes(nodeId);
+        
+        if (isSolent) {
+            // Keep only links that point to other Solent nodes
+            return links.filter(linkId => {
+                const targetNode = mapNodes[linkId];
+                return targetNode && (solentPorts.includes(linkId) || ['solent_east_forts', 'solent_mid', 'solent_west'].includes(linkId));
+            });
+        }
     }
 
+    // 2. EXCLUSION: If Offshore is on, we strip all Solent-internal links to force open water
     if (activeRoutePreference === 'offshore') {
-        // VETO: If we want offshore, do NOT allow transit through tight Solent/Harbour nodes
-        return links.filter(id => !['newtown_creek', 'lymington_approach', 'king_quay', 'stokes_bay'].includes(id));
+        return links.filter(linkId => !solentPorts.includes(linkId) && linkId !== 'solent_mid');
     }
 
-    // AUTO: No filters, the pathfinder will naturally find the shortest route based on Haversine distance
     return links;
 }
-
         function getHaversineDistance(coords1, coords2) {
             if (!coords1 || !coords2) return 0;
             const lon1 = coords1.lon * Math.PI / 180;
