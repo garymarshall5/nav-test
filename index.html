@@ -267,7 +267,7 @@
                                 <i class="fas fa-wind text-lg"></i> Windy
                             </a>
                             <a id="tideLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(79,70,229,0.3)] text-[10px] text-center active:scale-95">
-                                <i oh class="fas fa-water text-lg"></i> EasyTide
+                                <i class="fas fa-water text-lg"></i> EasyTide
                             </a>
                             <a id="navilyLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95">
                                 <i class="fas fa-binoculars text-lg"></i> Navily
@@ -318,7 +318,7 @@
         const dateElement = document.getElementById('currentDate');
 
         // Strictly enforcing the exact required Date 
-        const exactDate = "Thursday, June 11, 2026";
+        const exactDate = "Sunday, June 14, 2026";
         if (dateElement) {
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
@@ -391,7 +391,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• Anchorage only. Mud/Sand holding.<br>• Spectacular white chalk cliff surroundings.<br>${webLink('https://www.visitisleofwight.co.uk', 'IoW Tourism')}`,
                 hazards: "Entirely exposed to easterly and southerly swells. Guarded by the shallow rocky fingers of Bembridge Ledge to the north.",
-                links: ["bembridge_approach", "iow_east_offshore"]
+                links: ["bembridge_approach", "princessa_cardinal"]
             },
             priory_bay: {
                 name: "Priory Bay (IOW)", lat: 50.718, lon: -1.102, isPort: true, isShallowBar: false, tideId: "0064",
@@ -755,26 +755,26 @@
             },
 
             // ----- APPROACH & COASTAL TRANSIT NODES (Preventing land clipping) -----
-            chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "iow_east_offshore"] },
-            bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.695, lon: -1.080, isPort: false, links: ["bembridge", "solent_east_forts", "iow_east_offshore", "priory_bay", "seaview", "whitecliff_bay"] },
+            chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "princessa_cardinal"] },
+            bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.695, lon: -1.080, isPort: false, links: ["bembridge", "solent_east_forts", "princessa_cardinal", "priory_bay", "seaview", "whitecliff_bay"] },
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
             lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
             poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
             weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
-            salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.210, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
-            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.130, lon: -5.030, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor", "dodman_offshore"] },
-            fowey_approach: { name: "Fowey Approach", lat: 50.310, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore", "plymouth_sound_approach"] },
-            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.300, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "newtonferrers", "stoke_point_transit", "rame_head_transit", "eddystone_transit", "fowey_approach", "bolt_head_offshore", "start_point_offshore"] },
-            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.335, lon: -3.550, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore", "portland_offshore"] },
+            salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.140, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor", "dodman_offshore"] },
+            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore", "plymouth_sound_approach"] },
+            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.315, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "newtonferrers", "stoke_point_transit", "rame_head_transit", "eddystone_transit", "fowey_approach", "bolt_head_offshore", "start_point_offshore"] },
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.565, isPort: false, links: ["berry_head_offshore", "dartmouth", "start_point_offshore", "portland_offshore"] },
 
             // ----- WAYPOINTS & SHAPE NODES -----
-            iow_east_offshore: { name: "Bembridge Offshore Corner", lat: 50.640, lon: -0.950, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
-            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.570, lon: -1.100, isPort: false, links: ["iow_east_offshore", "iow_south", "iow_south_coastal"] }, 
+            princessa_cardinal: { name: "Princessa Cardinal", lat: 50.665, lon: -1.045, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
+            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.570, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
             iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_southwest_transit", "durlston", "poole_bay"] }, 
             iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.575, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
-            solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "iow_east_offshore"] }, 
+            solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "princessa_cardinal"] }, 
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
             needles_fairway: { name: "Needles Safe Water", lat: 50.630, lon: -1.600, isPort: false, links: ["solent_west", "alum_bay", "iow_south_coastal", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },
@@ -940,14 +940,12 @@
                 if (!startIsSolent && !endIsSolent) runBypass = true;
             }
             
-            // Fix: Only severe the literal entrance points to the Solent. 
-            // Do NOT cut the coastal offshore nodes (like needles_fairway to iow_south_coastal).
             if (runBypass) {
                 if (nodeId === 'chichester_approach' || nodeId === 'bembridge_approach' || nodeId === 'portsmouth_approach') {
                     links = links.filter(l => l !== 'solent_east_forts');
                 }
                 if (nodeId === 'solent_east_forts') {
-                    links = links.filter(l => l !== 'chichester_approach' && l !== 'bembridge_approach' && l !== 'portsmouth_approach' && l !== 'iow_east_offshore' && l !== 'seaview' && l !== 'priory_bay');
+                    links = links.filter(l => l !== 'chichester_approach' && l !== 'bembridge_approach' && l !== 'portsmouth_approach' && l !== 'princessa_cardinal' && l !== 'seaview' && l !== 'priory_bay');
                 }
                 if (nodeId === 'needles_fairway') {
                     links = links.filter(l => l !== 'solent_west' && l !== 'solent_mid');
@@ -1221,6 +1219,38 @@
                             <span class="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2.5 py-1.5 rounded-lg border border-blue-500/30">` + legDist.toFixed(1) + ` NM</span>
                         </div>`;
                 }
+            }
+
+            // --- DYNAMIC ISOCHRONE RINGS ---
+            if (window.isochroneLayer) {
+                map.removeLayer(window.isochroneLayer);
+            }
+            window.isochroneLayer = L.featureGroup().addTo(map);
+            
+            const speedKnots = parseFloat(speedSlider.value);
+            const timeIntervals = [3, 5, 7, 9, 12, 15, 18];
+            const depNodeData = mapNodes[depId];
+            
+            if (depNodeData) {
+                timeIntervals.forEach(hour => {
+                    // 1 Nautical Mile = 1852 meters. Leaflet draws circles in meters.
+                    const radiusMeters = (speedKnots * hour) * 1852; 
+                    
+                    const ring = L.circle([depNodeData.lat, depNodeData.lon], {
+                        radius: radiusMeters,
+                        color: '#f43f5e',     // Rose color
+                        weight: 1.5,
+                        dashArray: '6, 6',    // Dashed line
+                        fillOpacity: 0.03,    // Very faint fill so you can still read the map
+                        fillColor: '#f43f5e'
+                    }).addTo(window.isochroneLayer);
+
+                    // Adding a hover tooltip to the rings
+                    ring.bindTooltip(`${hour} Hours @ ${speedKnots} kts`, { 
+                        sticky: true, // Follows your mouse when you hover over the ring
+                        className: 'custom-tooltip text-rose-400 border-rose-500/50' 
+                    });
+                });
             }
         }
 
@@ -1653,37 +1683,9 @@
             }, 150);
         }
 
-        // Setup initial state from localStorage or defaults
+        // --- WINDOW ONLOAD INITIALIZATION ---
         window.onload = () => {
             initLeafletMap();
-            const hourlyWaypoints = [
-                [50.570, -1.100], // 3h
-                [50.525, -1.333], // 5h
-                [50.510, -1.590], // 7h
-                [50.500, -1.850], // 9h
-                [50.470, -2.250], // 12h
-                [50.450, -2.630], // 15h
-                [50.430, -3.010]  // 18h
-            ];
-
-            const hourLabels = [3, 5, 7, 9, 12, 15, 18];
-
-            hourlyWaypoints.forEach((coords, i) => {
-                L.circleMarker(coords, { 
-                    radius: 6, 
-                    fillColor: '#f43f5e', 
-                    color: '#fff', 
-                    weight: 2, 
-                    fillOpacity: 1 
-                })
-                .addTo(map) 
-                .bindTooltip(hourLabels[i] + " Hours", { 
-                    permanent: true, 
-                    direction: 'top', 
-                    className: 'custom-tooltip text-rose-400' 
-                })
-                .openTooltip();
-            });
 
             const savedDep = localStorage.getItem('coastal_nav_departure');
             const savedDest = localStorage.getItem('coastal_nav_destination');
@@ -1699,6 +1701,7 @@
             }, 300);
         };
 
+        // --- EVENT LISTENERS ---
         depSelect.addEventListener('change', () => {
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             update();
@@ -1713,24 +1716,7 @@
             document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
             update(); 
         });
-        
-                destSelect.addEventListener('change', () => {
-            localStorage.setItem('coastal_nav_destination', destSelect.value);
-            update();
-        });
-        
-        speedSlider.addEventListener('input', () => {
-            document.getElementById('speedLabel').innerText = "Estimated Time @ " + parseFloat(speedSlider.value).toFixed(1) + " Knots";
-            update(); 
-        });
 
-        
-        
-    </script>
-</body>
-</html>
-
-        
     </script>
 </body>
 </html>
