@@ -1062,6 +1062,27 @@ offshore_transit_south_devon: {
                     }).addTo(routeLayer);
                 }
 
+                for (let i = 1; i < pathNodesArray.length - 1; i++) {
+        const wpId = pathNodesArray[i];
+        const wp = mapNodes[wpId];
+        
+        // Create the circle marker
+        const marker = L.circleMarker([wp.lat, wp.lon], { 
+            radius: 4, 
+            fillColor: '#cbd5e1', 
+            color: '#1e293b', 
+            weight: 1, 
+            fillOpacity: 1 
+        }).addTo(routeLayer);
+
+        // Bind the tooltip to show the waypoint name on hover
+        marker.bindTooltip(wp.name, {
+            className: 'custom-tooltip', // Uses your existing dark-theme CSS class
+            direction: 'top',
+            offset: [0, -5]
+        });
+    }
+
                 const startNode = mapNodes[pathNodesArray[0]];
                 const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
 
