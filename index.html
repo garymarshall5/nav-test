@@ -811,12 +811,10 @@ yealm_approach: {
             mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "rame_head_transit"] }, // REMOVED PLYMOUTH LINK
             
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["looe_bay_transit", "mewstone_south_clearance"] },
-            looe_bay_transit: { name: "Looe Bay Transit", lat: 50.330, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
-            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["looe_bay_transit", "dodman_offshore"] },
-            
-            dodman_offshore: { name: "Dodman Point Clearance", lat: 50.205, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach", "eddystone_transit"] }, // REMOVED FALMOUTH_APPROACH LINK
-            st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
-            
+            looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.340, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
+            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["looe_bay_transit", "dodman_shore_transit"] },
+            dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
+            dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["eddystone_transit", "manacles_east", "portscatho"] }, // REMOVED FALMOUTH_APPROACH LINK
             manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
             
@@ -947,38 +945,25 @@ yealm_approach: {
             update();
         }
 
-        function getNeighbors(nodeId, startId, endId) {
-            const node = mapNodes[nodeId];
-            if (!node) return [];
-            let links = [...node.links];
-            let runBypass = false;
-            
-            if (activeRoutePreference === 'offshore') {
-                runBypass = true;
-            } else if (activeRoutePreference === 'solent') {
-                runBypass = false;
-            } else {
-                const startIsSolent = solentPorts.includes(startId);
-                const endIsSolent = solentPorts.includes(endId);
-                if (!startIsSolent && !endIsSolent) runBypass = true;
-            }
-            
-            if (runBypass) {
-                if (nodeId === 'chichester_approach' || nodeId === 'bembridge_approach' || nodeId === 'portsmouth_approach') {
-                    links = links.filter(l => l !== 'solent_east_forts');
-                }
-                if (nodeId === 'solent_east_forts') {
-                    links = links.filter(l => l !== 'chichester_approach' && l !== 'bembridge_approach' && l !== 'portsmouth_approach' && l !== 'princessa_cardinal' && l !== 'seaview' && l !== 'priory_bay');
-                }
-                if (nodeId === 'needles_fairway') {
-                    links = links.filter(l => l !== 'solent_west' && l !== 'solent_mid');
-                }
-                if (nodeId === 'solent_west') {
-                    links = links.filter(l => l !== 'needles_fairway');
-                }
-            }
-            return links;
-        }
+function getNeighbors(nodeId, startId, endId) {
+    const node = mapNodes[nodeId];
+    if (!node) return [];
+    
+    let links = [...node.links];
+
+    // If "Force Solent" (Coastal) is selected, remove all nodes containing "offshore"
+    if (activeRoutePreference === 'solent') {
+        return links.filter(linkId => !linkId.includes('offshore'));
+    }
+
+    // If "Offshore" is selected, remove all nodes containing "shore_transit"
+    if (activeRoutePreference === 'offshore') {
+        return links.filter(linkId => !linkId.includes('shore_transit'));
+    }
+
+    // Default: Return all available links
+    return links;
+}
 
         function getHaversineDistance(coords1, coords2) {
             if (!coords1 || !coords2) return 0;
