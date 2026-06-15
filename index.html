@@ -955,42 +955,32 @@
 
        
             
-           function getNeighbors(nodeId, startId, endId, effectiveMode) {
-    const node = mapNodes[nodeId];
-    if (!node) return [];
+ function getNeighbors(nodeId, startId, endId, effectiveMode) {
+        const node = mapNodes[nodeId];
+        if (!node) return [];
 
-    let links = [...node.links];
-    
-    // MODE: SOLENT - "The Gateway & Cage Logic"
-    if (effectiveMode === 'solent') {
-        return links.filter(linkId => {
-            // 1. Allow if it's explicitly a Solent port or transit area
-            // 2. Allow if it's the target destination (to exit the cage)
-            // 3. Allow if it's the starting node (to enter the cage)
-            // 4. Always allow known Solent gateway nodes
-            const isGateway = ['chichester_entrance', 'needles_fairway', 'solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'lymington_approach'].includes(linkId);
-            
-            return isSolent(linkId) || 
-                   linkId === endId || 
-                   linkId === startId || 
-                   isGateway;
-        });
+        let links = [...node.links];
+
+        if (effectiveMode === 'solent') {
+            return links.filter(linkId => {
+                const isGateway = ['chichester_entrance', 'needles_fairway', 'solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'lymington_approach'].includes(linkId);
+                return isSolent(linkId) || linkId === endId || linkId === startId || isGateway;
+            });
+        }
+        return links;
     }
-            // MODE: AUTO - Standard Graph
-            return links;
-        }
 
-        function getHaversineDistance(coords1, coords2) {
-            if (!coords1 || !coords2) return 0;
-            const lon1 = coords1.lon * Math.PI / 180;
-            const lat1 = coords1.lat * Math.PI / 180;
-            const lon2 = coords2.lon * Math.PI / 180;
-            const lat2 = coords2.lat * Math.PI / 180;
-            const dlon = lon2 - lon1;
-            const dlat = lat2 - lat1;
-            const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
-            return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        }
+    function getHaversineDistance(coords1, coords2) {
+        if (!coords1 || !coords2) return 0;
+        const lon1 = coords1.lon * Math.PI / 180;
+        const lat1 = coords1.lat * Math.PI / 180;
+        const lon2 = coords2.lon * Math.PI / 180;
+        const lat2 = coords2.lat * Math.PI / 180;
+        const dlon = lon2 - lon1;
+        const dlat = lat2 - lat1;
+        const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+        return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
         
 
 function calculateRoute(startId, endId, effectiveMode) {
