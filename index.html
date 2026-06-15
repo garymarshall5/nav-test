@@ -949,21 +949,24 @@ function getNeighbors(nodeId, startId, endId) {
     const node = mapNodes[nodeId];
     if (!node) return [];
 
-    // Define "Hard Coastal" nodes that must ALWAYS be used if Solent/Shore mode is on
-    const shoreOnlyNodes = ['newtown_creek', 'solent_west', 'lymington_approach', 'fowey_approach', 'dodman_shore_transit'];
-    
     let links = [...node.links];
 
+    // Define categories
+    const isSolentNode = solentPorts.includes(nodeId) || 
+                         ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(nodeId);
+
     if (activeRoutePreference === 'solent') {
-        // Force coastal by removing known deep-sea/offshore waypoint IDs specifically
-        return links.filter(id => !['eddystone_transit', 'iow_south', 'portland_offshore'].includes(id));
+        // VETO: If we are in the Solent, do NOT allow jumps to offshore waypoints
+        // Only allow transit through known Solent-safe nodes
+        return links.filter(id => !['eddystone_transit', 'iow_south', 'portland_offshore', 'berry_head_offshore'].includes(id));
     }
 
     if (activeRoutePreference === 'offshore') {
-        // Force offshore by removing known tight-shore transit IDs
-        return links.filter(id => !['newtown_creek', 'dodman_shore_transit', 'lymington_approach'].includes(id));
+        // VETO: If we want offshore, do NOT allow transit through tight Solent/Harbour nodes
+        return links.filter(id => !['newtown_creek', 'lymington_approach', 'king_quay', 'stokes_bay'].includes(id));
     }
 
+    // AUTO: No filters, the pathfinder will naturally find the shortest route based on Haversine distance
     return links;
 }
 
