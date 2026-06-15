@@ -959,13 +959,18 @@
 
             let links = [...node.links];
             
-            // MODE: OFFSHORE - "The Highway"
-            if (effectiveMode === 'offshore') {
-                return links.filter(linkId => {
-                    const target = mapNodes[linkId];
-                    return !target.isPort || linkId === endId || linkId === startId;
-                });
-            }
+           // MODE: SOLENT
+    if (effectiveMode === 'solent') {
+        return links.filter(linkId => {
+            // 1. Allow if it's a Solent port
+            // 2. Allow if it's the start or end point (The "Gateway" fix)
+            // 3. Allow if it is a specific known transit node
+            return isSolent(linkId) || 
+                   linkId === endId || 
+                   linkId === startId || 
+                   ['chichester_entrance', 'needles_fairway', 'solent_east_forts'].includes(linkId);
+        });
+    }
 
             // MODE: SOLENT - "The Cage"
             if (effectiveMode === 'solent') {
