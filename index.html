@@ -1037,72 +1037,64 @@ offshore_transit_south_devon: {
 
 
 // --- UI & LEAFLET SYNC ---
-        function updateLeafletRoute(pathNodesArray) {
-            routeLayer.clearLayers();
-            currentRoutePath = pathNodesArray;
+function updateLeafletRoute(pathNodesArray) {
+    routeLayer.clearLayers();
+    currentRoutePath = pathNodesArray;
 
-            if (pathNodesArray && pathNodesArray.length > 0) {
-                const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
-                
-                L.polyline(latlngs, {
-                    color: '#10b981',
-                    weight: 3.5,
-                    dashArray: '8, 8',
-                    opacity: 0.9
-                }).addTo(routeLayer);
-
-                for (let i = 1; i < pathNodesArray.length - 1; i++) {
-                    const wp = mapNodes[pathNodesArray[i]];
-                    L.circleMarker([wp.lat, wp.lon], { 
-                        radius: 4, 
-                        fillColor: '#cbd5e1', 
-                        color: '#1e293b', 
-                        weight: 1, 
-                        fillOpacity: 1 
-                    }).addTo(routeLayer);
-                }
-
-                for (let i = 1; i < pathNodesArray.length - 1; i++) {
-        const wpId = pathNodesArray[i];
-        const wp = mapNodes[wpId];
+    if (pathNodesArray && pathNodesArray.length > 0) {
+        const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
         
-        // Create the circle marker
-        const marker = L.circleMarker([wp.lat, wp.lon], { 
-            radius: 4, 
-            fillColor: '#cbd5e1', 
-            color: '#1e293b', 
-            weight: 1, 
-            fillOpacity: 1 
+        // 1. Draw the route line
+        L.polyline(latlngs, {
+            color: '#10b981',
+            weight: 3.5,
+            dashArray: '8, 8',
+            opacity: 0.9
         }).addTo(routeLayer);
 
-        // Bind the tooltip to show the waypoint name on hover
-        marker.bindTooltip(wp.name, {
-            className: 'custom-tooltip', // Uses your existing dark-theme CSS class
-            direction: 'top',
-            offset: [0, -5]
-        });
-    }
+        // 2. Single loop to draw all waypoints (excluding Start/End for now)
+        for (let i = 1; i < pathNodesArray.length - 1; i++) {
+            const wpId = pathNodesArray[i];
+            const wp = mapNodes[wpId];
+            
+            const marker = L.circleMarker([wp.lat, wp.lon], { 
+                radius: 4, 
+                fillColor: '#cbd5e1', 
+                color: '#1e293b', 
+                weight: 1, 
+                fillOpacity: 1 
+            }).addTo(routeLayer);
 
-                const startNode = mapNodes[pathNodesArray[0]];
-                const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
-
-                if (pathNodesArray.length > 1) {
-                    L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
-                        .addTo(routeLayer)
-                        .bindTooltip("DEP", {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
-
-                    L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
-                        .addTo(routeLayer)
-                        .bindTooltip("DEST", {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
-                }
-
-                if (latlngs.length > 1) {
-                    map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
-                } else if (latlngs.length === 1) {
-                    map.flyTo(latlngs[0], 12, { duration: 1.5 });
-                }
-            }
+            // Bind the tooltip (using wp.name OR wpId if name is missing)
+            marker.bindTooltip(wp.name || wpId, {
+                className: 'custom-tooltip',
+                direction: 'top',
+                offset: [0, -5]
+            });
         }
+
+        // 3. Draw Start and End points
+        const startNode = mapNodes[pathNodesArray[0]];
+        const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
+
+        if (pathNodesArray.length > 1) {
+            L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
+                .addTo(routeLayer)
+                .bindTooltip("DEP: " + startNode.name, {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
+
+            L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
+                .addTo(routeLayer)
+                .bindTooltip("DEST: " + endNode.name, {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
+        }
+
+        // 4. Handle Zoom
+        if (latlngs.length > 1) {
+            map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
+        } else if (latlngs.length === 1) {
+            map.flyTo(latlngs[0], 12, { duration: 1.5 });
+        }
+    }
+}
 
         function checkDepth(destNode) {
             const requiredDepth = 1.5; 
