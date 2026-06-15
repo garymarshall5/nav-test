@@ -802,40 +802,28 @@ yealm_approach: {
             berry_head_offshore: { name: "Berry Head Clearance", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south"] },
             start_point_offshore: { name: "Start Point Clearance", lat: 50.210, lon: -3.620, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "eddystone_transit"] }, 
             prawle_point_offshore: { name: "Prawle Point Clearance", lat: 50.200, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
+            
+
             bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bolt_tail_clearance", "eddystone_transit"] }, 
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
-            bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
             
-            // Yealm approach now routes West strictly via the Mewstone clearance
             yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
+            mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "rame_head_transit"] }, // REMOVED PLYMOUTH LINK
+            
+            rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["looe_bay_transit", "mewstone_south_clearance"] },
+            looe_bay_transit: { name: "Looe Bay Transit", lat: 50.330, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
+            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["looe_bay_transit", "dodman_offshore"] },
+            
+            dodman_offshore: { name: "Dodman Point Clearance", lat: 50.205, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach", "eddystone_transit"] }, // REMOVED FALMOUTH_APPROACH LINK
+            st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
+            
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["eddystone_transit", "manacles_east", "portscatho"] }, // REMOVED FALMOUTH_APPROACH LINK
+            manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
+            
+            eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] } // REMOVED PLYMOUTH/FALMOUTH LINKS
             
             // NEW: Forces the track ~0.8nm South of Great Mewstone
-            mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "plymouth_sound_approach", "rame_head_transit"] },
-            
-            // Forces the route to stay offshore of Falmouth/St Anthony's Head
-            st_mawes_approach: { 
-                name: "St Mawes Approach (Offshore)", 
-                lat: 50.135, 
-                lon: -5.000, 
-                isPort: false, 
-                links: ["manacles_east", "dodman_offshore", "st_mawes"] 
-            },
-            
-            
-            // Rame Head now accepts the direct express line from the Mewstone
-            rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["looe_bay_transit", "mewstone_south_clearance"] },
-            
-            looe_bay_transit: { name: "Looe Bay Transit", lat: 50.330, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
-            eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound_approach", "dodman_offshore", "falmouth_bay", "lizard_point"] },
-            dodman_offshore: { name: "Dodman Point Clearance", lat: 50.205, lon: -4.800, isPort: false, links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "portscatho", "falmouth_approach"] },
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["dodman_offshore", "falmouth_approach", "helford", "portscatho", "manacles_east", "start_point_offshore", "eddystone_transit"] },
-            manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point"] },
-            lizard_point: { name: "Lizard Point Clearance", lat: 49.945, lon: -5.200, isPort: false, links: ["manacles_east", "mounts_bay", "eddystone_transit", "heading_west_bypass"] }, 
-            mounts_bay: { name: "Mounts Bay Passage", lat: 49.980, lon: -5.450, isPort: false, links: ["lizard_point", "penzance", "lands_end_south_transit"] },
-            lands_end_south_transit: { name: "Runnel Stone Clearance", lat: 50.000, lon: -5.670, isPort: false, links: ["mounts_bay", "lands_end"] },
-            heading_west_bypass: { name: "English Channel Westbound Transit Line", lat: 50.000, lon: -4.500, isPort: false, links: ["lizard_point"] },
-            lands_end: { name: "Longships Passage", lat: 50.060, lon: -5.780, isPort: false, links: ["lizard_point", "lands_end_south_transit", "scilly", "scilly_grimsby", "scilly_helens", "scilly_tresco"] }
-          };
+            mewstone_south_clearance:   };
             const solentPorts = [
             'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
             'bembridge', 'stokes_bay', 'osborne_bay', 'king_quay', 
