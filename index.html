@@ -948,20 +948,22 @@ yealm_approach: {
 function getNeighbors(nodeId, startId, endId) {
     const node = mapNodes[nodeId];
     if (!node) return [];
+
+    // Define "Hard Coastal" nodes that must ALWAYS be used if Solent/Shore mode is on
+    const shoreOnlyNodes = ['newtown_creek', 'solent_west', 'lymington_approach', 'fowey_approach', 'dodman_shore_transit'];
     
     let links = [...node.links];
 
-    // If "Force Solent" (Coastal) is selected, remove all nodes containing "offshore"
     if (activeRoutePreference === 'solent') {
-        return links.filter(linkId => !linkId.includes('offshore'));
+        // Force coastal by removing known deep-sea/offshore waypoint IDs specifically
+        return links.filter(id => !['eddystone_transit', 'iow_south', 'portland_offshore'].includes(id));
     }
 
-    // If "Offshore" is selected, remove all nodes containing "shore_transit"
     if (activeRoutePreference === 'offshore') {
-        return links.filter(linkId => !linkId.includes('shore_transit'));
+        // Force offshore by removing known tight-shore transit IDs
+        return links.filter(id => !['newtown_creek', 'dodman_shore_transit', 'lymington_approach'].includes(id));
     }
 
-    // Default: Return all available links
     return links;
 }
 
