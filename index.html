@@ -323,6 +323,12 @@
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
 
+        // Solent 
+        function isSolent(id) {
+    return solentPorts.includes(id) || 
+           ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
+}
+
         // Helper function to format phone numbers to active tel links
         function telLink(phone) {
             const rawPhone = phone.replace(/[^0-9]/g, '');
@@ -1016,31 +1022,33 @@ function getNeighbors(nodeId, startId, endId) {
 
                 const neighbors = getNeighbors(current.id, startId, endId);
                 for (const neighborId of neighbors) {
-                    if (!mapNodes[neighborId]) continue;
-                    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
+    if (!mapNodes[neighborId]) continue;
+    
+    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
+    
+    // --- OPTION 2 LOGIC GOES HERE ---
+    let penalty = 0;
+    const neighborNode = mapNodes[neighborId];
 
-// Apply dynamic penalty based on intent
-let penalty = 0;
-const neighborNode = mapNodes[neighborId];
+    // Penalty for ports in offshore mode
+    if (activeRoutePreference === 'offshore' && neighborNode.isPort && neighborId !== endId) {
+        penalty = 20; 
+    } 
+    // Penalty for leaving the Solent when forced
+    else if (activeRoutePreference === 'solent' && !isSolent(neighborId) && neighborId !== endId) {
+        penalty = 20;
+    }
 
-// If Offshore mode is ON and neighbor is a Port, apply penalty to bypass it
-if (activeRoutePreference === 'offshore' && neighborNode.isPort && neighborId !== endId) {
-    penalty = 20; 
-} 
-// If Solent mode is ON and neighbor is NOT Solent, apply penalty to stay inside
-else if (activeRoutePreference === 'solent' && !isSolent(neighborId) && neighborId !== endId) {
-    penalty = 20;
+    const alt = distances[current.id] + edgeDist + penalty;
+    // --------------------------------
+
+    if (alt < distances[neighborId]) {
+        distances[neighborId] = alt;
+        previous[neighborId] = current.id;
+        const idx = queue.findIndex(q => q.id === neighborId);
+        if (idx !== -1) queue[idx].dist = alt;
+    }
 }
-
-const alt = distances[current.id] + edgeDist + penalty;
-                    if (alt < distances[neighborId]) {
-                        distances[neighborId] = alt;
-                        previous[neighborId] = current.id;
-                        const idx = queue.findIndex(q => q.id === neighborId);
-                        if (idx !== -1) queue[idx].dist = alt;
-                    }
-                }
-            }
 
             const path = [];
             let curr = endId;
