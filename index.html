@@ -1011,9 +1011,17 @@
             const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
             let alt = distances[current.id] + edgeDist; 
 
-            // --- NEW LOGIC: Penalize Solent transit if Offshore is forced ---
-            if (effectiveMode === 'offshore' && isSolent(neighborId) && neighborId !== endId && neighborId !== startId) {
-                alt += 1000; // Adds a massive 1,000 NM virtual distance penalty
+            // --- LOGIC: Apply Tidal Gate Penalties for Offshore Mode ---
+            if (effectiveMode === 'offshore' && neighborId !== endId && neighborId !== startId) {
+                // 1. Needles Fairway Penalty (The "Tidal Gate" at the Needles)
+                if (neighborId === 'needles_fairway' || neighborId === 'yarmouth' || neighborId === 'solent_west') {
+                    alt += 250; // High penalty to force avoidance of the Needles channel
+                }
+                
+                // 2. Portland Bill Penalty (The "Tidal Gate" at Portland)
+                if (neighborId === 'portland_offshore' || neighborId === 'portland_east_transit') {
+                    alt += 250; // High penalty to keep the track well clear of the Race
+                }
             }
 
             if (alt < distances[neighborId]) {
@@ -1024,6 +1032,24 @@
             }
         }
     }
+
+    const path = [];
+    let curr = endId;
+    while (curr !== null) {
+        path.unshift(curr);
+        curr = previous[curr];
+    }
+    
+    // Recalculate true geographic distance for the final path so the UI readout remains accurate
+    let trueDistance = 0;
+    if (path.length > 0 && path[0] === startId) {
+        for (let i = 0; i < path.length - 1; i++) {
+            trueDistance += getHaversineDistance(mapNodes[path[i]], mapNodes[path[i+1]]);
+        }
+    }
+
+    return { path: path[0] === startId ? path : [], distance: trueDistance };
+}
 
     const path = [];
     let curr = endId;
