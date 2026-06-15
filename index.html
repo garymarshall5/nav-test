@@ -924,44 +924,31 @@ offshore_transit_south_devon: {
             }
         };
 
-        // --- ROUTING LOGIC ---
-        function setRoutePreference(mode) {
-            activeRoutePreference = mode;
-            ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
-                document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
-            });
-            const activeId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
-            document.getElementById(activeId).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
-            update();
+   // --- ROUTING LOGIC ---
+    function setRoutePreference(mode) {
+        activeRoutePreference = mode;
+        ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
+            document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
+        });
+        const activeId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
+        document.getElementById(activeId).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
+        update();
+    }
+
+    function determineRouteRouting(origin, destination, currentPreference) {
+        if (currentPreference === 'solent') return 'solent';
+        if (currentPreference === 'offshore') return 'offshore';
+
+        const involvesChichester = (origin === 'chichester_entrance' || destination === 'chichester_entrance');
+        const targetLocation = (origin === 'chichester_entrance') ? destination : origin;
+
+        if (involvesChichester) {
+            return solentPorts.includes(targetLocation) ? 'solent' : 'offshore';
         }
+        return 'auto';
+    }
 
-        // New Dynamic Routing Logic Evaluator
-        function determineRouteRouting(origin, destination, currentPreference) {
-            // 1. Absolute Override: User manually clicked Force Solent or Offshore
-            if (currentPreference === 'solent') return 'solent';
-            if (currentPreference === 'offshore') return 'offshore';
-
-            // 2. We are in 'Auto' mode. Check for Chichester.
-            const involvesChichester = (origin === 'chichester_entrance' || destination === 'chichester_entrance');
-            const targetLocation = (origin === 'chichester_entrance') ? destination : origin;
-
-            if (involvesChichester) {
-                // If the destination is inside the Solent, force Solent routing
-                if (solentPorts.includes(targetLocation)) {
-                    return 'solent';
-                } 
-                // Otherwise (Brixham, Weymouth, etc.), force Offshore south of IOW
-                else {
-                    return 'offshore';
-                }
-            }
-            // Default behavior for everything else
-            return 'auto';
-        }
-
-       
-            
- function getNeighbors(nodeId, startId, endId, effectiveMode) {
+    function getNeighbors(nodeId, startId, endId, effectiveMode) {
         const node = mapNodes[nodeId];
         if (!node) return [];
 
@@ -987,75 +974,66 @@ offshore_transit_south_devon: {
         const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
         return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
-        
 
-function calculateRoute(startId, endId, effectiveMode) {
-    if (startId === endId) return { path: [startId], distance: 0 };
+    function calculateRoute(startId, endId, effectiveMode) {
+        if (startId === endId) return { path: [startId], distance: 0 };
 
-    const gScore = {}; // Cost from start to node
-    const fScore = {}; // Estimated total cost (g + heuristic)
-    const previous = {};
-    const openSet = new Set([startId]);
+        const gScore = {};
+        const fScore = {};
+        const previous = {};
+        const openSet = new Set([startId]);
 
-    // Initialize scores
-    for (const key in mapNodes) {
-        gScore[key] = Infinity;
-        fScore[key] = Infinity;
-        previous[key] = null;
-    }
-    gScore[startId] = 0;
-    fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
-
-    while (openSet.size > 0) {
-        // Get node in openSet with lowest fScore
-        let current = null;
-        for (let id of openSet) {
-            if (current === null || fScore[id] < fScore[current]) current = id;
+        for (const key in mapNodes) {
+            gScore[key] = Infinity;
+            fScore[key] = Infinity;
+            previous[key] = null;
         }
+        gScore[startId] = 0;
+        fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
 
-        if (current === endId) break;
-
-        openSet.delete(current);
-        const neighbors = getNeighbors(current, startId, endId, effectiveMode);
-
-        for (const neighborId of neighbors) {
-            const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
-            let tentativeGScore = gScore[current] + edgeDist;
-
-            // --- APPLY PENALTIES (Your existing logic) ---
-            if (neighborId !== endId && neighborId !== startId) {
-                if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
-                    tentativeGScore += 250;
-                }
-                if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
-                    tentativeGScore += 250;
-                }
+        while (openSet.size > 0) {
+            let current = null;
+            for (let id of openSet) {
+                if (current === null || fScore[id] < fScore[current]) current = id;
             }
 
-          // ... inside the for loop ...
-if (tentativeGScore < gScore[neighborId]) {
-    previous[neighborId] = current;
-    gScore[neighborId] = tentativeGScore;
-    
-    // THE A* MAGIC: This directs the search toward the destination
-    const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
-    fScore[neighborId] = tentativeGScore + h; 
-    
-    openSet.add(neighborId);
-}
-        }
-    }
+            if (current === endId) break;
 
-    // Path Reconstruction
-    const path = [];
-    let curr = endId;
-    while (curr !== null) {
-        path.unshift(curr);
-        curr = previous[curr];
-    }
-    
-    return { path: path[0] === startId ? path : [], distance: gScore[endId] };
-}    
+            openSet.delete(current);
+            const neighbors = getNeighbors(current, startId, endId, effectiveMode);
+
+            for (const neighborId of neighbors) {
+                const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
+                let tentativeGScore = gScore[current] + edgeDist;
+
+                if (neighborId !== endId && neighborId !== startId) {
+                    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
+                        tentativeGScore += 250;
+                    }
+                    if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
+                        tentativeGScore += 250;
+                    }
+                }
+
+                if (tentativeGScore < gScore[neighborId]) {
+                    previous[neighborId] = current;
+                    gScore[neighborId] = tentativeGScore;
+                    const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
+                    fScore[neighborId] = tentativeGScore + h;
+                    openSet.add(neighborId);
+                }
+            }
+        }
+
+        const path = [];
+        let curr = endId;
+        while (curr !== null) {
+            path.unshift(curr);
+            curr = previous[curr];
+        }
+
+        return { path: path[0] === startId ? path : [], distance: gScore[endId] };
+    }    
 
 
 // --- UI & LEAFLET SYNC ---
