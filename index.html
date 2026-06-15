@@ -966,27 +966,22 @@ function getNeighbors(nodeId, startId, endId) {
     const isSolent = (id) => solentPorts.includes(id) || 
                           ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
 
-    // FORCE SOLENT: Keep path inside the Solent system
-    if (activeRoutePreference === 'solent') {
-        // If we are in the Solent, allow moving to other Solent nodes OR the end goal
-        if (isSolent(nodeId)) {
-            return links.filter(linkId => isSolent(linkId) || linkId === endId);
-        }
-        // If we are at the Start node, force entry into the Solent
-        if (nodeId === startId) {
-            return links.filter(linkId => isSolent(linkId));
-        }
-    }
-
-    // OFFSHORE: Keep path out of ports, but maintain the offshore chain
+    // MODE: OFFSHORE - "The Highway"
     if (activeRoutePreference === 'offshore') {
+        // ONLY allow offshore nodes, PLUS the exact start/end points
         return links.filter(linkId => {
             const target = mapNodes[linkId];
-            // Allow if it's an offshore waypoint OR the destination
-            return !target.isPort || linkId === endId;
+            return !target.isPort || linkId === endId || linkId === startId;
         });
     }
 
+    // MODE: SOLENT - "The Cage"
+    if (activeRoutePreference === 'solent') {
+        // ONLY allow Solent nodes, PLUS the exact start/end points
+        return links.filter(linkId => isSolent(linkId) || linkId === endId || linkId === startId);
+    }
+
+    // MODE: AUTO - Standard Graph
     return links;
 }
         function getHaversineDistance(coords1, coords2) {
