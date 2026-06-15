@@ -1049,16 +1049,7 @@ function calculateRoute(startId, endId, effectiveMode) {
     
     return { path: path[0] === startId ? path : [], distance: gScore[endId] };
 }    
-    // Recalculate true geographic distance for the final path so the UI remains accurate
-    let trueDistance = 0;
-    if (path.length > 0 && path[0] === startId) {
-        for (let i = 0; i < path.length - 1; i++) {
-            trueDistance += getHaversineDistance(mapNodes[path[i]], mapNodes[path[i+1]]);
-        }
-    }
 
-    return { path: path[0] === startId ? path : [], distance: trueDistance };
-}
 
 // --- UI & LEAFLET SYNC ---
         function updateLeafletRoute(pathNodesArray) {
