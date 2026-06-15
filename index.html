@@ -1007,8 +1007,21 @@ function getNeighbors(nodeId, startId, endId) {
                 for (const neighborId of neighbors) {
                     if (!mapNodes[neighborId]) continue;
                     const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-                    const alt = distances[current.id] + edgeDist;
 
+// Apply dynamic penalty based on intent
+let penalty = 0;
+const neighborNode = mapNodes[neighborId];
+
+// If Offshore mode is ON and neighbor is a Port, apply penalty to bypass it
+if (activeRoutePreference === 'offshore' && neighborNode.isPort && neighborId !== endId) {
+    penalty = 20; 
+} 
+// If Solent mode is ON and neighbor is NOT Solent, apply penalty to stay inside
+else if (activeRoutePreference === 'solent' && !isSolent(neighborId) && neighborId !== endId) {
+    penalty = 20;
+}
+
+const alt = distances[current.id] + edgeDist + penalty;
                     if (alt < distances[neighborId]) {
                         distances[neighborId] = alt;
                         previous[neighborId] = current.id;
