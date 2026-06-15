@@ -1018,18 +1018,28 @@ function calculateRoute(startId, endId, effectiveMode) {
             const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
             let alt = distances[current.id] + edgeDist; 
 
-            // --- LOGIC: Apply Tidal Gate Penalties for Offshore Mode ---
-            if (effectiveMode === 'offshore' && neighborId !== endId && neighborId !== startId) {
-                // 1. Needles Fairway Penalty (The "Tidal Gate" at the Needles)
-                if (['needles_fairway', 'yarmouth', 'solent_west'].includes(neighborId)) {
-                    alt += 250; // Ensure units match your Haversine output
-                }
-                
-                // 2. Portland Bill Penalty (The "Tidal Gate" at Portland)
-                if (['portland_offshore', 'portland_east_transit'].includes(neighborId)) {
-                    alt += 250; 
-                }
-            }
+            // --- LOGIC: Apply Routing Penalties based on Mode ---
+if (neighborId !== endId && neighborId !== startId) {
+
+    // Mode 1: If they want to go OFFSHORE, penalize the Solent entries to force them outside
+    if (effectiveMode === 'offshore') {
+        if (['needles_fairway', 'yarmouth', 'solent_west'].includes(neighborId)) {
+            alt += 250; 
+        }
+        if (['portland_offshore', 'portland_east_transit'].includes(neighborId)) {
+            alt += 250; 
+        }
+    }
+
+    // Mode 2: If they want to use the SOLENT (Inshore), penalize the outside route to force them inside
+    if (effectiveMode === 'inshore') {
+        // NOTE: Replace these string names with whatever your actual node IDs are 
+        // for the waters SOUTH of the Isle of Wight (e.g., St. Catherine's Point)
+        if (['st_catherines_point', 'south_iow_passage', 'an_farn_buoy'].includes(neighborId)) {
+            alt += 250; 
+        }
+    }
+}
 
             if (alt < distances[neighborId]) {
                 distances[neighborId] = alt;
