@@ -963,24 +963,27 @@ function getNeighbors(nodeId, startId, endId) {
     if (!node) return [];
 
     let links = [...node.links];
+    const isSolent = (id) => solentPorts.includes(id) || 
+                          ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
 
-    // 1. OFFSHORE MODE: The "Expressway"
-    if (activeRoutePreference === 'offshore') {
-        // Only return links that are NOT ports, OR if the link is the final destination.
-        return links.filter(linkId => {
-            const target = mapNodes[linkId];
-            return !target.isPort || linkId === endId;
-        });
+    // FORCE SOLENT: Keep path inside the Solent system
+    if (activeRoutePreference === 'solent') {
+        // If we are in the Solent, allow moving to other Solent nodes OR the end goal
+        if (isSolent(nodeId)) {
+            return links.filter(linkId => isSolent(linkId) || linkId === endId);
+        }
+        // If we are at the Start node, force entry into the Solent
+        if (nodeId === startId) {
+            return links.filter(linkId => isSolent(linkId));
+        }
     }
 
-    // 2. SOLENT MODE: The "Solent Cage"
-    if (activeRoutePreference === 'solent') {
-        const isSolent = (id) => solentPorts.includes(id) || 
-                              ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
-        
-        // If we are in the Solent, stay there. If we are entering/exiting, allow that transition.
+    // OFFSHORE: Keep path out of ports, but maintain the offshore chain
+    if (activeRoutePreference === 'offshore') {
         return links.filter(linkId => {
-            return isSolent(nodeId) ? (isSolent(linkId) || linkId === startId || linkId === endId) : isSolent(linkId);
+            const target = mapNodes[linkId];
+            // Allow if it's an offshore waypoint OR the destination
+            return !target.isPort || linkId === endId;
         });
     }
 
