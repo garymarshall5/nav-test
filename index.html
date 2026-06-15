@@ -708,7 +708,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Helford River Moorings ${telLink('01326 231575')} ${webLink('https://www.helfordrivermoorings.co.uk/', 'Helford River Moorings')}`,
                 hazards: "August Rock lies off the entrance. Shallow bar limits access at low water. Dense mooring buoy fields. Oyster bed restrictions apply.",
-                links: ["frenchmans_creek", "dodman_offshore"]
+                links: ["frenchmans_creek", "dodman_offshore","helford_approach"]
             },
             frenchmans_creek: {
                 name: "Frenchman's Creek", lat: 50.090, lon: -5.135, isPort: true, isShallowBar: true, barDepth: 0.2, tideId: "0004",
@@ -717,7 +717,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
                 marina: `• Deep wilderness creek anchorage on the south bank of the Helford.<br>• Suitable only for shallow draft or drying vessels.`,
                 hazards: "Almost completely dries at low water except for a few deep pools. Ancient oak trees overhang the channel—watch your mast!",
-                links: ["helford", "dodman_offshore"]
+                links: ["helford", "dodman_offshore",  "helford_approach"]
             },
             penzance: {
                 name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
@@ -806,7 +806,9 @@
             dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, 
             st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
             dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["manacles_east", "portscatho"] }, 
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["manacles_east", "portscatho","helford_approach"] }, 
+            helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["manacles_east", "portscatho"] }, 
+
             manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
         };
