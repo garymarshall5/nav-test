@@ -959,24 +959,27 @@
 
             let links = [...node.links];
             
-           // MODE: SOLENT
+           function getNeighbors(nodeId, startId, endId, effectiveMode) {
+    const node = mapNodes[nodeId];
+    if (!node) return [];
+
+    let links = [...node.links];
+    
+    // MODE: SOLENT - "The Gateway & Cage Logic"
     if (effectiveMode === 'solent') {
         return links.filter(linkId => {
-            // 1. Allow if it's a Solent port
-            // 2. Allow if it's the start or end point (The "Gateway" fix)
-            // 3. Allow if it is a specific known transit node
+            // 1. Allow if it's explicitly a Solent port or transit area
+            // 2. Allow if it's the target destination (to exit the cage)
+            // 3. Allow if it's the starting node (to enter the cage)
+            // 4. Always allow known Solent gateway nodes
+            const isGateway = ['chichester_entrance', 'needles_fairway', 'solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'lymington_approach'].includes(linkId);
+            
             return isSolent(linkId) || 
                    linkId === endId || 
                    linkId === startId || 
-                   ['chichester_entrance', 'needles_fairway', 'solent_east_forts'].includes(linkId);
+                   isGateway;
         });
     }
-
-            // MODE: SOLENT - "The Cage"
-            if (effectiveMode === 'solent') {
-                return links.filter(linkId => isSolent(linkId) || linkId === endId || linkId === startId);
-            }
-
             // MODE: AUTO - Standard Graph
             return links;
         }
