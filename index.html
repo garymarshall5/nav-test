@@ -789,6 +789,16 @@
             bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bolt_tail_clearance", "eddystone_transit"] }, 
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
             yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "plymouth_sound_approach"] },
+            bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
+            
+            // Yealm approach now routes West strictly via the Mewstone clearance
+            yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
+            
+            // NEW: Forces the track ~0.8nm South of Great Mewstone
+            mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "plymouth_sound_approach", "rame_head_transit"] },
+            
+            // Rame Head now accepts the direct express line from the Mewstone
+            rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit", "mewstone_south_clearance"] },
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit"] },
             looe_bay_transit: { name: "Looe Bay Transit", lat: 50.330, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "plymouth_sound_approach", "dodman_offshore", "falmouth_bay", "lizard_point"] },
