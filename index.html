@@ -989,69 +989,57 @@
 
 function calculateRoute(startId, endId, effectiveMode) {
     if (startId === endId) return { path: [startId], distance: 0 };
-    
-    const distances = {};
+
+    const gScore = {}; // Cost from start to node
+    const fScore = {}; // Estimated total cost (g + heuristic)
     const previous = {};
-    let queue = [];
+    const openSet = new Set([startId]);
 
-    // Initialize graph
+    // Initialize scores
     for (const key in mapNodes) {
-        distances[key] = key === startId ? 0 : Infinity;
+        gScore[key] = Infinity;
+        fScore[key] = Infinity;
         previous[key] = null;
-        queue.push({ id: key, dist: distances[key] });
     }
+    gScore[startId] = 0;
+    fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
 
-    while (queue.length > 0) {
-        // Note: sorting the queue on every iteration is O(N log N). 
-        // This is fine for small graphs, but might lag if mapNodes > 1000.
-        queue.sort((a, b) => a.dist - b.dist);
-        const current = queue.shift();
-        
-        if (current.dist === Infinity) break;
-        if (current.id === endId) break;
+    while (openSet.size > 0) {
+        // Get node in openSet with lowest fScore
+        let current = null;
+        for (let id of openSet) {
+            if (current === null || fScore[id] < fScore[current]) current = id;
+        }
 
-        const neighbors = getNeighbors(current.id, startId, endId, effectiveMode);
-        
+        if (current === endId) break;
+
+        openSet.delete(current);
+        const neighbors = getNeighbors(current, startId, endId, effectiveMode);
+
         for (const neighborId of neighbors) {
-            if (!mapNodes[neighborId]) continue;
-            
-            const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-            let alt = distances[current.id] + edgeDist; 
+            const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
+            let tentativeGScore = gScore[current] + edgeDist;
 
-            // --- LOGIC: Apply Routing Penalties based on Mode ---
-if (neighborId !== endId && neighborId !== startId) {
+            // --- APPLY PENALTIES (Your existing logic) ---
+            if (neighborId !== endId && neighborId !== startId) {
+                if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
+                    tentativeGScore += 250;
+                }
+                if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
+                    tentativeGScore += 250;
+                }
+            }
 
-    // Mode 1: If they want to go OFFSHORE, penalize the Solent entries to force them outside
-    if (effectiveMode === 'offshore') {
-        if (['needles_fairway', 'yarmouth', 'solent_west'].includes(neighborId)) {
-            alt += 250; 
-        }
-        if (['portland_offshore', 'portland_east_transit'].includes(neighborId)) {
-            alt += 250; 
-        }
-    }
-
-    // Mode 2: If they want to use the SOLENT (Inshore), penalize the outside route to force them inside
-    if (effectiveMode === 'solent') {
-        // NOTE: Replace these string names with whatever your actual node IDs are 
-        // for the waters SOUTH of the Isle of Wight (e.g., St. Catherine's Point)
-        if (['st_catherines_point', 'south_iow_passage', 'an_farn_buoy'].includes(neighborId)) {
-            alt += 250; 
-        }
-    }
-}
-
-            if (alt < distances[neighborId]) {
-                distances[neighborId] = alt;
-                previous[neighborId] = current.id;
-                
-                const idx = queue.findIndex(q => q.id === neighborId);
-                if (idx !== -1) queue[idx].dist = alt;
+            if (tentativeGScore < gScore[neighborId]) {
+                previous[neighborId] = current;
+                gScore[neighborId] = tentativeGScore;
+                fScore[neighborId] = gScore[neighborId] + getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
+                openSet.add(neighborId);
             }
         }
     }
 
-    // Reconstruct the path
+    // Path Reconstruction
     const path = [];
     let curr = endId;
     while (curr !== null) {
@@ -1059,6 +1047,8 @@ if (neighborId !== endId && neighborId !== startId) {
         curr = previous[curr];
     }
     
+    return { path: path[0] === startId ? path : [], distance: gScore[endId] };
+}    
     // Recalculate true geographic distance for the final path so the UI remains accurate
     let trueDistance = 0;
     if (path.length > 0 && path[0] === startId) {
