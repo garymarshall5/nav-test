@@ -6,7 +6,6 @@
     <title>Painkiller Almanac - OpenSeaMap Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <style>
@@ -323,11 +322,17 @@
             dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
         }
 
+        const solentPorts = [
+            'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
+            'bembridge', 'stokes_bay', 'osborne_bay', 'king_quay', 
+            'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
+        ];
+
         // Solent 
         function isSolent(id) {
-    return solentPorts.includes(id) || 
-           ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
-}
+            return solentPorts.includes(id) || 
+                   ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
+        }
 
         // Helper function to format phone numbers to active tel links
         function telLink(phone) {
@@ -760,7 +765,7 @@
                 links: ["lands_end"]
             },
 
-            // ----- APPROACH & COASTAL TRANSIT NODES (Preventing land clipping) -----
+            // ----- APPROACH & COASTAL TRANSIT NODES -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "princessa_cardinal"] },
             bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.695, lon: -1.080, isPort: false, links: ["bembridge", "solent_east_forts", "princessa_cardinal", "priory_bay", "seaview", "whitecliff_bay"] },
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
@@ -770,27 +775,12 @@
             weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
             falmouth_approach: { name: "Carrick Roads Approach", lat: 50.150, lon: -5.050, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "st_just_in_roseland","mylor"] },
-fowey_approach: { 
-                name: "Fowey Approach", 
-                lat: 50.320, 
-                lon: -4.630, 
-                isPort: false, 
-                links: ["fowey", "looe_bay_transit", "dodman_offshore"] 
-            },plymouth_sound_approach: { 
-                name: "Plymouth Sound Approach", 
-                lat: 50.315, 
-                lon: -4.140, 
-                isPort: false, 
-                links: ["plymouth", "bovisand_beach", "mewstone_south_clearance", "rame_head_transit", "eddystone_transit"] 
-            },            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.565, isPort: false, links: ["berry_head_offshore", "start_point_offshore", "portland_offshore"] },
-yealm_approach: { 
-                name: "Yealm River Approach", 
-                lat: 50.300, 
-                lon: -4.060, 
-                isPort: false, 
-                links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] 
-            },
-          // ----- TIGHTENED WAYPOINTS & SHAPE NODES -----
+            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["fowey", "looe_bay_transit", "dodman_offshore"] },
+            plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.315, lon: -4.140, isPort: false, links: ["plymouth", "bovisand_beach", "mewstone_south_clearance", "rame_head_transit", "eddystone_transit"] },            
+            dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.340, lon: -3.565, isPort: false, links: ["berry_head_offshore", "start_point_offshore", "portland_offshore"] },
+            yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
+            
+            // ----- TIGHTENED WAYPOINTS & SHAPE NODES -----
             princessa_cardinal: { name: "Princessa Cardinal", lat: 50.665, lon: -1.045, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },
             iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
@@ -805,48 +795,21 @@ yealm_approach: {
             st_albans_transit: { name: "St Albans Ledge Transit", lat: 50.565, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach", "portland_east_transit", "portland_offshore"] },
             portland_east_transit: { name: "Portland East Transit", lat: 50.530, lon: -2.400, isPort: false, links: ["weymouth_approach", "portland_offshore", "st_albans_transit"] },
             portland_offshore: { name: "Portland Bill Clearance (3nm)", lat: 50.470, lon: -2.450, isPort: false, links: ["portland_east_transit", "st_albans_transit", "berry_head_offshore", "start_point_offshore", "weymouth_approach", "dartmouth_approach", "iow_south"] }, 
-           berry_head_offshore: { 
-    name: "Berry Head Clearance", 
-    lat: 50.400, 
-    lon: -3.475, 
-    isPort: false, 
-    // Add start_point_offshore to the links array
-    links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south", "start_point_offshore"] 
-},
-start_point_offshore: { 
-    name: "Start Point Clearance", 
-    lat: 50.210, 
-    lon: -3.620, 
-    isPort: false, 
-    // Add berry_head_offshore to the links array
-    links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "berry_head_offshore"] 
-},prawle_point_offshore: { name: "Prawle Point Clearance", lat: 50.200, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
-            
-
+            berry_head_offshore: { name: "Berry Head Clearance", lat: 50.400, lon: -3.475, isPort: false, links: ["brixham", "portland_offshore", "dartmouth_approach", "iow_south", "start_point_offshore"] },
+            start_point_offshore: { name: "Start Point Clearance", lat: 50.210, lon: -3.620, isPort: false, links: ["dartmouth_approach", "portland_offshore", "prawle_point_offshore", "falmouth_bay", "berry_head_offshore"] },
+            prawle_point_offshore: { name: "Prawle Point Clearance", lat: 50.200, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
             bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bolt_tail_clearance", "eddystone_transit"] }, 
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
-            
-            yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
-            mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "rame_head_transit"] }, // REMOVED PLYMOUTH LINK
-            
+            mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "rame_head_transit"] },
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["looe_bay_transit", "mewstone_south_clearance"] },
             looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.340, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
-            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.630, isPort: false, links: ["looe_bay_transit", "dodman_shore_transit"] },
-            dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
+            dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, 
+            st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
             dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["manacles_east", "portscatho"] }, // REMOVED FALMOUTH_APPROACH LINK
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.115, lon: -5.010, isPort: false, links: ["manacles_east", "portscatho"] }, 
             manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
-            
-            eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] } // REMOVED PLYMOUTH/FALMOUTH LINKS
+            eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
         };
- 
-         
-            const solentPorts = [
-            'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
-            'bembridge', 'stokes_bay', 'osborne_bay', 'king_quay', 
-            'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
-        ];
-      
 
         // Automatic programmatical graph bidirectionality setup
         for (const key in mapNodes) {
@@ -964,32 +927,29 @@ start_point_offshore: {
             update();
         }
 
-function getNeighbors(nodeId, startId, endId) {
-    const node = mapNodes[nodeId];
-    if (!node) return [];
+        function getNeighbors(nodeId, startId, endId) {
+            const node = mapNodes[nodeId];
+            if (!node) return [];
 
-    let links = [...node.links];
-    const isSolent = (id) => solentPorts.includes(id) || 
-                          ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
+            let links = [...node.links];
+            
+            // MODE: OFFSHORE - "The Highway"
+            if (activeRoutePreference === 'offshore') {
+                return links.filter(linkId => {
+                    const target = mapNodes[linkId];
+                    return !target.isPort || linkId === endId || linkId === startId;
+                });
+            }
 
-    // MODE: OFFSHORE - "The Highway"
-    if (activeRoutePreference === 'offshore') {
-        // ONLY allow offshore nodes, PLUS the exact start/end points
-        return links.filter(linkId => {
-            const target = mapNodes[linkId];
-            return !target.isPort || linkId === endId || linkId === startId;
-        });
-    }
+            // MODE: SOLENT - "The Cage"
+            if (activeRoutePreference === 'solent') {
+                return links.filter(linkId => isSolent(linkId) || linkId === endId || linkId === startId);
+            }
 
-    // MODE: SOLENT - "The Cage"
-    if (activeRoutePreference === 'solent') {
-        // ONLY allow Solent nodes, PLUS the exact start/end points
-        return links.filter(linkId => isSolent(linkId) || linkId === endId || linkId === startId);
-    }
+            // MODE: AUTO - Standard Graph
+            return links;
+        }
 
-    // MODE: AUTO - Standard Graph
-    return links;
-}
         function getHaversineDistance(coords1, coords2) {
             if (!coords1 || !coords2) return 0;
             const lon1 = coords1.lon * Math.PI / 180;
@@ -1022,33 +982,19 @@ function getNeighbors(nodeId, startId, endId) {
 
                 const neighbors = getNeighbors(current.id, startId, endId);
                 for (const neighborId of neighbors) {
-    if (!mapNodes[neighborId]) continue;
-    
-    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-    
-    // --- OPTION 2 LOGIC GOES HERE ---
-    let penalty = 0;
-    const neighborNode = mapNodes[neighborId];
+                    if (!mapNodes[neighborId]) continue;
+                    
+                    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
+                    const alt = distances[current.id] + edgeDist; // No penalties, just pure distance!
 
-    // Penalty for ports in offshore mode
-    if (activeRoutePreference === 'offshore' && neighborNode.isPort && neighborId !== endId) {
-        penalty = 20; 
-    } 
-    // Penalty for leaving the Solent when forced
-    else if (activeRoutePreference === 'solent' && !isSolent(neighborId) && neighborId !== endId) {
-        penalty = 20;
-    }
-
-    const alt = distances[current.id] + edgeDist + penalty;
-    // --------------------------------
-
-    if (alt < distances[neighborId]) {
-        distances[neighborId] = alt;
-        previous[neighborId] = current.id;
-        const idx = queue.findIndex(q => q.id === neighborId);
-        if (idx !== -1) queue[idx].dist = alt;
-    }
-}
+                    if (alt < distances[neighborId]) {
+                        distances[neighborId] = alt;
+                        previous[neighborId] = current.id;
+                        const idx = queue.findIndex(q => q.id === neighborId);
+                        if (idx !== -1) queue[idx].dist = alt;
+                    }
+                }
+            }
 
             const path = [];
             let curr = endId;
