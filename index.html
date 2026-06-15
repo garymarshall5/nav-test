@@ -951,19 +951,24 @@ function getNeighbors(nodeId, startId, endId) {
 
     let links = [...node.links];
 
-    // If Offshore mode is ON, exclude any node that is a Port, 
-    // UNLESS it is the actual start or end destination.
+    // 1. OFFSHORE MODE: The "Expressway"
     if (activeRoutePreference === 'offshore') {
+        // Only return links that are NOT ports, OR if the link is the final destination.
         return links.filter(linkId => {
             const target = mapNodes[linkId];
-            // Only keep if it's NOT a port, OR if it's the specific destination
             return !target.isPort || linkId === endId;
         });
     }
 
-    // Force Solent logic
+    // 2. SOLENT MODE: The "Solent Cage"
     if (activeRoutePreference === 'solent') {
-        return links.filter(linkId => isSolent(nodeId) && isSolent(linkId));
+        const isSolent = (id) => solentPorts.includes(id) || 
+                              ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
+        
+        // If we are in the Solent, stay there. If we are entering/exiting, allow that transition.
+        return links.filter(linkId => {
+            return isSolent(nodeId) ? (isSolent(linkId) || linkId === startId || linkId === endId) : isSolent(linkId);
+        });
     }
 
     return links;
