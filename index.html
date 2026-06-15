@@ -1032,7 +1032,7 @@ if (neighborId !== endId && neighborId !== startId) {
     }
 
     // Mode 2: If they want to use the SOLENT (Inshore), penalize the outside route to force them inside
-    if (effectiveMode === 'inshore') {
+    if (effectiveMode === 'solent') {
         // NOTE: Replace these string names with whatever your actual node IDs are 
         // for the waters SOUTH of the Isle of Wight (e.g., St. Catherine's Point)
         if (['st_catherines_point', 'south_iow_passage', 'an_farn_buoy'].includes(neighborId)) {
