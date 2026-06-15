@@ -951,25 +951,22 @@ function getNeighbors(nodeId, startId, endId) {
 
     let links = [...node.links];
     
-    // Helper to identify Solent nodes
+    // Helper: Define the Solent network
     const isSolent = (id) => solentPorts.includes(id) || 
                           ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
 
-    // 1. FORCE SOLENT: If toggled, prohibit leaving the Solent once inside, 
-    // AND prioritize entering it from the start.
     if (activeRoutePreference === 'solent') {
-        // If we are currently in a Solent node, we are not allowed to jump to offshore
+        // If we are currently in a Solent node, stay in the Solent
         if (isSolent(nodeId)) {
-            return links.filter(linkId => isSolent(linkId));
+            return links.filter(linkId => isSolent(linkId) || linkId === startId || linkId === endId);
         }
-        // If we are at the start node (e.g. Chichester), 
-        // we MUST pick a neighbor that leads into the Solent
-        if (nodeId === startId) {
+        
+        // If we are at the Start or End, allow moving to a Solent node
+        if (nodeId === startId || nodeId === endId) {
             return links.filter(linkId => isSolent(linkId));
         }
     }
 
-    // 2. OFFSHORE: If toggled, prohibit entering Solent nodes
     if (activeRoutePreference === 'offshore') {
         return links.filter(linkId => !isSolent(linkId));
     }
