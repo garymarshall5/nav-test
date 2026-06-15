@@ -950,25 +950,20 @@ function getNeighbors(nodeId, startId, endId) {
     if (!node) return [];
 
     let links = [...node.links];
-    
-    // Helper: Define the Solent network
-    const isSolent = (id) => solentPorts.includes(id) || 
-                          ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach'].includes(id);
 
-    if (activeRoutePreference === 'solent') {
-        // If we are currently in a Solent node, stay in the Solent
-        if (isSolent(nodeId)) {
-            return links.filter(linkId => isSolent(linkId) || linkId === startId || linkId === endId);
-        }
-        
-        // If we are at the Start or End, allow moving to a Solent node
-        if (nodeId === startId || nodeId === endId) {
-            return links.filter(linkId => isSolent(linkId));
-        }
+    // If Offshore mode is ON, exclude any node that is a Port, 
+    // UNLESS it is the actual start or end destination.
+    if (activeRoutePreference === 'offshore') {
+        return links.filter(linkId => {
+            const target = mapNodes[linkId];
+            // Only keep if it's NOT a port, OR if it's the specific destination
+            return !target.isPort || linkId === endId;
+        });
     }
 
-    if (activeRoutePreference === 'offshore') {
-        return links.filter(linkId => !isSolent(linkId));
+    // Force Solent logic
+    if (activeRoutePreference === 'solent') {
+        return links.filter(linkId => isSolent(nodeId) && isSolent(linkId));
     }
 
     return links;
