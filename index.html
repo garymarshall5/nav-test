@@ -987,40 +987,61 @@
         }
 
         function calculateRoute(startId, endId, effectiveMode) {
-            if (startId === endId) return { path: [startId], distance: 0 };
-            const distances = {};
-            const previous = {};
-            let queue = [];
+    if (startId === endId) return { path: [startId], distance: 0 };
+    const distances = {};
+    const previous = {};
+    let queue = [];
 
-            for (const key in mapNodes) {
-                distances[key] = key === startId ? 0 : Infinity;
-                previous[key] = null;
-                queue.push({ id: key, dist: distances[key] });
+    for (const key in mapNodes) {
+        distances[key] = key === startId ? 0 : Infinity;
+        previous[key] = null;
+        queue.push({ id: key, dist: distances[key] });
+    }
+
+    while (queue.length > 0) {
+        queue.sort((a, b) => a.dist - b.dist);
+        const current = queue.shift();
+        if (current.dist === Infinity) break;
+        if (current.id === endId) break;
+
+        const neighbors = getNeighbors(current.id, startId, endId, effectiveMode);
+        for (const neighborId of neighbors) {
+            if (!mapNodes[neighborId]) continue;
+            
+            const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
+            let alt = distances[current.id] + edgeDist; 
+
+            // --- NEW LOGIC: Penalize Solent transit if Offshore is forced ---
+            if (effectiveMode === 'offshore' && isSolent(neighborId) && neighborId !== endId && neighborId !== startId) {
+                alt += 1000; // Adds a massive 1,000 NM virtual distance penalty
             }
 
-            while (queue.length > 0) {
-                queue.sort((a, b) => a.dist - b.dist);
-                const current = queue.shift();
-                if (current.dist === Infinity) break;
-                if (current.id === endId) break;
-
-                // Pass the effectiveMode down here
-                const neighbors = getNeighbors(current.id, startId, endId, effectiveMode);
-                for (const neighborId of neighbors) {
-                    if (!mapNodes[neighborId]) continue;
-                    
-                    const edgeDist = getHaversineDistance(mapNodes[current.id], mapNodes[neighborId]);
-                    const alt = distances[current.id] + edgeDist; 
-
-                    if (alt < distances[neighborId]) {
-                        distances[neighborId] = alt;
-                        previous[neighborId] = current.id;
-                        const idx = queue.findIndex(q => q.id === neighborId);
-                        if (idx !== -1) queue[idx].dist = alt;
-                    }
-                }
+            if (alt < distances[neighborId]) {
+                distances[neighborId] = alt;
+                previous[neighborId] = current.id;
+                const idx = queue.findIndex(q => q.id === neighborId);
+                if (idx !== -1) queue[idx].dist = alt;
             }
+        }
+    }
 
+    const path = [];
+    let curr = endId;
+    while (curr !== null) {
+        path.unshift(curr);
+        curr = previous[curr];
+    }
+    
+    // Recalculate true geographic distance for the final path so the UI remains accurate
+    let trueDistance = 0;
+    if (path.length > 0 && path[0] === startId) {
+        for (let i = 0; i < path.length - 1; i++) {
+            trueDistance += getHaversineDistance(mapNodes[path[i]], mapNodes[path[i+1]]);
+        }
+    }
+
+    return { path: path[0] === startId ? path : [], distance: trueDistance };
+}
             const path = [];
             let curr = endId;
             while (curr !== null) {
