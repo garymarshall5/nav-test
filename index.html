@@ -763,7 +763,7 @@
             poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
             weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
-            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.140, lon: -5.040, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "mylor", "dodman_offshore"] },
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.150, lon: -5.050, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "st_just_in_roseland","mylor"] },
 fowey_approach: { 
                 name: "Fowey Approach", 
                 lat: 50.320, 
@@ -804,7 +804,6 @@ yealm_approach: {
             prawle_point_offshore: { name: "Prawle Point Clearance", lat: 50.200, lon: -3.715, isPort: false, links: ["start_point_offshore", "salcombe_approach", "bolt_head_offshore"] }, 
             bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore", "salcombe_approach", "bolt_tail_clearance", "eddystone_transit"] }, 
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
-            yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "plymouth_sound_approach"] },
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach", "plymouth_sound_approach"] },
             
             // Yealm approach now routes West strictly via the Mewstone clearance
@@ -812,6 +811,16 @@ yealm_approach: {
             
             // NEW: Forces the track ~0.8nm South of Great Mewstone
             mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "plymouth_sound_approach", "rame_head_transit"] },
+            
+            // Forces the route to stay offshore of Falmouth/St Anthony's Head
+            st_mawes_approach: { 
+                name: "St Mawes Approach (Offshore)", 
+                lat: 50.135, 
+                lon: -5.000, 
+                isPort: false, 
+                links: ["manacles_east", "dodman_offshore", "st_mawes"] 
+            },
+            
             
             // Rame Head now accepts the direct express line from the Mewstone
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["plymouth_sound_approach", "looe_bay_transit", "mewstone_south_clearance"] },
