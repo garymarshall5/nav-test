@@ -629,15 +629,7 @@
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
                 links: ["fowey_approach"]
             },
-            portscatho: {
-                name: "Portscatho", lat: 50.178, lon: -4.965, isPort: true, isShallowBar: false, tideId: "0005",
-                vhf: "Watch CH 16", category: "Anchorage", fuel: "No Fuel",
-                navily: "https://www.navily.com/mouillage/porthscatho/50380",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Sand/Clay holding anchorage in the shelter of Gerrans Bay.`,
-                hazards: "Completely exposed to east and south-east winds which generate dangerous lee-shore breaking surf.",
-                links: ["dodman_offshore"]
-            },
+            
             stmawes: {
                 name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
@@ -806,7 +798,7 @@
             dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, 
             st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
             dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
-            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["manacles_east", "portscatho","helford_approach"] }, 
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["manacles_east","helford_approach"] }, 
             helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["manacles_east"] }, 
 offshore_transit_south_devon: {
     name: "Devon Offshore Transit",
@@ -1620,11 +1612,7 @@ function updateLeafletRoute(pathNodesArray) {
                     food: ["<strong>The Old Quay House Restaurant</strong> ⭐ 4.5/5 - Smart estuary-side dining terrace with gorgeous views.", "<strong>Gameanger Bakery</strong> ⭐ 4.6/5 - Phenomenal Cornish pasties, buns, and local ice cream lines."],
                     amenities: "Fowey Harbour Authority deep-water visitor pontoons, harbor water taxi networks, public shower cells at the quay, and mid-river fuel options."
                 },
-                portscatho: {
-                    pubs: ["<strong>The Plume of Feathers</strong> ⭐ 4.5/5 - Historic Cornish country pub serving local fish cuts.", "<strong>The Standard Inn</strong> (Gerrans) ⭐ 4.4/5 - Exceptional traditional community bar."],
-                    food: ["<strong>The Hidden Hut</strong> (Porthcurnick Beach) ⭐ 4.8/5 - Globally famous beachside open-air woodfire feast nights.", "<strong>Portscatho Bakery</strong> ⭐ 4.5/5 - Local saffron cakes and warm morning treats."],
-                    amenities: "Beach anchorage with sand holding. Public slipway, village grocery stores, basic toilets near the beach wall, and regular coastal bus vectors."
-                },
+                
                 stmawes: {
                     pubs: ["<strong>The Victory Inn</strong> ⭐ 4.4/5 - Traditional lanes pub with a lovely elevated sea view terrace.", "<strong>The Rising Sun</strong> ⭐ 4.5/5 - Smart premium waterfront inn overlooking the harbor quay."],
                     food: ["<strong>The Idle Rocks Restaurant</strong> ⭐ 4.6/5 - High-end culinary dining set on a spectacular stone seawall terrace.", "<strong>St Mawes Bakery</strong> ⭐ 4.6/5 - Historic pasty maker supplying the docks since the 1800s."],
