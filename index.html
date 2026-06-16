@@ -1005,7 +1005,7 @@
 
                 // --- SAFETY GATE LOGIC ---
                 // If starting at Brixham and heading to any Western Port:
-                // Force the route through 'start_point_offshore' by penalizing all other exits.
+                // Force the route through 'berry_head_offshore' by penalizing all other exits.
                 if (startId === 'brixham' && westernPorts.includes(endId)) {
                     if (current === 'brixham' && neighborId !== 'start_point_offshore') {
                         tentativeGScore += 55000; 
