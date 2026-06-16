@@ -629,7 +629,6 @@
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
                 links: ["fowey_approach"]
             },
-            
             stmawes: {
                 name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "No Fuel",
@@ -800,12 +799,12 @@
             dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["manacles_east","helford_approach"] }, 
             helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["manacles_east"] }, 
-offshore_transit_south_devon: {
-    name: "Devon Offshore Transit",
-    lat: 50.150,
-    lon: -3.800,
-    isPort: false,
-    links: ["portland_offshore", "fowey_approach"] }, 
+            offshore_transit_south_devon: {
+                name: "Devon Offshore Transit",
+                lat: 50.150,
+                lon: -3.800,
+                isPort: false,
+                links: ["portland_offshore", "fowey_approach"] }, 
 
             manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
@@ -916,7 +915,7 @@ offshore_transit_south_devon: {
             }
         };
 
-   // --- ROUTING LOGIC ---
+    // --- ROUTING LOGIC ---
     function setRoutePreference(mode) {
         activeRoutePreference = mode;
         ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
@@ -940,145 +939,168 @@ offshore_transit_south_devon: {
         return 'auto';
     }
 
- function calculateRoute(startId, endId, effectiveMode) {
-    if (startId === endId) return { path: [startId], distance: 0 };
-
-    // Define the Western destination list that triggers the gateway rule
-    const westernPorts = [
-        'dartmouth', 'dittisham', 'totnes', 'salcombe', 'newtonferrers', 
-        'bovisand_beach', 'plymouth', 'fowey', 'portscatho', 'stmawes', 
-        'st_just', 'malpas', 'mylor', 'truro', 'falmouth', 'penryn', 
-        'helford', 'frenchmans_creek', 'penzance', 'scilly_helens', 
-        'scilly', 'scilly_tresco', 'scilly_grimsby'
-    ];
-
-    const gScore = {};
-    const fScore = {};
-    const previous = {};
-    const openSet = new Set([startId]);
-
-    for (const key in mapNodes) {
-        gScore[key] = Infinity;
-        fScore[key] = Infinity;
-        previous[key] = null;
-    }
-    gScore[startId] = 0;
-    fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
-
-    while (openSet.size > 0) {
-        let current = null;
-        for (let id of openSet) {
-            if (current === null || fScore[id] < fScore[current]) current = id;
-        }
-
-        if (current === endId) break;
-
-        openSet.delete(current);
-        const neighbors = getNeighbors(current, startId, endId, effectiveMode);
-
-        for (const neighborId of neighbors) {
-            const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
-            let tentativeGScore = gScore[current] + edgeDist;
-
-            // --- SAFETY GATE LOGIC ---
-            // If starting at Brixham and heading to any Western Port:
-            // Force the route through 'start_point_offshore' by penalizing all other exits.
-            if (startId === 'brixham' && westernPorts.includes(endId)) {
-                if (current === 'brixham' && neighborId !== 'start_point_offshore') {
-                    tentativeGScore += 5000; 
-                }
-            }
-
-            // --- EXISTING PENALTIES ---
-            if (neighborId !== endId && neighborId !== startId) {
-                if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
-                    tentativeGScore += 250;
-                }
-                if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
-                    tentativeGScore += 250;
-                }
-            }
-
-            if (tentativeGScore < gScore[neighborId]) {
-                previous[neighborId] = current;
-                gScore[neighborId] = tentativeGScore;
-                const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
-                fScore[neighborId] = tentativeGScore + h;
-                openSet.add(neighborId);
-            }
-        }
-    }
-
-    const path = [];
-    let curr = endId;
-    while (curr !== null) {
-        path.unshift(curr);
-        curr = previous[curr];
-    }
-
-    return { path: path[0] === startId ? path : [], distance: gScore[endId] };
-}
-
-
-// --- UI & LEAFLET SYNC ---
-function updateLeafletRoute(pathNodesArray) {
-    routeLayer.clearLayers();
-    currentRoutePath = pathNodesArray;
-
-    if (pathNodesArray && pathNodesArray.length > 0) {
-        const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
-        
-        // 1. Draw the route line
-        L.polyline(latlngs, {
-            color: '#10b981',
-            weight: 3.5,
-            dashArray: '8, 8',
-            opacity: 0.9
-        }).addTo(routeLayer);
-
-        // 2. Single loop to draw all waypoints (excluding Start/End for now)
-        for (let i = 1; i < pathNodesArray.length - 1; i++) {
-            const wpId = pathNodesArray[i];
-            const wp = mapNodes[wpId];
-            
-            const marker = L.circleMarker([wp.lat, wp.lon], { 
-                radius: 4, 
-                fillColor: '#cbd5e1', 
-                color: '#1e293b', 
-                weight: 1, 
-                fillOpacity: 1 
-            }).addTo(routeLayer);
-
-            // Bind the tooltip (using wp.name OR wpId if name is missing)
-            marker.bindTooltip(wp.name || wpId, {
-                className: 'custom-tooltip',
-                direction: 'top',
-                offset: [0, -5]
+    // MISSING HELPER FUNCTIONS RESTORED
+    function getNeighbors(nodeId, startId, endId, effectiveMode) {
+        const node = mapNodes[nodeId];
+        if (!node) return [];
+        let links = [...node.links];
+        if (effectiveMode === 'solent') {
+            return links.filter(linkId => {
+                const isGateway = ['chichester_entrance', 'needles_fairway', 'solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'lymington_approach'].includes(linkId);
+                return isSolent(linkId) || linkId === endId || linkId === startId || isGateway;
             });
         }
+        return links;
+    }
 
-        // 3. Draw Start and End points
-        const startNode = mapNodes[pathNodesArray[0]];
-        const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
+    function getHaversineDistance(coords1, coords2) {
+        if (!coords1 || !coords2) return 0;
+        const lon1 = coords1.lon * Math.PI / 180; const lat1 = coords1.lat * Math.PI / 180;
+        const lon2 = coords2.lon * Math.PI / 180; const lat2 = coords2.lat * Math.PI / 180;
+        const dlon = lon2 - lon1; const dlat = lat2 - lat1;
+        const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+        return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
 
-        if (pathNodesArray.length > 1) {
-            L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
-                .addTo(routeLayer)
-                .bindTooltip("DEP: " + startNode.name, {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
+    function calculateRoute(startId, endId, effectiveMode) {
+        if (startId === endId) return { path: [startId], distance: 0 };
 
-            L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
-                .addTo(routeLayer)
-                .bindTooltip("DEST: " + endNode.name, {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
+        // Define the Western destination list that triggers the gateway rule
+        const westernPorts = [
+            'dartmouth', 'dittisham', 'totnes', 'salcombe', 'newtonferrers', 
+            'bovisand_beach', 'plymouth', 'fowey', 'portscatho', 'stmawes', 
+            'st_just', 'malpas', 'mylor', 'truro', 'falmouth', 'penryn', 
+            'helford', 'frenchmans_creek', 'penzance', 'scilly_helens', 
+            'scilly', 'scilly_tresco', 'scilly_grimsby'
+        ];
+
+        const gScore = {};
+        const fScore = {};
+        const previous = {};
+        const openSet = new Set([startId]);
+
+        for (const key in mapNodes) {
+            gScore[key] = Infinity;
+            fScore[key] = Infinity;
+            previous[key] = null;
+        }
+        gScore[startId] = 0;
+        fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
+
+        while (openSet.size > 0) {
+            let current = null;
+            for (let id of openSet) {
+                if (current === null || fScore[id] < fScore[current]) current = id;
+            }
+
+            if (current === endId) break;
+
+            openSet.delete(current);
+            const neighbors = getNeighbors(current, startId, endId, effectiveMode);
+
+            for (const neighborId of neighbors) {
+                const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
+                let tentativeGScore = gScore[current] + edgeDist;
+
+                // --- SAFETY GATE LOGIC ---
+                // If starting at Brixham and heading to any Western Port:
+                // Force the route through 'start_point_offshore' by penalizing all other exits.
+                if (startId === 'brixham' && westernPorts.includes(endId)) {
+                    if (current === 'brixham' && neighborId !== 'start_point_offshore') {
+                        tentativeGScore += 5000; 
+                    }
+                }
+
+                // --- EXISTING PENALTIES ---
+                if (neighborId !== endId && neighborId !== startId) {
+                    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
+                        tentativeGScore += 250;
+                    }
+                    if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
+                        tentativeGScore += 250;
+                    }
+                }
+
+                if (tentativeGScore < gScore[neighborId]) {
+                    previous[neighborId] = current;
+                    gScore[neighborId] = tentativeGScore;
+                    const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
+                    fScore[neighborId] = tentativeGScore + h;
+                    openSet.add(neighborId);
+                }
+            }
         }
 
-        // 4. Handle Zoom
-        if (latlngs.length > 1) {
-            map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
-        } else if (latlngs.length === 1) {
-            map.flyTo(latlngs[0], 12, { duration: 1.5 });
+        const path = [];
+        let curr = endId;
+        while (curr !== null) {
+            path.unshift(curr);
+            curr = previous[curr];
+        }
+
+        return { path: path[0] === startId ? path : [], distance: gScore[endId] };
+    }
+
+
+    // --- UI & LEAFLET SYNC ---
+    function updateLeafletRoute(pathNodesArray) {
+        routeLayer.clearLayers();
+        currentRoutePath = pathNodesArray;
+
+        if (pathNodesArray && pathNodesArray.length > 0) {
+            const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
+            
+            // 1. Draw the route line
+            L.polyline(latlngs, {
+                color: '#10b981',
+                weight: 3.5,
+                dashArray: '8, 8',
+                opacity: 0.9
+            }).addTo(routeLayer);
+
+            // 2. Single loop to draw all waypoints (excluding Start/End for now)
+            for (let i = 1; i < pathNodesArray.length - 1; i++) {
+                const wpId = pathNodesArray[i];
+                const wp = mapNodes[wpId];
+                
+                const marker = L.circleMarker([wp.lat, wp.lon], { 
+                    radius: 4, 
+                    fillColor: '#cbd5e1', 
+                    color: '#1e293b', 
+                    weight: 1, 
+                    fillOpacity: 1 
+                }).addTo(routeLayer);
+
+                // Bind the tooltip (using wp.name OR wpId if name is missing)
+                marker.bindTooltip(wp.name || wpId, {
+                    className: 'custom-tooltip',
+                    direction: 'top',
+                    offset: [0, -5]
+                });
+            }
+
+            // 3. Draw Start and End points
+            const startNode = mapNodes[pathNodesArray[0]];
+            const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
+
+            if (pathNodesArray.length > 1) {
+                L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
+                    .addTo(routeLayer)
+                    .bindTooltip("DEP: " + startNode.name, {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
+
+                L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
+                    .addTo(routeLayer)
+                    .bindTooltip("DEST: " + endNode.name, {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
+            }
+
+            // 4. Handle Zoom
+            if (latlngs.length > 1) {
+                map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
+            } else if (latlngs.length === 1) {
+                map.flyTo(latlngs[0], 12, { duration: 1.5 });
+            }
         }
     }
-}
 
         function checkDepth(destNode) {
             const requiredDepth = 1.5; 
