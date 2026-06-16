@@ -795,10 +795,10 @@
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: ["looe_bay_transit", "mewstone_south_clearance"] },
             looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.340, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
             dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "st_mawes_approach"] }, 
-            st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "manacles_east", "st_mawes"] },
+            st_mawes_approach: { name: "St Mawes Approach (Offshore)", lat: 50.135, lon: -5.000, isPort: false, links: ["dodman_offshore", "st_mawes"] },
             dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "st_mawes_approach"] },
             falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["helford_approach"] }, 
-            helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["manacles_east"] }, 
+            helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: [] }, 
             offshore_transit_south_devon: {
                 name: "Devon Offshore Transit",
                 lat: 50.150,
@@ -806,7 +806,7 @@
                 isPort: false,
                 links: ["portland_offshore", "fowey_approach"] }, 
 
-            manacles_east: { name: "The Manacles East Clearance", lat: 50.045, lon: -5.020, isPort: false, links: ["falmouth_bay", "lizard_point", "st_mawes_approach"] },
+            
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
         };
 
