@@ -777,13 +777,11 @@ falmouth_approach: {
             // ----- TIGHTENED WAYPOINTS & SHAPE NODES
 princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
-            iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit","helford"] }, 
-            iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
+iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit", "helford"] },            iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "princessa_cardinal"] }, 
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "southampton_water", "cowes", "osborne_bay", "king_quay", "newtown_creek", "solent_west"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["solent_mid", "lymington_approach", "yarmouth", "needles_fairway", "beaulieu"] },
-            needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "iow_south_coastal", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },
-            poole_bay: { name: "Poole Bay Transit", lat: 50.650, lon: -1.850, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south_coastal"] },
+needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },            poole_bay: { name: "Poole Bay Transit", lat: 50.650, lon: -1.850, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south_coastal"] },
             durlston: { name: "Durlston/Anvil Point Clearance", lat: 50.585, lon: -1.945, isPort: false, links: ["poole_bay", "st_albans_transit", "needles_fairway", "poole_approach", "weymouth_approach"] },
             st_albans_transit: { name: "St Albans Ledge Transit", lat: 50.565, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach", "portland_east_transit", "portland_offshore"] },
             portland_east_transit: { name: "Portland East Transit", lat: 50.530, lon: -2.400, isPort: false, links: ["weymouth_approach", "portland_offshore", "st_albans_transit"] },
@@ -960,10 +958,10 @@ dodman_offshore: {
 }
 
     // MISSING HELPER FUNCTIONS RESTORED
-    function getNeighbors(nodeId, startId, endId, effectiveMode) {
+  function getNeighbors(nodeId, startId, endId, effectiveMode) {
     const node = mapNodes[nodeId];
     if (!node) return [];
-    return [...node.links];
+    return [...node.links]; // Let the algorithm see all nodes, we will control it with costs instead
 }
 
     function getHaversineDistance(coords1, coords2) {
@@ -1047,15 +1045,17 @@ if (effectiveMode === 'auto') {
 }
                 // --- EXISTING PENALTIES ---
            // --- EXISTING PENALTIES ---
+// --- EXISTING PENALTIES ---
 if (neighborId !== endId && neighborId !== startId) {
+    // If user clicks "Offshore", heavily penalize the inside of the Solent
     if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
-        tentativeGScore += 1000; // Massive penalty to keep it out of the Solent
+        tentativeGScore += 1000; 
     }
-    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast'].includes(neighborId)) {
-        tentativeGScore += 1000; // Massive penalty to keep it off the South coast of IoW
+    // If user clicks "Force Solent", heavily penalize the outside of the Isle of Wight
+    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
+        tentativeGScore += 1000; 
     }
 }
-
                 if (tentativeGScore < gScore[neighborId]) {
                     previous[neighborId] = current;
                     gScore[neighborId] = tentativeGScore;
