@@ -111,10 +111,16 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center justify-center gap-3 mt-2 w-full max-w-[240px] mx-auto">
-                    <span class="text-[10px] text-slate-500 font-bold">3 kn</span>
+                <div class="flex items-center justify-center gap-3 mt-3 w-full max-w-[280px] mx-auto">
+                    <button id="btnSpeedDown" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
+                        <i class="fas fa-minus text-xs"></i>
+                    </button>
+                    
                     <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
-                    <span class="text-[10px] text-slate-500 font-bold">10 kn</span>
+                    
+                    <button id="btnSpeedUp" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
+                        <i class="fas fa-plus text-xs"></i>
+                    </button>
                 </div>
                 <div id="routePreferenceBadge" class="mt-3 text-[10px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-500/30">
                     <i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing
@@ -1811,7 +1817,25 @@ if (effectiveMode === 'auto') {
             document.getElementById('speedDisplayVal').innerText = parseFloat(speedSlider.value).toFixed(1);
             update(); 
         });
+// Speed Button Controls
+        function adjustSpeed(amount) {
+            let currentVal = parseFloat(speedSlider.value);
+            let newVal = currentVal + amount;
+            
+            // Keep it strictly within your 3 to 10 knot limits
+            if (newVal < 3) newVal = 3;
+            if (newVal > 10) newVal = 10;
+            
+            // Set the new value to the slider
+            speedSlider.value = newVal;
+            
+            // Update the UI badge and recalculate passage time
+            document.getElementById('speedDisplayVal').innerText = newVal.toFixed(1);
+            update();
+        }
 
+        document.getElementById('btnSpeedDown').addEventListener('click', () => adjustSpeed(-0.5));
+        document.getElementById('btnSpeedUp').addEventListener('click', () => adjustSpeed(0.5));
     </script>
 </body>
 </html>
