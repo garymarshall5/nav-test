@@ -775,8 +775,7 @@ falmouth_approach: {
             yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
             
             // ----- TIGHTENED WAYPOINTS & SHAPE NODES
-            princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "iow_southwest_transit",  "solent_east_forts"] },
-            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
+princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
             iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "needles_fairway", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit","helford"] }, 
             iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
@@ -938,31 +937,34 @@ dodman_offshore: {
     }
 
     function determineRouteRouting(origin, destination, currentPreference) {
-        if (currentPreference === 'solent') return 'solent';
-        if (currentPreference === 'offshore') return 'offshore';
+    // 1. Manual Overrides always win
+    if (currentPreference === 'solent') return 'solent';
+    if (currentPreference === 'offshore') return 'offshore';
 
-        const involvesChichester = (origin === 'chichester_entrance' || destination === 'chichester_entrance');
-        const targetLocation = (origin === 'chichester_entrance') ? destination : origin;
-
-        if (involvesChichester) {
-            return solentPorts.includes(targetLocation) ? 'solent' : 'offshore';
-        }
-        return 'auto';
+    // 2. Identify our Eastern departure/arrival points
+    const easternPorts = ['chichester_entrance', 'whitecliff_bay'];
+    
+    const isOriginEast = easternPorts.includes(origin);
+    const isDestEast = easternPorts.includes(destination);
+    
+    // 3. If we are traveling between an Eastern port and a non-Solent port (West), default to Offshore (South of IoW)
+    if (isOriginEast && !isSolent(destination) && !easternPorts.includes(destination)) {
+        return 'offshore';
     }
+    if (isDestEast && !isSolent(origin) && !easternPorts.includes(origin)) {
+        return 'offshore';
+    }
+
+    // 4. Everything else uses standard auto calculations
+    return 'auto';
+}
 
     // MISSING HELPER FUNCTIONS RESTORED
     function getNeighbors(nodeId, startId, endId, effectiveMode) {
-        const node = mapNodes[nodeId];
-        if (!node) return [];
-        let links = [...node.links];
-        if (effectiveMode === 'solent') {
-            return links.filter(linkId => {
-                const isGateway = ['chichester_entrance', 'needles_fairway', 'solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'lymington_approach'].includes(linkId);
-                return isSolent(linkId) || linkId === endId || linkId === startId || isGateway;
-            });
-        }
-        return links;
-    }
+    const node = mapNodes[nodeId];
+    if (!node) return [];
+    return [...node.links];
+}
 
     function getHaversineDistance(coords1, coords2) {
         if (!coords1 || !coords2) return 0;
@@ -1044,14 +1046,15 @@ if (effectiveMode === 'auto') {
     }
 }
                 // --- EXISTING PENALTIES ---
-                if (neighborId !== endId && neighborId !== startId) {
-                    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
-                        tentativeGScore += 250;
-                    }
-                    if (effectiveMode === 'solent' && ['st_catherines_point', 'iow_south'].includes(neighborId)) {
-                        tentativeGScore += 250;
-                    }
-                }
+           // --- EXISTING PENALTIES ---
+if (neighborId !== endId && neighborId !== startId) {
+    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
+        tentativeGScore += 1000; // Massive penalty to keep it out of the Solent
+    }
+    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast'].includes(neighborId)) {
+        tentativeGScore += 1000; // Massive penalty to keep it off the South coast of IoW
+    }
+}
 
                 if (tentativeGScore < gScore[neighborId]) {
                     previous[neighborId] = current;
