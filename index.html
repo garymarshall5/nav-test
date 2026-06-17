@@ -483,7 +483,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• National Trust protected estuary.<br>• Visitor moorings available inside. Eco-sensitive seagrass area.<br>${webLink('https://www.nationaltrust.org.uk', 'National Trust Newtown')}`,
                 hazards: "Strict shallow entrance bar. High speed cross-tides at the creek mouth. Must navigate closely along the narrow, winding spit markers.",
-                links: ["solent_mid", "solent_west", "yarmouth"]
+                links: [ "solent_west", "yarmouth","beaulieu_approach"]
             },
             yarmouth: {
                 name: "Yarmouth Harbour", lat: 50.705, lon: -1.498, isPort: true, isShallowBar: false, tideId: "0061",
@@ -492,7 +492,7 @@
                 vhf: "VHF CH 68", category: "Harbour", fuel: "Diesel & Petrol",
                 marina: `• Yarmouth Harbour Pontoons ${vhfBadge('68')} ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Web')}<br><br>HM (Yarmouth): ${telLink('01983 760321')} ${webLink('https://www.yarmouthharbour.co.uk', 'Yarmouth Harbour')}<br>Email: ${emailLink('info@yarmouthharbour.co.uk')}`,
                 hazards: "Car ferries maneuver aggressively in the temporary entrance channel. Strong cross-tides sweep east/west across the outer pierhead.",
-                links: ["solent_west", "newtown_creek", "lymington_approach", "needles_fairway"]
+                links: ["solent_west", "beaulieu_approach", "lymington_approach", "needles_fairway"]
             },
             lymington: {
                 name: "Lymington", lat: 50.752, lon: -1.530, isPort: true, isShallowBar: false, tideId: "0044",
@@ -773,7 +773,8 @@ falmouth_approach: {
             plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.315, lon: -4.140, isPort: false, links: ["plymouth","bovisand_beach", "mewstone_south_clearance","rame_head_transit"] },            
             dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.3215, lon: -3.545, isPort: false, links: ["start_point_offshore","berry_head_offshore"] },
             yealm_approach: { name: "Yealm River Approach", lat: 50.300, lon: -4.060, isPort: false, links: ["bolt_tail_clearance", "newtonferrers", "mewstone_south_clearance"] },
-            
+            beaulieu_approach: { name: "Beaulieu Entrance / Mid Channel", lat: 50.768, lon: -1.359, isPort: false, links: ["beaulieu", "solent_mid", "solent_west","newtown_creek"] },
+
             // ----- TIGHTENED WAYPOINTS & SHAPE NODES
 princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
