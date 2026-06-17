@@ -1051,16 +1051,16 @@ if (effectiveMode === 'auto') {
                 // --- EXISTING PENALTIES ---
            // --- EXISTING PENALTIES ---
 // --- EXISTING PENALTIES ---
-if (neighborId !== endId && neighborId !== startId) {
-    // If user clicks "Offshore", heavily penalize the inside of the Solent
-    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
-        tentativeGScore += 1000; 
-    }
-    // If user clicks "Force Solent", heavily penalize the outside of the Isle of Wight
-    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
-        tentativeGScore += 1000; 
-    }
-}
+                if (neighborId !== endId && neighborId !== startId) {
+                    // If user clicks "Offshore", heavily penalize the inside of the Solent
+                    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'beaulieu_approach', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
+                        tentativeGScore += 1000; 
+                    }
+                    // If user clicks "Force Solent", heavily penalize the outside of the Isle of Wight
+                    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
+                        tentativeGScore += 1000; 
+                    }
+                }
                 if (tentativeGScore < gScore[neighborId]) {
                     previous[neighborId] = current;
                     gScore[neighborId] = tentativeGScore;
