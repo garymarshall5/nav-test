@@ -555,7 +555,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/devon+(south+coast)/",
                 marina: `• Brixham MDL Marina ${vhfBadge('80')} ${telLink('01803 882929')} ${webLink('https://www.mdlmarinas.co.uk/marinas/mdl-brixham-marina/marina-plan/', 'MDL Brixham')}<br><br>HM (Torbay Auth): ${telLink('01803 853321')} ${webLink('https://www.torbayharbours.co.uk', 'Torbay Harbours')}<br>Email: ${emailLink('brixham@mdlmarinas.co.uk')}`,
                 hazards: "Massive active commercial fishing fleet moving 24/7. Long outer breakwater requires a wide berth on approach during easterlies.",
-                links: ["berry_head_offshore","start_point_offshore"]
+                links: ["berry_head_offshore"]
             },
             dartmouth: {
                 name: "Dartmouth", lat: 50.345, lon: -3.575, isPort: true, isShallowBar: false, tideId: "0023",
@@ -1007,7 +1007,7 @@
                 // If starting at Brixham and heading to any Western Port:
                 // Force the route through 'berry_head_offshore' by penalizing all other exits.
                 if (startId === 'brixham' && westernPorts.includes(endId)) {
-                    if (current === 'brixham' && neighborId !== 'start_point_offshore') {
+                    if (current === 'brixham' && neighborId !== 'berry_head_offshore') {
                         tentativeGScore += 5000; 
                     }
                 }
