@@ -1022,7 +1022,17 @@ dodman_offshore: {
                         tentativeGScore += 5000; 
                     }
                 }
-
+// --- COASTAL PREFERENCE PENALTY ---
+    // If the path is attempting to jump from Dartmouth Approach 
+    // to an offshore point, add a 'penalty' to make that route 
+    // look "longer" than staying on the coast.
+    if (current === 'dartmouth_approach' && neighborId === 'start_point_offshore') {
+        // Only penalize if the destination is NOT a far-western port
+        const isFarWest = ['falmouth', 'penzance', 'scilly'].includes(endId);
+        if (!isFarWest) {
+            tentativeGScore += 50; // Artificial cost makes the algorithm prefer coastal nodes
+        }
+    }
                 // --- EXISTING PENALTIES ---
                 if (neighborId !== endId && neighborId !== startId) {
                     if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
