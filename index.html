@@ -384,7 +384,7 @@
                 eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/isle+of+wight/",
                 marina: `• Bembridge Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge')}<br>• Duver Marina ${vhfBadge('80')} ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Duver')}<br><br>HM (Bembridge Harbour): ${telLink('01983 872828')} ${webLink('https://www.bembridgeharbour.co.uk', 'Bembridge Web')}<br>Email: ${emailLink('office@bembridgeharbour.co.uk')}`,
                 hazards: "Extremely tidal entrance channel. The bar dries out. Approach from the north via the tide-dependent marked channel only. Avoid Bembridge Ledge to the east.",
-                links: ["bembridge_approach","Solent_east_forts"]
+                links: ["bembridge_approach","solent_east_forts"]
             },
             seaview: {
                 name: "Seaview (IOW)", lat: 50.725, lon: -1.100, isPort: true, isShallowBar: false, tideId: "0064",
@@ -761,14 +761,10 @@
             bembridge_approach: { name: "Bembridge St Helens Approach", lat: 50.695, lon: -1.080, isPort: false, links: ["bembridge", "solent_east_forts", "princessa_cardinal", "priory_bay", "seaview", "whitecliff_bay"] },
             portsmouth_approach: { name: "Portsmouth Swashway Approach", lat: 50.770, lon: -1.090, isPort: false, links: ["portsmouth", "solent_east_forts", "stokes_bay"] },
             southampton_water: { name: "Southampton Water Transit", lat: 50.810, lon: -1.310, isPort: false, links: ["southampton", "solent_mid"] },
-            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth"] },
-            poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
+            lymington_approach: { name: "Lymington River Approach", lat: 50.730, lon: -1.500, isPort: false, links: ["lymington", "solent_west", "yarmouth", "needles_fairway"] },            poole_approach: { name: "Swash Channel Approach", lat: 50.680, lon: -1.940, isPort: false, links: ["poole", "poole_bay", "studland", "needles_fairway", "durlston"] },
             weymouth_approach: { name: "Weymouth Bay Transit", lat: 50.610, lon: -2.430, isPort: false, links: ["weymouth", "portland_marina", "st_albans_transit", "portland_east_transit", "durlston", "portland_offshore"] },
             salcombe_approach: { name: "Salcombe Bar Approach", lat: 50.220, lon: -3.770, isPort: false, links: ["salcombe", "prawle_point_offshore", "bolt_head_offshore"] },
-falmouth_approach: { 
-    name: "Carrick Roads Approach", lat: 50.1537, lon: -5.0316, isPort: false, 
-    links: ["falmouth", "falmouth_bay", "stmawes", "st_just", "mylor"] // REMOVED dodman_offshore
-},
+            falmouth_approach: { name: "Carrick Roads Approach", lat: 50.1537, lon: -5.0316, isPort: false, links: ["falmouth", "falmouth_bay", "stmawes", "st_just", "mylor"]  },
             fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.650, isPort: false, links: ["fowey", "looe_bay_transit","bolt_tail_clearance", "dodman_offshore","newton_ferrers"] },
             plymouth_sound_approach: { name: "Plymouth Sound Approach", lat: 50.315, lon: -4.140, isPort: false, links: ["plymouth","bovisand_beach", "mewstone_south_clearance","rame_head_transit"] },            
             dartmouth_approach: { name: "Dartmouth Approach Passage", lat: 50.3215, lon: -3.545, isPort: false, links: ["start_point_offshore","berry_head_offshore"] },
@@ -776,18 +772,16 @@ falmouth_approach: {
             beaulieu_approach: { name: "Beaulieu Entrance / Mid Channel", lat: 50.768, lon: -1.359, isPort: false, links: ["beaulieu", "solent_mid", "solent_west","newtown_creek"] },
 
             // ----- TIGHTENED WAYPOINTS & SHAPE NODES
-princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
+            princessa_cardinal: { name: "Princessa Cardinal", lat: 50.670, lon: -1.0580, isPort: false, links: ["chichester_approach", "bembridge_approach", "whitecliff_bay", "iow_southeast", "solent_east_forts"] },            
+            iow_southeast: { name: "Sandown Bay Offshore", lat: 50.600, lon: -1.100, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] }, 
             iow_south: { name: "St Catherine's Offshore Point", lat: 50.530, lon: -1.300, isPort: false, links: ["iow_southeast", "portland_offshore", "berry_head_offshore"] }, 
-iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit", "helford"] },            iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
-           iow_southeast: { name: "Ventnor/Dunnose Clearance", lat: 50.565, lon: -1.160, isPort: false, links: ["princessa_cardinal", "iow_south", "iow_south_coastal"] },
+            iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit", "helford"] },            
+            iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "princessa_cardinal"] }, 
-needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },           
+            needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },           
             poole_bay: { name: "Poole Bay Transit", lat: 50.650, lon: -1.850, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south_coastal"] },
-solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "beaulieu_approach","southampton_water", "cowes", "osborne_bay", "king_quay"] },
-            
+            solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "beaulieu_approach","southampton_water", "cowes", "osborne_bay", "king_quay"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["lymington_approach", "yarmouth", "needles_fairway", "beaulieu_approach"] },
-            
-            beaulieu_approach: { name: "Beaulieu Entrance / Mid Channel", lat: 50.768, lon: -1.359, isPort: false, links: ["beaulieu", "solent_mid", "solent_west","newtown_creek"] },
             durlston: { name: "Durlston/Anvil Point Clearance", lat: 50.585, lon: -1.945, isPort: false, links: ["poole_bay", "st_albans_transit", "needles_fairway", "poole_approach", "weymouth_approach"] },
             st_albans_transit: { name: "St Albans Ledge Transit", lat: 50.565, lon: -2.060, isPort: false, links: ["durlston", "weymouth_approach", "portland_east_transit", "portland_offshore"] },
             portland_east_transit: { name: "Portland East Transit", lat: 50.530, lon: -2.400, isPort: false, links: ["weymouth_approach", "portland_offshore", "st_albans_transit"] },
@@ -798,29 +792,13 @@ solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: f
             bolt_head_offshore: { name: "Bolt Head Clearance", lat: 50.205, lon: -3.780, isPort: false, links: ["prawle_point_offshore","fowey_approach", "salcombe_approach",  "eddystone_transit"] }, 
             bolt_tail_clearance: { name: "Bolt Tail Clearance", lat: 50.245, lon: -3.880, isPort: false, links: ["bolt_head_offshore", "yealm_approach","fowey_approach", "plymouth_sound_approach"] },
             mewstone_south_clearance: { name: "Great Mewstone South Clearance", lat: 50.295, lon: -4.115, isPort: false, links: ["yealm_approach", "rame_head_transit"] },
-            dodman_shore_transit: { 
-    name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, 
-    links: ["fowey_approach", "falmouth_bay"] // REMOVED falmouth_approach
-}, 
-dodman_offshore: { 
-    name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, 
-    links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "rame_head_transit"] // REMOVED falmouth_approach
-},
-           falmouth_bay: { 
-    name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, 
-    links: ["helford_approach", "dodman_offshore"] 
-},
+            dodman_shore_transit: { name: "Dodman Point Coastal", lat: 50.215, lon: -4.790, isPort: false, links: ["fowey_approach", "falmouth_bay"] }, 
+            dodman_offshore: { name: "Dodman Offshore", lat: 50.180, lon: -4.800, isPort: false, links: ["fowey_approach", "falmouth_bay", "eddystone_transit", "rame_head_transit"] },
+            falmouth_bay: { name: "Falmouth Bay Transit", lat: 50.1345, lon: -5.020, isPort: false, links: ["helford_approach", "dodman_offshore"] },
             rame_head_transit: { name: "Rame Head Clearance", lat: 50.310, lon: -4.225, isPort: false, links: [ "looe_bay_transit","mewstone_south_clearance", "dodman_offshore"] },
             looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.340, lon: -4.430, isPort: false, links: ["rame_head_transit", "fowey_approach"] },
             helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["helford", "falmouth_bay", "dodman_offshore"] }, 
-            offshore_transit_south_devon: {
-                name: "Devon Offshore Transit",
-                lat: 50.150,
-                lon: -3.800,
-                isPort: false,
-                links: ["portland_offshore", "fowey_approach"] }, 
-
-            
+            offshore_transit_south_devon: {name: "Devon Offshore Transit", lat: 50.150, lon: -3.800, isPort: false,links: ["portland_offshore", "fowey_approach"] }, 
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
         };
 
