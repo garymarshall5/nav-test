@@ -7,8 +7,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Magic CSS to animate Leaflet SVG lines */
+        .leaflet-interactive {
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: drawRoute 1.5s ease-out forwards;
+        }
+        @keyframes drawRoute {
+            to { stroke-dashoffset: 0; }
+        }
+
         .glow-blue { box-shadow: 0 0 15px rgba(59, 130, 246, 0.25); }
         .glow-emerald { box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); }
         .glow-rose { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
@@ -19,48 +34,31 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        select { -webkit-appearance: none; }
-        .safe-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }F
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.3);
-            border-radius: 999px;
-        }
+        .safe-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 999px; }
+
+        /* Custom Dark Mode Select Component CSS */
+        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
+        .custom-select { position: relative; display: flex; flex-direction: column; }
+        .custom-select__trigger { display: flex; align-items: center; justify-content: space-between; padding: 0 1rem 0 3rem; font-size: 0.875rem; font-weight: 700; color: #fff; height: 3.5rem; background-color: #0f172a; border: 1px solid #334155; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .custom-select__trigger:hover { border-color: #3b82f6; background-color: #1e293b; }
+        .custom-options { position: absolute; display: block; top: calc(100% + 4px); left: 0; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 0.75rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.8); z-index: 500; max-height: 250px; overflow-y: auto; opacity: 0; visibility: hidden; pointer-events: none; transition: all 0.2s ease; transform: translateY(-10px); }
+        .custom-select.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; transform: translateY(0); }
+        .custom-option { position: relative; display: block; padding: 0.85rem 1rem 0.85rem 3rem; font-size: 0.875rem; font-weight: 600; color: #cbd5e1; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid rgba(51, 65, 85, 0.4); }
+        .custom-option:last-child { border-bottom: none; }
+        .custom-option:hover { background-color: #1e293b; color: #fff; padding-left: 3.2rem; }
+        .custom-option.selected { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border-left: 3px solid #3b82f6; padding-left: calc(3rem - 3px); }
 
         /* Leaflet Custom UI overrides for Dark Theme */
-        .leaflet-container {
-            background-color: #060e1a !important;
-            font-family: inherit;
-        }
-        .leaflet-tooltip.custom-tooltip {
-            background-color: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #f8fafc;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-            padding: 4px 8px;
-        }
-        .leaflet-tooltip-top:before {
-            border-top-color: rgba(59, 130, 246, 0.4);
-        }
-        .leaflet-tooltip.route-label {
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            font-weight: 900;
-            font-size: 10px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-        }
+        .leaflet-container { background-color: #060e1a !important; font-family: inherit; }
+        .leaflet-tooltip.custom-tooltip { background-color: rgba(15, 23, 42, 0.95); border: 1px solid rgba(59, 130, 246, 0.4); color: #f8fafc; border-radius: 6px; font-weight: 700; font-size: 10px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); padding: 4px 8px; }
+        .leaflet-tooltip-top:before { border-top-color: rgba(59, 130, 246, 0.4); }
+        .leaflet-tooltip.route-label { background-color: transparent; border: none; box-shadow: none; font-weight: 900; font-size: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
     </style>
 </head>
-<body class="bg-[#020617] p-2 sm:p-4 font-sans text-slate-100 min-h-screen flex flex-col items-center pb-10 safe-pb selection:bg-blue-500/30">
+<body class="bg-[#020617] p-2 sm:p-4 text-slate-100 min-h-screen flex flex-col items-center pb-10 safe-pb selection:bg-blue-500/30">
 
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
         
@@ -84,8 +82,7 @@
             </div>
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
-                <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner">
-                    </div>
+                <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner"></div>
                 <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
@@ -98,16 +95,15 @@
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                 <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
-                <div id="distanceOutput" class="text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
+                <div id="distanceOutput" class="font-mono text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
                 
-                <div id="timeOutput" class="text-xl sm:text-2xl font-bold text-sky-300 mt-2 drop-shadow-md tracking-wide">
+                <div id="timeOutput" class="text-xl sm:text-2xl font-bold text-sky-300 mt-2 drop-shadow-md tracking-wide font-mono">
                     <i class="fas fa-clock mr-1.5 opacity-80"></i>0 mins
                 </div>
                 
-                <!-- NEW PROMINENT SPEED BADGE -->
                 <div class="mt-3 mb-1 flex justify-center">
                     <div class="bg-blue-900/60 text-blue-200 font-black text-sm px-4 py-1.5 rounded-full border border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.4)] flex items-center gap-2">
-                        <i class="fas fa-gauge-high text-blue-400"></i> <span id="speedDisplayVal" class="text-white text-base">5.0</span> KNOTS
+                        <i class="fas fa-gauge-high text-blue-400"></i> <span id="speedDisplayVal" class="text-white text-base font-mono">5.0</span> KNOTS
                     </div>
                 </div>
                 
@@ -144,12 +140,19 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
-                    <div class="w-full">
+                    
+                    <div class="w-full relative">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
-                        <div class="relative">
-                            <select id="departure" class="w-full h-14 pl-12 pr-10 text-sm border border-slate-700 rounded-xl bg-slate-900 text-white font-bold focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer appearance-none transition-all shadow-md relative z-10"></select>
-                            <i class="fas fa-anchor absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg z-0 pointer-events-none"></i>
-                            <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-sm z-0 pointer-events-none"></i>
+                        <select id="departure" class="hidden"></select>
+                        <div class="custom-select-wrapper" id="dep-wrapper">
+                            <div class="custom-select">
+                                <div class="custom-select__trigger">
+                                    <span class="custom-select-text">Select...</span>
+                                    <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
+                                </div>
+                                <i class="fas fa-anchor absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg z-10 pointer-events-none"></i>
+                                <div class="custom-options custom-scrollbar" id="dep-options"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -159,14 +162,21 @@
                         </button>
                     </div>
 
-                    <div class="w-full">
+                    <div class="w-full relative">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
-                        <div class="relative">
-                            <select id="destination" class="w-full h-14 pl-12 pr-10 text-sm border border-slate-700 rounded-xl bg-slate-900 text-white font-bold focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer appearance-none transition-all shadow-md relative z-10"></select>
-                            <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400 text-lg z-0 pointer-events-none"></i>
-                            <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-sm z-0 pointer-events-none"></i>
+                        <select id="destination" class="hidden"></select>
+                        <div class="custom-select-wrapper" id="dest-wrapper">
+                            <div class="custom-select">
+                                <div class="custom-select__trigger">
+                                    <span class="custom-select-text">Select...</span>
+                                    <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
+                                </div>
+                                <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400 text-lg z-10 pointer-events-none"></i>
+                                <div class="custom-options custom-scrollbar" id="dest-options"></div>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
 
@@ -183,22 +193,22 @@
                     <div class="relative w-full z-10">
                         <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
 
-                        <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400]">
-                            <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
-                                <i class="fas fa-plus text-blue-400"></i>
+                        <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400] backdrop-blur-md bg-slate-900/60 p-1.5 rounded-xl border border-slate-700/50 shadow-xl">
+                            <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
+                                <i class="fas fa-plus"></i>
                             </button>
-                            <button onclick="zoomOutMap()" title="Zoom Out" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
-                                <i class="fas fa-minus text-blue-400"></i>
+                            <button onclick="zoomOutMap()" title="Zoom Out" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
+                                <i class="fas fa-minus"></i>
                             </button>
-                            <button onclick="findMyGPSLocation()" title="Locate Me (GPS)" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
+                            <button onclick="findMyGPSLocation()" title="Locate Me (GPS)" class="bg-slate-800/80 hover:bg-emerald-600 hover:text-white hover:border-emerald-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
                                 <i class="fas fa-crosshairs text-emerald-400"></i>
                             </button>
-                            <button onclick="resetZoom()" title="Fit Route" class="bg-slate-900/95 hover:bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-lg transition-colors active:scale-95">
+                            <button onclick="resetZoom()" title="Fit Route" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
                                 <i class="fas fa-route text-blue-400"></i>
                             </button>
                         </div>
 
-                        <div class="absolute bottom-6 left-2 bg-slate-900/95 border border-slate-700 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
+                        <div class="absolute bottom-6 left-2 backdrop-blur-md bg-slate-900/70 border border-slate-700/50 text-[9px] px-3 py-2 rounded-lg space-y-1 text-slate-300 pointer-events-none shadow-xl z-[400]">
                             <div class="flex items-center gap-2"><span class="w-3.5 h-0.5 bg-emerald-500 block"></span> Route Track</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 block border border-white"></span> Port / Departure</div>
                             <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 block border border-white"></span> Destination</div>
@@ -210,8 +220,7 @@
                         <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
                             <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
                         </h3>
-                        <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar">
-                            </div>
+                        <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
                     </div>
                 </div>
 
@@ -269,8 +278,7 @@
                     </div>
 
                     <div class="space-y-2.5">
-                        <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2">
-                            </div>
+                        <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2"></div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
                             <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
@@ -309,8 +317,7 @@
                             <span>Port Guide</span>
                         </button>
 
-                        <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar">
-                            </div>
+                        <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar"></div>
                     </div>
                 </div>
             </div>
@@ -790,7 +797,7 @@
             iow_south_coastal: { name: "St Catherine's Coastal Point", lat: 50.560, lon: -1.300, isPort: false, links: ["iow_southeast", "iow_southwest_transit", "durlston", "poole_bay", "eddystone_transit", "helford"] },            
             iow_southwest_transit: { name: "Atherfield Coastal Transit", lat: 50.600, lon: -1.450, isPort: false, links: ["iow_south_coastal", "needles_fairway"] },
             solent_east_forts: { name: "Eastern Solent Forts", lat: 50.730, lon: -1.050, isPort: false, links: ["chichester_approach", "portsmouth_approach", "solent_mid", "bembridge_approach", "priory_bay", "seaview", "princessa_cardinal"] }, 
-            needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },           
+            needles_fairway: { name: "Needles Safe Water", lat: 50.650, lon: -1.610, isPort: false, links: ["solent_west", "alum_bay", "poole_bay", "durlston", "yarmouth", "iow_southwest_transit", "poole_approach"] },            
             poole_bay: { name: "Poole Bay Transit", lat: 50.650, lon: -1.850, isPort: false, links: ["poole_approach", "needles_fairway", "durlston", "iow_south_coastal"] },
             solent_mid: { name: "Mid-Solent Safe Water", lat: 50.770, lon: -1.250, isPort: false, links: ["solent_east_forts", "stokes_bay", "beaulieu_approach","southampton_water", "cowes", "osborne_bay", "king_quay"] },
             solent_west: { name: "Western Solent Transit", lat: 50.745, lon: -1.450, isPort: false, links: ["lymington_approach", "yarmouth", "needles_fairway", "beaulieu_approach"] },
@@ -839,6 +846,69 @@
         depSelect.innerHTML = depHtml;
         destSelect.innerHTML = destHtml;
 
+        // Custom UI Dropdown Builder
+        function renderCustomOptions() {
+            const depOptionsContainer = document.getElementById('dep-options');
+            const destOptionsContainer = document.getElementById('dest-options');
+            let optionsHTML = '';
+            for (const portId in mapNodes) {
+                if (mapNodes[portId] && mapNodes[portId].isPort) {
+                    optionsHTML += `<span class="custom-option" data-value="${portId}">${mapNodes[portId].name}</span>`;
+                }
+            }
+            depOptionsContainer.innerHTML = optionsHTML;
+            destOptionsContainer.innerHTML = optionsHTML;
+
+            setupCustomSelect('dep-wrapper', 'departure');
+            setupCustomSelect('dest-wrapper', 'destination');
+        }
+
+        function setupCustomSelect(wrapperId, selectId) {
+            const wrapper = document.getElementById(wrapperId);
+            const select = document.getElementById(selectId);
+            const trigger = wrapper.querySelector('.custom-select__trigger');
+            const options = wrapper.querySelectorAll('.custom-option');
+
+            trigger.addEventListener('click', function(e) {
+                document.querySelectorAll('.custom-select').forEach(el => {
+                    if (el !== wrapper.querySelector('.custom-select')) el.classList.remove('open');
+                });
+                wrapper.querySelector('.custom-select').classList.toggle('open');
+                e.stopPropagation();
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    select.value = this.getAttribute('data-value');
+                    wrapper.querySelector('.custom-select').classList.remove('open');
+                    select.dispatchEvent(new Event('change'));
+                });
+            });
+        }
+
+        function updateCustomSelectUI(selectId, wrapperId) {
+            const select = document.getElementById(selectId);
+            const wrapper = document.getElementById(wrapperId);
+            if (!select || !wrapper) return;
+            const triggerText = wrapper.querySelector('.custom-select-text');
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption) triggerText.textContent = selectedOption.text;
+            
+            wrapper.querySelectorAll('.custom-option').forEach(opt => {
+                if(opt.getAttribute('data-value') === select.value) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', function() {
+            document.querySelectorAll('.custom-select').forEach(el => el.classList.remove('open'));
+        });
+
+
         // --- MAP INITIALIZATION (OpenSeaMap & Leaflet) ---
         function initLeafletMap() {
             map = L.map('routingMap', {
@@ -883,7 +953,7 @@
                     marker.on('click', () => {
                         if (depSelect.value !== key) {
                             destSelect.value = key;
-                            update();
+                            destSelect.dispatchEvent(new Event('change'));
                         }
                     });
                 }
@@ -931,33 +1001,27 @@
     }
 
     function determineRouteRouting(origin, destination, currentPreference) {
-    // 1. Manual Overrides always win
-    if (currentPreference === 'solent') return 'solent';
-    if (currentPreference === 'offshore') return 'offshore';
+        if (currentPreference === 'solent') return 'solent';
+        if (currentPreference === 'offshore') return 'offshore';
 
-    // 2. Identify our Eastern departure/arrival points
-    const easternPorts = ['chichester_entrance', 'whitecliff_bay'];
-    
-    const isOriginEast = easternPorts.includes(origin);
-    const isDestEast = easternPorts.includes(destination);
-    
-    // 3. If we are traveling between an Eastern port and a non-Solent port (West), default to Offshore (South of IoW)
-    if (isOriginEast && !isSolent(destination) && !easternPorts.includes(destination)) {
-        return 'offshore';
+        const easternPorts = ['chichester_entrance', 'whitecliff_bay'];
+        const isOriginEast = easternPorts.includes(origin);
+        const isDestEast = easternPorts.includes(destination);
+        
+        if (isOriginEast && !isSolent(destination) && !easternPorts.includes(destination)) {
+            return 'offshore';
+        }
+        if (isDestEast && !isSolent(origin) && !easternPorts.includes(origin)) {
+            return 'offshore';
+        }
+
+        return 'auto';
     }
-    if (isDestEast && !isSolent(origin) && !easternPorts.includes(origin)) {
-        return 'offshore';
-    }
 
-    // 4. Everything else uses standard auto calculations
-    return 'auto';
-}
-
-    // MISSING HELPER FUNCTIONS RESTORED
   function getNeighbors(nodeId, startId, endId, effectiveMode) {
     const node = mapNodes[nodeId];
     if (!node) return [];
-    return [...node.links]; // Let the algorithm see all nodes, we will control it with costs instead
+    return [...node.links];
 }
 
     function getHaversineDistance(coords1, coords2) {
@@ -971,8 +1035,6 @@
 
     function calculateRoute(startId, endId, effectiveMode) {
         if (startId === endId) return { path: [startId], distance: 0 };
-
-        // Define the Western destination list that triggers the gateway rule
         
         const westernPorts = [
             'salcombe', 'newtonferrers', 
@@ -1010,44 +1072,35 @@
                 const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
                 let tentativeGScore = gScore[current] + edgeDist;
 
-                // --- SAFETY GATE LOGIC ---
-                // If starting at Brixham and heading to any Western Port:
-                // Force the route through 'berry_head_offshore' by penalizing all other exits.
                 if (startId === 'brixham' && westernPorts.includes(endId)) {
                     if (current === 'brixham' && neighborId !== 'berry_head_offshore') {
                         tentativeGScore += 5000; 
                     }
                 }
-// --- ANTI DOG-LEG & COASTAL PREFERENCE ---
-// Penalize massive offshore shortcuts when in Auto mode, forcing the 
-// algorithm to prefer your coastal headland waypoints instead.
-if (effectiveMode === 'auto') {
-    const isOffshoreShortcut = (
-        (current === 'start_point_offshore' && neighborId === 'falmouth_bay') ||
-        (current === 'falmouth_bay' && neighborId === 'start_point_offshore') ||
-        (current === 'start_point_offshore' && neighborId === 'iow_south') ||
-        (current === 'iow_south' && neighborId === 'start_point_offshore') ||
-        (current === 'berry_head_offshore' && neighborId === 'iow_south') ||
-        (current === 'iow_south' && neighborId === 'berry_head_offshore') ||
-        (current === 'fowey_approach' && neighborId === 'offshore_transit_south_devon') ||
-        (current === 'offshore_transit_south_devon' && neighborId === 'fowey_approach') ||
-        (current === 'portland_offshore' && neighborId === 'start_point_offshore') ||
-        (current === 'start_point_offshore' && neighborId === 'portland_offshore')
-    );
-    
-    if (isOffshoreShortcut) {
-        tentativeGScore += 500; // Massive penalty ensures A* hugs the coast
-    }
-}
-                // --- EXISTING PENALTIES ---
-           // --- EXISTING PENALTIES ---
-// --- EXISTING PENALTIES ---
+                
+                if (effectiveMode === 'auto') {
+                    const isOffshoreShortcut = (
+                        (current === 'start_point_offshore' && neighborId === 'falmouth_bay') ||
+                        (current === 'falmouth_bay' && neighborId === 'start_point_offshore') ||
+                        (current === 'start_point_offshore' && neighborId === 'iow_south') ||
+                        (current === 'iow_south' && neighborId === 'start_point_offshore') ||
+                        (current === 'berry_head_offshore' && neighborId === 'iow_south') ||
+                        (current === 'iow_south' && neighborId === 'berry_head_offshore') ||
+                        (current === 'fowey_approach' && neighborId === 'offshore_transit_south_devon') ||
+                        (current === 'offshore_transit_south_devon' && neighborId === 'fowey_approach') ||
+                        (current === 'portland_offshore' && neighborId === 'start_point_offshore') ||
+                        (current === 'start_point_offshore' && neighborId === 'portland_offshore')
+                    );
+                    
+                    if (isOffshoreShortcut) {
+                        tentativeGScore += 500; 
+                    }
+                }
+
                 if (neighborId !== endId && neighborId !== startId) {
-                    // If user clicks "Offshore", heavily penalize the inside of the Solent
                     if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'beaulieu_approach', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
                         tentativeGScore += 1000; 
                     }
-                    // If user clicks "Force Solent", heavily penalize the outside of the Isle of Wight
                     if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
                         tentativeGScore += 1000; 
                     }
@@ -1081,7 +1134,7 @@ if (effectiveMode === 'auto') {
         if (pathNodesArray && pathNodesArray.length > 0) {
             const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
             
-            // 1. Draw the route line
+            // 1. Draw the route line (Animated via CSS)
             L.polyline(latlngs, {
                 color: '#10b981',
                 weight: 3.5,
@@ -1089,7 +1142,7 @@ if (effectiveMode === 'auto') {
                 opacity: 0.9
             }).addTo(routeLayer);
 
-            // 2. Single loop to draw all waypoints (excluding Start/End for now)
+            // 2. Draw intermediate waypoints
             for (let i = 1; i < pathNodesArray.length - 1; i++) {
                 const wpId = pathNodesArray[i];
                 const wp = mapNodes[wpId];
@@ -1102,7 +1155,6 @@ if (effectiveMode === 'auto') {
                     fillOpacity: 1 
                 }).addTo(routeLayer);
 
-                // Bind the tooltip (using wp.name OR wpId if name is missing)
                 marker.bindTooltip(wp.name || wpId, {
                     className: 'custom-tooltip',
                     direction: 'top',
@@ -1176,6 +1228,11 @@ if (effectiveMode === 'auto') {
             destSelect.value = tempVal;
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             localStorage.setItem('coastal_nav_destination', destSelect.value);
+            
+            // Sync UI dropdowns
+            updateCustomSelectUI('departure', 'dep-wrapper');
+            updateCustomSelectUI('destination', 'dest-wrapper');
+            
             update();
         }
 
@@ -1185,7 +1242,10 @@ if (effectiveMode === 'auto') {
             const destId = destSelect.value;
             if (!depId || !destId) return;
 
-            // Apply dynamic routing preference based on logic
+            // Sync Custom Dropdowns text
+            updateCustomSelectUI('departure', 'dep-wrapper');
+            updateCustomSelectUI('destination', 'dest-wrapper');
+
             const effectiveRoutingMode = determineRouteRouting(depId, destId, activeRoutePreference);
             const route = calculateRoute(depId, destId, effectiveRoutingMode);
             const destNode = mapNodes[destId];
@@ -1203,7 +1263,6 @@ if (effectiveMode === 'auto') {
             
             document.getElementById('timeOutput').innerHTML = `<i class="fas fa-clock mr-1.5 opacity-80"></i>` + timeStr;
 
-            // Dynamic UI feedback based on what the algorithm decided
             const badge = document.getElementById('routePreferenceBadge');
             if (effectiveRoutingMode === 'offshore' && activeRoutePreference === 'auto') {
                 badge.innerHTML = `<i class="fas fa-ship mr-1"></i> Auto-Detected Offshore Track`;
@@ -1322,7 +1381,6 @@ if (effectiveMode === 'auto') {
                     const segmentDist = getHaversineDistance(p1, p2);
 
                     while (currentIntervalIndex < timeIntervals.length && cumulativeDistance + segmentDist >= targetDistance) {
-                        // Interpolate exact coordinates along the segment
                         const remainingDist = targetDistance - cumulativeDistance;
                         const ratio = remainingDist / segmentDist;
                         const interpLat = p1.lat + (p2.lat - p1.lat) * ratio;
@@ -1330,7 +1388,6 @@ if (effectiveMode === 'auto') {
 
                         const hourLabel = timeIntervals[currentIntervalIndex];
                         
-                        // Create custom styling for the time marker
                         const timeIcon = L.divIcon({
                             className: 'clear-default-leaflet-bg',
                             html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative">${hourLabel}h</div>`,
@@ -1361,7 +1418,7 @@ if (effectiveMode === 'auto') {
         // Live Weather Engine
         async function fetchLocalWeather(lat, lon, destName) {
             const panel = document.getElementById('inshoreForecastContent');
-            panel.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sky-400"></i><span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>`;
+            panel.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sky-400 text-lg"></i><span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>`;
             
             try {
                 const [weatherRes, marineRes] = await Promise.all([
@@ -1473,11 +1530,16 @@ if (effectiveMode === 'auto') {
                                 </div>
                             </div>
                             
-                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[80px] sm:min-w-[90px] shrink-0">
-                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Wind</div>
-                                <div class="text-[11px] sm:text-xs font-black ${windColor} flex items-center gap-1.5 justify-end whitespace-nowrap" title="Wind from ${windDir}° with gusts up to ${windGusts} kn">
-                                    <span>${windKnots}<span class="text-[9px] font-bold text-slate-400">g</span>${windGusts} kn</span>
-                                    <i class="fas fa-arrow-down" style="transform: rotate(${windDir}deg)"></i>
+                            <div class="bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-700/50 min-w-[85px] sm:min-w-[95px] shrink-0 flex items-center justify-between gap-1.5">
+                                <div>
+                                    <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Wind</div>
+                                    <div class="text-[11px] sm:text-xs font-black ${windColor} flex items-center whitespace-nowrap" title="Wind from ${windDir}° with gusts up to ${windGusts} kn">
+                                        <span>${windKnots}<span class="text-[9px] font-bold text-slate-400 mx-[1px]">g</span>${windGusts}</span>
+                                    </div>
+                                </div>
+                                <div class="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-slate-600/60 flex items-center justify-center bg-slate-800 shadow-inner shrink-0" title="Direction: ${windDir}°">
+                                    <span class="absolute top-0 text-[5px] text-slate-400 font-bold -mt-0.5">N</span>
+                                    <i class="fas fa-location-arrow ${windColor} text-[8px] sm:text-[10px] drop-shadow-[0_0_3px_currentColor]" style="transform: rotate(${windDir - 45}deg)"></i>
                                 </div>
                             </div>
                             
@@ -1786,6 +1848,7 @@ if (effectiveMode === 'auto') {
         // --- WINDOW ONLOAD INITIALIZATION ---
         window.onload = () => {
             initLeafletMap();
+            renderCustomOptions();
 
             const savedDep = localStorage.getItem('coastal_nav_departure');
             const savedDest = localStorage.getItem('coastal_nav_destination');
@@ -1796,6 +1859,9 @@ if (effectiveMode === 'auto') {
             if (savedDest && mapNodes[savedDest]) destSelect.value = savedDest;
             else destSelect.value = 'salcombe';
             
+            updateCustomSelectUI('departure', 'dep-wrapper');
+            updateCustomSelectUI('destination', 'dest-wrapper');
+
             setTimeout(() => {
                 update();
             }, 300);
@@ -1813,23 +1879,20 @@ if (effectiveMode === 'auto') {
         });
         
        speedSlider.addEventListener('input', () => {
-            // Updates the prominent number in the new badge
             document.getElementById('speedDisplayVal').innerText = parseFloat(speedSlider.value).toFixed(1);
             update(); 
         });
-// Speed Button Controls
+
+        // Speed Button Controls
         function adjustSpeed(amount) {
             let currentVal = parseFloat(speedSlider.value);
             let newVal = currentVal + amount;
             
-            // Keep it strictly within your 3 to 10 knot limits
             if (newVal < 3) newVal = 3;
             if (newVal > 10) newVal = 10;
             
-            // Set the new value to the slider
             speedSlider.value = newVal;
             
-            // Update the UI badge and recalculate passage time
             document.getElementById('speedDisplayVal').innerText = newVal.toFixed(1);
             update();
         }
