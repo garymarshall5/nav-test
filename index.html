@@ -1022,17 +1022,27 @@ dodman_offshore: {
                         tentativeGScore += 5000; 
                     }
                 }
-// --- COASTAL PREFERENCE PENALTY ---
-    // If the path is attempting to jump from Dartmouth Approach 
-    // to an offshore point, add a 'penalty' to make that route 
-    // look "longer" than staying on the coast.
-    if (current === 'dartmouth_approach' && neighborId === 'start_point_offshore') {
-        // Only penalize if the destination is NOT a far-western port
-        const isFarWest = ['falmouth', 'penzance', 'scilly'].includes(endId);
-        if (!isFarWest) {
-            tentativeGScore += 50; // Artificial cost makes the algorithm prefer coastal nodes
-        }
+// --- ANTI DOG-LEG & COASTAL PREFERENCE ---
+// Penalize massive offshore shortcuts when in Auto mode, forcing the 
+// algorithm to prefer your coastal headland waypoints instead.
+if (effectiveMode === 'auto') {
+    const isOffshoreShortcut = (
+        (current === 'start_point_offshore' && neighborId === 'falmouth_bay') ||
+        (current === 'falmouth_bay' && neighborId === 'start_point_offshore') ||
+        (current === 'start_point_offshore' && neighborId === 'iow_south') ||
+        (current === 'iow_south' && neighborId === 'start_point_offshore') ||
+        (current === 'berry_head_offshore' && neighborId === 'iow_south') ||
+        (current === 'iow_south' && neighborId === 'berry_head_offshore') ||
+        (current === 'fowey_approach' && neighborId === 'offshore_transit_south_devon') ||
+        (current === 'offshore_transit_south_devon' && neighborId === 'fowey_approach') ||
+        (current === 'portland_offshore' && neighborId === 'start_point_offshore') ||
+        (current === 'start_point_offshore' && neighborId === 'portland_offshore')
+    );
+    
+    if (isOffshoreShortcut) {
+        tentativeGScore += 500; // Massive penalty ensures A* hugs the coast
     }
+}
                 // --- EXISTING PENALTIES ---
                 if (neighborId !== endId && neighborId !== startId) {
                     if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'portland_offshore'].includes(neighborId)) {
