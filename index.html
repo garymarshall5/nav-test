@@ -641,6 +641,25 @@ if (dateElement) {
                 hazards: "Major military submarine and warship lanes. Navy ships take absolute priority. Keep strictly clear of moving exclusion zones.",
                 links: ["plymouth_sound_approach"]
             },
+
+            looe: {
+                name: "Looe", lat: 50.3551, lon: -4.4542, isPort: true, isShallowBar: true, barDepth: 0.0, tideId: "0014",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
+                navily: "https://www.navily.com/anchorage/looe/12347",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• River dries completely<br><br>HM (Looe): ${telLink('01503 262839')}<br>Email: ${emailLink('looeharbour@btconnect.com')}`,
+                hazards: "River dries completely at low tide. Access requires strict tidal planning around High Water. Watch for strong river currents on the ebb.",
+                links: ["looe_bay_transit"]
+            },
+            polperro: {
+                name: "Polperro", lat: 50.3292, lon: -4.5204, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
+                vhf: "Watch CH 16 / Phone", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/anchorage/polperro/12345",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• 6 Visitor buoys in outer harbour<br>• Inner harbour dries.<br><br>HM (Polperro): ${telLink('01503 272423')}<br>Email: ${emailLink('admin@polperroharbour.com')}`,
+                hazards: "Inner harbour dries to firm sand. Outer buoys exposed to strong Southerly and South-Easterly winds.",
+                links: ["polperro_transit]
+            },
             fowey: {
                 name: "Fowey Harbour", lat: 50.332, lon: -4.632, isPort: true, isShallowBar: false, tideId: "0014",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -649,6 +668,17 @@ if (dateElement) {
                 marina: `• Fowey Harbour Pontoons ${vhfBadge('12')} ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Web')}<br>• Mixtow Marine ${telLink('01726 832204')} ${webLink('https://www.foweyharbour.co.uk', 'Mixtow')}<br><br>HM (Fowey): ${telLink('01726 832471')} ${webLink('https://www.foweyharbour.co.uk', 'Fowey Harbour Authority')}<br>Email: ${emailLink('fhc@foweyharbour.co.uk')}`,
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
                 links: ["fowey_approach"]
+            },
+
+             mevagissey: {
+                name: "Mevagissey", lat: 50.2702, lon: -4.7875, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/anchorage/mevagissey/12346",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Busy working fishing port<br>• Outer harbour visitor moorings.<br><br>HM (Mevagissey): ${telLink('01726 843305')}<br>Email: ${emailLink('mevagisseyharbour@btconnect.com')}`,
+                hazards: "Inner harbour dries completely to sand/mud. Very busy commercial fishing traffic day and night. Use outer harbour visitor moorings.",
+                links: ["gribbin_head_transit", "dodman_shore_transit"]
+            
             },
             stmawes: {
                 name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
@@ -733,34 +763,8 @@ if (dateElement) {
             },
 
 
-                looe: {
-                name: "Looe", lat: 50.3551, lon: -4.4542, isPort: true, isShallowBar: true, barDepth: 0.0, tideId: "0014",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
-                navily: "https://www.navily.com/anchorage/looe/12347",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• River dries completely<br><br>HM (Looe): ${telLink('01503 262839')}<br>Email: ${emailLink('looeharbour@btconnect.com')}`,
-                hazards: "River dries completely at low tide. Access requires strict tidal planning around High Water. Watch for strong river currents on the ebb.",
-                links: ["looe_bay_transit"]
-            },
-            polperro: {
-                name: "Polperro", lat: 50.3292, lon: -4.5204, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
-                vhf: "Watch CH 16 / Phone", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/anchorage/polperro/12345",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• 6 Visitor buoys in outer harbour<br>• Inner harbour dries.<br><br>HM (Polperro): ${telLink('01503 272423')}<br>Email: ${emailLink('admin@polperroharbour.com')}`,
-                hazards: "Inner harbour dries to firm sand. Outer buoys exposed to strong Southerly and South-Easterly winds.",
-                links: ["looe_bay_transit", "fowey_approach"]
-            },
-            mevagissey: {
-                name: "Mevagissey", lat: 50.2702, lon: -4.7875, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
-                vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel",
-                navily: "https://www.navily.com/anchorage/mevagissey/12346",
-                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
-                marina: `• Busy working fishing port<br>• Outer harbour visitor moorings.<br><br>HM (Mevagissey): ${telLink('01726 843305')}<br>Email: ${emailLink('mevagisseyharbour@btconnect.com')}`,
-                hazards: "Inner harbour dries completely to sand/mud. Very busy commercial fishing traffic day and night. Use outer harbour visitor moorings.",
-                links: ["fowey_approach", "dodman_shore_transit"]
-            
-            },
+                
+           
             penzance: {
                 name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -852,6 +856,12 @@ if (dateElement) {
             helford_approach: { name: "Helford transit Transit", lat: 50.0960, lon: -5.0206, isPort: false, links: ["helford", "falmouth_bay", "dodman_offshore"] }, 
             offshore_transit_south_devon: {name: "Devon Offshore Transit", lat: 50.150, lon: -3.800, isPort: false,links: ["portland_offshore", "fowey_approach"] }, 
             eddystone_transit: { name: "Eddystone Passage", lat: 50.195, lon: -4.260, isPort: false, links: ["start_point_offshore", "bolt_head_offshore", "dodman_offshore", "falmouth_bay", "lizard_point"] }
+            polperro_transit: { name: "Polperro Clearance", lat: 50.315, lon: -4.520, isPort: false, links: ["pencarrow_transit", "looe_bay_transit"] },
+            pencarrow_transit: { name: "Pencarrow Head Transit", lat: 50.305, lon: -4.580, isPort: false, links: ["fowey_approach"] },
+            gribbin_head_transit: { name: "Gribbin Head Clearance", lat: 50.305, lon: -4.665, isPort: false, links: ["fowey_approach", "dodman_shore_transit"] },
+        looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.325, lon: -4.440, isPort: false, links: ["rame_head_transit", "polperro_transit"] },
+            
+            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.650, isPort: false, links: ["fowey", "pencarrow_transit", "gribbin_head_transit", "dodman_offshore", "newton_ferrers", "bolt_tail_clearance"] },
         };
 
         // Automatic programmatical graph bidirectionality setup
