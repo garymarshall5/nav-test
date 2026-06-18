@@ -1531,7 +1531,13 @@ document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span
                         </div>
                     `;
                 } else {
-                    warningContainer.innerHTML = '';
+                // NEW: Positive confirmation badge instead of a blank space
+                    warningContainer.innerHTML = `
+                        <div class="flex items-center gap-2 bg-emerald-950/40 border border-emerald-500/50 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-wider text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] mt-1">
+                            <i class="fas fa-check-circle text-emerald-500"></i>
+                            <span>Conditions Clear</span>
+                        </div>
+                    `;
                 }
                 // -------------------------------------
 
