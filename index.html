@@ -80,16 +80,17 @@
                     <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Hopefully useful information</p>
                 </div>
             </div>
-            
-            <div class="flex flex-col items-center sm:items-end gap-1.5">
-                <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner"></div>
-                <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
-                </span>
-            </div>
-        </div>
-        
+                 <div id="headerWeatherWarning"></div>
+          <div class="flex flex-col items-center sm:items-end gap-1.5">
+    <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner"></div>
+    <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
+    </span>
+    <!-- Dynamic Weather Warning Badge Container -->
+    <div id="headerWeatherWarning" class="min-h-[24px]"></div>
+</div>
+   
         <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
             
             <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
