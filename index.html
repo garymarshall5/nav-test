@@ -731,6 +731,36 @@ if (dateElement) {
                 hazards: "Almost completely dries at low water except for a few deep pools. Ancient oak trees overhang the channel—watch your mast!",
                 links: ["helford", "dodman_offshore",  "helford_approach"]
             },
+
+
+                looe: {
+                name: "Looe", lat: 50.3551, lon: -4.4542, isPort: true, isShallowBar: true, barDepth: 0.0, tideId: "0014",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
+                navily: "https://www.navily.com/anchorage/looe/12347",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• River dries completely<br><br>HM (Looe): ${telLink('01503 262839')}<br>Email: ${emailLink('looeharbour@btconnect.com')}`,
+                hazards: "River dries completely at low tide. Access requires strict tidal planning around High Water. Watch for strong river currents on the ebb.",
+                links: ["looe_bay_transit"]
+            },
+            polperro: {
+                name: "Polperro", lat: 50.3292, lon: -4.5204, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
+                vhf: "Watch CH 16 / Phone", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/anchorage/polperro/12345",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• 6 Visitor buoys in outer harbour<br>• Inner harbour dries.<br><br>HM (Polperro): ${telLink('01503 272423')}<br>Email: ${emailLink('admin@polperroharbour.com')}`,
+                hazards: "Inner harbour dries to firm sand. Outer buoys exposed to strong Southerly and South-Easterly winds.",
+                links: ["looe_bay_transit", "fowey_approach"]
+            },
+            mevagissey: {
+                name: "Mevagissey", lat: 50.2702, lon: -4.7875, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
+                vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel",
+                navily: "https://www.navily.com/anchorage/mevagissey/12346",
+                eoceanic: "https://eoceanic.com/sailing/harbours/europe/england/Cornwall/",
+                marina: `• Busy working fishing port<br>• Outer harbour visitor moorings.<br><br>HM (Mevagissey): ${telLink('01726 843305')}<br>Email: ${emailLink('mevagisseyharbour@btconnect.com')}`,
+                hazards: "Inner harbour dries completely to sand/mud. Very busy commercial fishing traffic day and night. Use outer harbour visitor moorings.",
+                links: ["fowey_approach", "dodman_shore_transit"]
+            
+            },
             penzance: {
                 name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -1801,6 +1831,23 @@ panel.innerHTML = `
                     pubs: ["<strong>The Trengilly Wartha Inn</strong> ⭐ 4.5/5 - Splendid hidden valley pub found roughly 1.5 miles inland.", "<strong>The Shipwrights</strong> ⭐ 4.7/5 - Reachable by high-tide dinghy rows."],
                     food: ["<strong>Helford Village Ice Cream Shed</strong> ⭐ 4.6/5 - Exceptional local clotted cream ice creams.", "<strong>The Gear Farm Pasties</strong> ⭐ 4.8/5 - Arguably Cornwall's finest pasties."],
                     amenities: "Secluded pristine wilderness anchorage. Deeply wooded shores. Completely dries to sand/mud bands. No lights, zero stores—total tranquility."
+                },
+
+
+                looe: {
+                    pubs: ["<strong>The Sail Loft</strong> ⭐ 4.0/5 - Classic maritime pub with a relaxed vibe, great for a pint after tying up.", "<strong>The Jolly Sailor</strong> ⭐ 4.6/5 - One of Britain's oldest pubs, full of heavy beams and nautical history."],
+                    food: ["<strong>The Old Sail Loft</strong> ⭐ 4.5/5 - Fine dining in one of the oldest buildings in Looe, right on the water.", "<strong>Catch</strong> ⭐ 4.5/5 - Award-winning fish and chips located directly on the harbour front."],
+                    amenities: "Strictly tidal access (river dries completely). Diesel available by arrangement via the Harbour Master. Vibrant town with extensive shops, bakeries, and marine services."
+                },
+                polperro: {
+                    pubs: ["<strong>The Three Pilchards</strong> ⭐ 4.5/5 - The oldest pub in Polperro. Features a rooftop harbour view beer garden and famous fish pie.", "<strong>The Blue Peter Inn</strong> ⭐ 4.5/5 - Award-winning historic pub right on the quay. Lively atmosphere and real ales."],
+                    food: ["<strong>Couch's Great House</strong> ⭐ 5.0/5 - High-end dining in a historic merchant's house. Bookings essential.", "<strong>The House on the Props</strong> ⭐ 4.6/5 - Famous building propped on stilts over the river. Excellent for cream teas."],
+                    amenities: "Quaint historic fishing village. No fuel. Inner harbour dries to sand. Extremely limited visitor moorings in the outer harbour—call ahead."
+                },
+                mevagissey: {
+                    pubs: ["<strong>The Fountain Inn</strong> ⭐ 4.5/5 - Traditional 15th-century Cornish pub tucked away in the narrow streets.", "<strong>The Ship Inn</strong> ⭐ 4.4/5 - Classic fishermen's pub with great local character and real ales."],
+                    food: ["<strong>The Sharksfin</strong> ⭐ 4.0/5 - Modern bar and restaurant right on the quay edge overlooking the harbour. Great cocktails.", "<strong>Salamander</strong> ⭐ 4.5/5 - Highly rated independent restaurant focusing on local Cornish steaks and fresh harbor catch."],
+                    amenities: "Busy commercial fishing port. Outer harbour visitor moorings available. Inner harbour dries. Excellent local shops, butchers, and bakeries."
                 },
                 penzance: {
                     pubs: ["<strong>The Dolphin Tavern</strong> ⭐ 4.5/5 - Historic old smuggler pub sitting directly opposite the wet dock gate.", "<strong>The Turks Head</strong> ⭐ 4.4/5 - Penzance's oldest inn filled with pirate history."],
