@@ -334,11 +334,13 @@
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
-        // Strictly enforcing the exact required Date 
-        const exactDate = "Sunday, June 14, 2026";
-        if (dateElement) {
-            dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + exactDate;
-        }
+       // Fetch the live current date
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const liveDate = new Date().toLocaleDateString('en-GB', options);
+
+if (dateElement) {
+    dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + liveDate;
+}
 
         const solentPorts = [
             'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
@@ -1323,8 +1325,7 @@
             
             document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
 
-            document.getElementById('tideContextBanner').innerHTML = `Tide Times Exact Date: <span class="text-indigo-200">` + exactDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
-
+document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span class="text-indigo-200">` + liveDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
             if (destId !== lastWeatherDestId) {
                 fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
                 lastWeatherDestId = destId;
