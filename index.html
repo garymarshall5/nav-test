@@ -1420,6 +1420,37 @@ document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span
         // Live Weather Engine
         async function fetchLocalWeather(lat, lon, destName) {
             const panel = document.getElementById('inshoreForecastContent');
+            // --- DESTINATION WARNING EVALUATOR ---
+const warningContainer = document.getElementById('headerWeatherWarning');
+let activeWarnings = [];
+
+// 1. Check for Wet Weather (Rain probability > 30% or actual precipitation)
+if (rainProb > 30 || rainAmount > 0.5) {
+    activeWarnings.push('<i class="fas fa-cloud-showers-heavy text-sky-400"></i> Wet');
+}
+
+// 2. Check for Gusts over 20 knots
+if (windGusts > 20) {
+    activeWarnings.push('<i class="fas fa-wind text-orange-400"></i> Gusts ' + windGusts + 'kn');
+}
+
+// 3. Check for Choppy/Rough Sea States (using your existing seaStateText)
+if (seaStateText === "Choppy" || seaStateText === "Rough Rough") {
+    activeWarnings.push('<i class="fas fa-water text-rose-400"></i> ' + seaStateText);
+}
+
+// Render the Badge if any warnings exist
+if (activeWarnings.length > 0) {
+    warningContainer.innerHTML = `
+        <div class="animate-pulse flex items-center gap-2 bg-rose-950/40 border border-rose-500/50 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-wider text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.3)] mt-1">
+            <i class="fas fa-triangle-exclamation text-rose-500"></i>
+            <span>Warning: ${activeWarnings.join('<span class="text-rose-500/30 px-1">|</span>')}</span>
+        </div>
+    `;
+} else {
+    warningContainer.innerHTML = ''; // Clear container if conditions are safe
+}
+// -------------------------------------
             panel.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sky-400 text-lg"></i><span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>`;
             
             try {
