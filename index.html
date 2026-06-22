@@ -86,10 +86,10 @@
             
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner"></div>
-                <span class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
-                </span>
+                <span id="networkBadge" class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300">
+    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
+</span>
                 <div id="headerWeatherWarning" class="min-h-[24px]"></div>
             </div>
         </div>
@@ -337,6 +337,34 @@
         const speedSlider = document.getElementById('speedSlider');
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
+
+        // --- NETWORK STATUS MANAGER ---
+const networkBadge = document.getElementById('networkBadge');
+
+function updateNetworkStatus() {
+    if (navigator.onLine) {
+        // Online State (Green & Pinging)
+        networkBadge.className = "text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
+        networkBadge.innerHTML = `
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
+        `;
+    } else {
+        // Offline State (Red & Static)
+        networkBadge.className = "text-[9px] text-rose-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
+        networkBadge.innerHTML = `
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <i class="fas fa-satellite-dish opacity-60"></i> Offline Mode Active
+        `;
+    }
+}
+
+// Listen for network changes in real-time
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+
+// Run an initial check when the app loads
+updateNetworkStatus();
 
        // Fetch the live current date
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
