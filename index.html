@@ -2111,7 +2111,7 @@ panel.innerHTML = `
                 console.error("Error loading logbook record", err);
             }
         }
-        window.onload = () => {
+   window.onload = async () => {
             initLeafletMap();
             renderCustomOptions();
 
@@ -2127,12 +2127,14 @@ panel.innerHTML = `
             updateCustomSelectUI('departure', 'dep-wrapper');
             updateCustomSelectUI('destination', 'dest-wrapper');
 
-            setTimeout(() => {
+            // Wait a split second to ensure UI is ready, then load data and update map
+            setTimeout(async () => {
                 update();
+                await loadOfflinePortData(destSelect.value);
             }, 300);
         };
 
-        loadOfflinePortData(destSelect.value);
+
 
         // --- EVENT LISTENERS ---
         depSelect.addEventListener('change', () => {
