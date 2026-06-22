@@ -2102,6 +2102,7 @@ panel.innerHTML = `
         destSelect.addEventListener('change', () => {
             localStorage.setItem('coastal_nav_destination', destSelect.value);
             update();
+            loadOfflinePortData(destSelect.value);
         });
         
        speedSlider.addEventListener('input', () => {
