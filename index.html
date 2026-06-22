@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#020617">
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Painkiller Almanac - OpenSeaMap Edition</title>
@@ -1958,6 +1961,15 @@ panel.innerHTML = `
 
         document.getElementById('btnSpeedDown').addEventListener('click', () => adjustSpeed(-0.5));
         document.getElementById('btnSpeedUp').addEventListener('click', () => adjustSpeed(0.5));
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered successfully.', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>
