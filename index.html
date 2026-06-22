@@ -352,8 +352,7 @@
         <div class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-slate-800/80 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center border border-slate-600 transition-colors shadow-lg cursor-pointer">
             <i class="fas fa-times text-lg"></i>
         </div>
-        <img id="modalImage" src="" class="max-h-full max-w-full rounded-xl shadow-2xl object-contain pointer-events-none">
-    </div>
+<img id="modalImage" src="" class="max-h-full max-w-full rounded-xl shadow-2xl object-contain touch-pinch-zoom">    </div>
     <script>
         // Global variables and elements
         const depSelect = document.getElementById('departure');
@@ -361,6 +360,42 @@
         const speedSlider = document.getElementById('speedSlider');
         const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
+
+        // --- SMART PWA ZOOM PREVENTION ---
+        // 1. Prevent Pinch-to-Zoom EXCEPT on Map and Image Modal
+        document.addEventListener('touchmove', function (event) {
+            // Check if the user's fingers are on the map or the fullscreen image
+            const isMap = event.target.closest('#routingMap');
+            const isModal = event.target.closest('#imageModal');
+            
+            // If they are pinching the screen, but NOT touching the map or photo, block it
+            if (event.touches.length > 1 && !isMap && !isModal) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 2. Prevent Double-Tap-to-Zoom EXCEPT on allowed elements
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const isMap = event.target.closest('#routingMap');
+            const isModal = event.target.closest('#imageModal');
+            
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300 && !isMap && !isModal) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // 3. Prevent Safari native gesture zooming EXCEPT on allowed areas
+        document.addEventListener('gesturestart', function (event) {
+            const isMap = event.target.closest('#routingMap');
+            const isModal = event.target.closest('#imageModal');
+            
+            if (!isMap && !isModal) {
+                event.preventDefault();
+            }
+        });
 
         // --- NETWORK STATUS MANAGER ---
 const networkBadge = document.getElementById('networkBadge');
