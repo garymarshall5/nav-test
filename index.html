@@ -227,7 +227,21 @@
                         <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
                     </div>
                 </div>
+                <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
+<div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
+    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
+        <i class="fas fa-book-open text-emerald-400"></i> Port Logbook & Photos
+    </h3>
+    <textarea id="portNotes" class="w-full bg-slate-950 border border-slate-700/50 p-2 rounded-lg text-xs text-slate-300 mb-3 custom-scrollbar" rows="3" placeholder="Enter offline pilotage notes, pontoon depths, or visual cues..."></textarea>
+    
+    <input type="file" id="portPhoto" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 mb-2 cursor-pointer">
+    
+    <div id="photoPreviewContainer" class="mb-3 empty:hidden flex justify-center"></div>
 
+    <button id="savePortBtn" class="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 w-full py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
+        Save Offline Data
+    </button>
+</div>
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
                     <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
@@ -1936,6 +1950,109 @@ panel.innerHTML = `
         }
 
         // --- WINDOW ONLOAD INITIALIZATION ---
+        // --- OFFLINE LOGBOOK ENGINE (INDEXEDDB) ---
+        const DB_NAME = 'MarineLogbookDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'destinations';
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'portName' });
+                    }
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function saveDestinationData(portName, notes, photoFile) {
+            const db = await openDB();
+            const transaction = db.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            const dataRecord = { portName: portName, notes: notes, updatedAt: new Date().toISOString() };
+            
+            if (photoFile) {
+                dataRecord.photoBlob = photoFile; 
+            } else {
+                const existing = await getDestinationData(portName);
+                if (existing && existing.photoBlob) dataRecord.photoBlob = existing.photoBlob;
+            }
+
+            return new Promise((resolve, reject) => {
+                const request = store.put(dataRecord);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function getDestinationData(portName) {
+            const db = await openDB();
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            return new Promise((resolve, reject) => {
+                const request = store.get(portName);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // --- UI BINDINGS FOR LOGBOOK ---
+        document.getElementById('savePortBtn').addEventListener('click', async () => {
+            const activePort = destSelect.value; 
+            const notesText = document.getElementById('portNotes').value;
+            const photoFileInput = document.getElementById('portPhoto').files[0];
+            const btn = document.getElementById('savePortBtn');
+            const originalText = btn.innerText;
+
+            btn.innerText = "SAVING...";
+            btn.classList.add('bg-emerald-900', 'text-white');
+            
+            try {
+                await saveDestinationData(activePort, notesText, photoFileInput);
+                btn.innerText = "SAVED TO LOGBOOK";
+                btn.classList.replace('bg-emerald-900', 'bg-emerald-600');
+                
+                // Reload the preview so the newly saved image appears immediately
+                loadOfflinePortData(activePort);
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                }, 2000);
+            } catch (err) {
+                console.error("Failed to save", err);
+                btn.innerText = "ERROR SAVING";
+            }
+        });
+
+        async function loadOfflinePortData(portName) {
+            try {
+                const record = await getDestinationData(portName);
+                const notesEl = document.getElementById('portNotes');
+                const photoPreview = document.getElementById('photoPreviewContainer');
+                const fileInput = document.getElementById('portPhoto');
+                
+                // Clear existing UI state
+                notesEl.value = "";
+                photoPreview.innerHTML = "";
+                fileInput.value = "";
+
+                if (record) {
+                    if (record.notes) notesEl.value = record.notes;
+                    if (record.photoBlob) {
+                        const imgUrl = URL.createObjectURL(record.photoBlob);
+                        photoPreview.innerHTML = `<img src="${imgUrl}" class="mt-2 rounded-lg max-h-48 w-auto border border-slate-700 shadow-md">`;
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading logbook record", err);
+            }
+        }
         window.onload = () => {
             initLeafletMap();
             renderCustomOptions();
@@ -1957,10 +2074,13 @@ panel.innerHTML = `
             }, 300);
         };
 
+        loadOfflinePortData(destSelect.value);
+
         // --- EVENT LISTENERS ---
         depSelect.addEventListener('change', () => {
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             update();
+            loadOfflinePortData(destSelect.value);
         });
         
         destSelect.addEventListener('change', () => {
