@@ -238,9 +238,14 @@
     
     <div id="photoPreviewContainer" class="mb-3 empty:hidden flex justify-center"></div>
 
-    <button id="savePortBtn" class="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 w-full py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
-        Save Offline Data
-    </button>
+    <div class="flex gap-2">
+        <button id="deletePortBtn" class="bg-rose-900/20 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 w-1/3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
+            <i class="fas fa-trash-alt mr-1"></i> Delete
+        </button>
+        <button id="savePortBtn" class="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 w-2/3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
+            Save Offline Data
+        </button>
+    </div>
 </div>
                 <div class="lg:col-span-5 space-y-4 flex flex-col">
                     
@@ -2001,6 +2006,17 @@ panel.innerHTML = `
             });
         }
 
+        async function deleteDestinationData(portName) {
+            const db = await openDB();
+            const transaction = db.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            return new Promise((resolve, reject) => {
+                const request = store.delete(portName);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
         // --- UI BINDINGS FOR LOGBOOK ---
         document.getElementById('savePortBtn').addEventListener('click', async () => {
             const activePort = destSelect.value; 
@@ -2091,6 +2107,42 @@ panel.innerHTML = `
        speedSlider.addEventListener('input', () => {
             document.getElementById('speedDisplayVal').innerText = parseFloat(speedSlider.value).toFixed(1);
             update(); 
+        });
+
+        // Event listener for deleting
+        document.getElementById('deletePortBtn').addEventListener('click', async () => {
+            const activePort = destSelect.value;
+            const activePortName = destSelect.options[destSelect.selectedIndex].text;
+            
+            // The native browser confirmation dialogue
+            const isSure = confirm(`ARE YOU SURE you want to delete all offline notes and photos for ${activePortName}?\n\nThis cannot be undone.`);
+            
+            if (isSure) {
+                const btn = document.getElementById('deletePortBtn');
+                const originalText = btn.innerHTML;
+                
+                try {
+                    await deleteDestinationData(activePort);
+                    
+                    // Clear the UI instantly
+                    document.getElementById('portNotes').value = "";
+                    document.getElementById('portPhoto').value = "";
+                    document.getElementById('photoPreviewContainer').innerHTML = "";
+                    
+                    // Show success state
+                    btn.innerHTML = `<i class="fas fa-check"></i> DELETED`;
+                    btn.classList.add('bg-rose-700', 'text-white');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('bg-rose-700', 'text-white');
+                    }, 2000);
+                    
+                } catch (err) {
+                    console.error("Failed to delete logbook record", err);
+                    alert("Error deleting the record. Check console.");
+                }
+            }
         });
 
         // Speed Button Controls
