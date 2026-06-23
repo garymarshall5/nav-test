@@ -1471,9 +1471,17 @@
 
                         const hourLabel = timeIntervals[currentIntervalIndex];
                         
-                      const timeIcon = L.divIcon({
+                      // 1. Calculate what percentage of the journey this marker is at
+// 2. Multiply by 3.5 seconds (your line draw animation time)
+const delaySeconds = (targetDistance / route.distance) * 3.5;
+
+const timeIcon = L.divIcon({
     className: 'clear-default-leaflet-bg',
-    html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative">${hourLabel}h</div>`,
+    // Inject opacity: 0 and the animation delay directly into the style attribute
+    html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative"
+                style="opacity: 0; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: ${delaySeconds.toFixed(2)}s;">
+                ${hourLabel}h
+           </div>`,
     iconSize: [24, 24],
     iconAnchor: [12, 12]
 });
