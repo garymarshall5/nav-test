@@ -1471,20 +1471,25 @@
 
                         const hourLabel = timeIntervals[currentIntervalIndex];
                         
-                        const timeIcon = L.divIcon({
-                            className: 'clear-default-leaflet-bg',
-                            html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative">${hourLabel}h</div>`,
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 12]
-                        });
-                        
-                        L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
-                         .addTo(window.timeMarkersLayer)
-                         .bindTooltip(`${hourLabel} Hours @ ${speedKnots.toFixed(1)} kts`, {
-                             className: 'custom-tooltip text-rose-400 border-rose-500/50 font-bold',
-                             direction: 'top',
-                             offset: [0, -10]
-                         });
+                      const timeIcon = L.divIcon({
+    className: 'clear-default-leaflet-bg',
+    html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative">${hourLabel}h</div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12]
+});
+
+L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
+ .addTo(window.timeMarkersLayer)
+ .bindTooltip(`
+    <div class="text-center leading-tight">
+        <span class="text-slate-200">Time:</span> <span class="text-white font-black">${hourLabel} hrs</span><br>
+        <span class="text-slate-200">Dist:</span> <span class="text-rose-400 font-black">${targetDistance.toFixed(1)} NM</span>
+    </div>
+ `, {
+     className: 'custom-tooltip border-rose-500/50',
+     direction: 'top',
+     offset: [0, -10]
+ });
 
                         currentIntervalIndex++;
                         if (currentIntervalIndex < timeIntervals.length) {
