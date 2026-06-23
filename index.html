@@ -1445,39 +1445,12 @@
                 }
             }
 
-            // --- DYNAMIC TIME MARKERS ALONG ROUTE ---
-            if (window.timeMarkersLayer) {
-                map.removeLayer(window.timeMarkersLayer);
-            }
-            window.timeMarkersLayer = L.featureGroup().addTo(map);
-            
-            const speedKnots = parseFloat(speedSlider.value);
-            const timeIntervals = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36];
-            let currentIntervalIndex = 0;
-            let targetDistance = timeIntervals[currentIntervalIndex] * speedKnots;
-            let cumulativeDistance = 0;
-
-            if (route.path.length > 1) {
-                for (let i = 0; i < route.path.length - 1; i++) {
-                    const p1 = mapNodes[route.path[i]];
-                    const p2 = mapNodes[route.path[i+1]];
-                    const segmentDist = getHaversineDistance(p1, p2);
-
-                    while (currentIntervalIndex < timeIntervals.length && cumulativeDistance + segmentDist >= targetDistance) {
-                        const remainingDist = targetDistance - cumulativeDistance;
-                        const ratio = remainingDist / segmentDist;
-                        const interpLat = p1.lat + (p2.lat - p1.lat) * ratio;
-                        const interpLon = p1.lon + (p2.lon - p1.lon) * ratio;
-
-                        const hourLabel = timeIntervals[currentIntervalIndex];
-                        
-                      // 1. Calculate what percentage of the journey this marker is at
-// 2. Multiply by 3.5 seconds (your line draw animation time)
-const delaySeconds = (targetDistance / route.distance) * 3.5;
+           // 1. Base delay of 3.5s (waits for the green line to finish drawing)
+// 2. Add a 0.15s stagger multiplied by the interval index to ripple them in
+const delaySeconds = 3.5 + (currentIntervalIndex * 0.15);
 
 const timeIcon = L.divIcon({
     className: 'clear-default-leaflet-bg',
-    // Inject opacity: 0 and the animation delay directly into the style attribute
     html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative"
                 style="opacity: 0; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: ${delaySeconds.toFixed(2)}s;">
                 ${hourLabel}h
@@ -1485,6 +1458,19 @@ const timeIcon = L.divIcon({
     iconSize: [24, 24],
     iconAnchor: [12, 12]
 });
+
+L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
+ .addTo(window.timeMarkersLayer)
+ .bindTooltip(`
+    <div class="text-center leading-tight">
+        <span class="text-slate-200">Time:</span> <span class="text-white font-black">${hourLabel} hrs</span><br>
+        <span class="text-slate-200">Dist:</span> <span class="text-rose-400 font-black">${targetDistance.toFixed(1)} NM</span>
+    </div>
+ `, {
+     className: 'custom-tooltip border-rose-500/50',
+     direction: 'top',
+     offset: [0, -10]
+ });
 
 L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
  .addTo(window.timeMarkersLayer)
