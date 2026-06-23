@@ -5,7 +5,7 @@
     <meta name="theme-color" content="#020617">
     <link rel="apple-touch-icon" href="./icon-192x192.png">
     <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Painkiller Almanac - OpenSeaMap Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="main-css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -87,106 +87,109 @@
             <div class="flex flex-col items-center sm:items-end gap-1.5">
                 <div id="currentDate" class="text-xs text-slate-300 font-bold bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700/50 shadow-inner"></div>
                 <span id="networkBadge" class="text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300">
-    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
-</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
+                </span>
                 <div id="headerWeatherWarning" class="min-h-[24px]"></div>
             </div>
         </div>
    
-        <div class="p-3 sm:p-6 space-y-4 sm:space-y-6">
+        <div class="flex border-b border-slate-800/80 bg-slate-900/50">
+            <button onclick="switchTab('nav')" id="tab-nav" class="flex-1 py-3 text-xs font-black uppercase text-blue-400 border-b-2 border-blue-500 transition-colors">Navigator</button>
+            <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300">Logbook</button>
+            <button onclick="switchTab('tools')" id="tab-tools" class="flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300">Tools</button>
+        </div>
+
+        <div class="p-3 sm:p-6">
             
-            <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
-                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
-                <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
-                <div id="distanceOutput" class="font-mono text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
-                
-                <div id="timeOutput" class="text-xl sm:text-2xl font-bold text-sky-300 mt-2 drop-shadow-md tracking-wide font-mono">
-                    <i class="fas fa-clock mr-1.5 opacity-80"></i>0 mins
-                </div>
-                
-                <div class="mt-3 mb-1 flex justify-center">
-                    <div class="bg-blue-900/60 text-blue-200 font-black text-sm px-4 py-1.5 rounded-full border border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.4)] flex items-center gap-2">
-                        <i class="fas fa-gauge-high text-blue-400"></i> <span id="speedDisplayVal" class="text-white text-base font-mono">5.0</span> KNOTS
-                    </div>
-                </div>
-                
-                <div class="flex items-center justify-center gap-3 mt-3 w-full max-w-[280px] mx-auto">
-                    <button id="btnSpeedDown" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
-                        <i class="fas fa-minus text-xs"></i>
-                    </button>
+            <div id="content-nav" class="space-y-4 sm:space-y-6 fade-in">
+                <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
+                    <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
+                    <div id="distanceOutput" class="font-mono text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
                     
-                    <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
+                    <div id="timeOutput" class="text-xl sm:text-2xl font-bold text-sky-300 mt-2 drop-shadow-md tracking-wide font-mono">
+                        <i class="fas fa-clock mr-1.5 opacity-80"></i>0 mins
+                    </div>
                     
-                    <button id="btnSpeedUp" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
-                        <i class="fas fa-plus text-xs"></i>
-                    </button>
-                </div>
-                <div id="routePreferenceBadge" class="mt-3 text-[10px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-500/30">
-                    <i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing
-                </div>
-            </div>
-
-            <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
-                <div>
-                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
-                    <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
-                        <button id="btnRouteAuto" onclick="setRoutePreference('auto')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50">
-                            <i class="fas fa-magic mr-1"></i> Auto-Detect
-                        </button>
-                        <button id="btnRouteOffshore" onclick="setRoutePreference('offshore')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white">
-                            <i class="fas fa-sailboat mr-1"></i> Offshore Only
-                        </button>
-                        <button id="btnRouteSolent" onclick="setRoutePreference('solent')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white">
-                            <i class="fas fa-water mr-1"></i> Force Solent
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
-                    
-                    <div class="w-full relative">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
-                        <select id="departure" class="hidden"></select>
-                        <div class="custom-select-wrapper" id="dep-wrapper">
-                            <div class="custom-select">
-                                <div class="custom-select__trigger">
-                                    <span class="custom-select-text">Select...</span>
-                                    <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
-                                </div>
-                                <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg z-10 pointer-events-none"></i>
-                                <div class="custom-options custom-scrollbar" id="dep-options"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center pb-2 md:pb-3">
-                        <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
-                            <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
-                        </button>
-                    </div>
-
-                    <div class="w-full relative">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
-                        <select id="destination" class="hidden"></select>
-                        <div class="custom-select-wrapper" id="dest-wrapper">
-                            <div class="custom-select">
-                                <div class="custom-select__trigger">
-                                    <span class="custom-select-text">Select...</span>
-                                    <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
-                                </div>
-                                <i class="fas fa-anchor absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400 text-lg z-10 pointer-events-none"></i>
-                                <div class="custom-options custom-scrollbar" id="dest-options"></div>
-                            </div>
+                    <div class="mt-3 mb-1 flex justify-center">
+                        <div class="bg-blue-900/60 text-blue-200 font-black text-sm px-4 py-1.5 rounded-full border border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.4)] flex items-center gap-2">
+                            <i class="fas fa-gauge-high text-blue-400"></i> <span id="speedDisplayVal" class="text-white text-base font-mono">5.0</span> KNOTS
                         </div>
                     </div>
                     
+                    <div class="flex items-center justify-center gap-3 mt-3 w-full max-w-[280px] mx-auto">
+                        <button id="btnSpeedDown" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
+                            <i class="fas fa-minus text-xs"></i>
+                        </button>
+                        
+                        <input type="range" id="speedSlider" min="3" max="10" step="0.5" value="5" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 outline-none">
+                        
+                        <button id="btnSpeedUp" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                    <div id="routePreferenceBadge" class="mt-3 text-[10px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-500/30">
+                        <i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing
+                    </div>
                 </div>
-            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-                
-                <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
+                <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
+                    <div>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
+                        <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                            <button id="btnRouteAuto" onclick="setRoutePreference('auto')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50">
+                                <i class="fas fa-magic mr-1"></i> Auto-Detect
+                            </button>
+                            <button id="btnRouteOffshore" onclick="setRoutePreference('offshore')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white">
+                                <i class="fas fa-sailboat mr-1"></i> Offshore Only
+                            </button>
+                            <button id="btnRouteSolent" onclick="setRoutePreference('solent')" class="py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white">
+                                <i class="fas fa-water mr-1"></i> Force Solent
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-3 items-end">
+                        <div class="w-full relative">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Departure Port / Anchorage</label>
+                            <select id="departure" class="hidden"></select>
+                            <div class="custom-select-wrapper" id="dep-wrapper">
+                                <div class="custom-select">
+                                    <div class="custom-select__trigger">
+                                        <span class="custom-select-text">Select...</span>
+                                        <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
+                                    </div>
+                                    <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg z-10 pointer-events-none"></i>
+                                    <div class="custom-options custom-scrollbar" id="dep-options"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center pb-2 md:pb-3">
+                            <button onclick="swapPorts()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50" title="Swap Departure and Destination">
+                                <i class="fas fa-exchange-alt rotate-90 md:rotate-0 text-sm"></i>
+                            </button>
+                        </div>
+
+                        <div class="w-full relative">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Destination Port / Anchorage</label>
+                            <select id="destination" class="hidden"></select>
+                            <div class="custom-select-wrapper" id="dest-wrapper">
+                                <div class="custom-select">
+                                    <div class="custom-select__trigger">
+                                        <span class="custom-select-text">Select...</span>
+                                        <i class="fas fa-chevron-down text-slate-500 text-sm"></i>
+                                    </div>
+                                    <i class="fas fa-anchor absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400 text-lg z-10 pointer-events-none"></i>
+                                    <div class="custom-options custom-scrollbar" id="dest-options"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
                         <div id="coordinateReadout" class="text-[9px] font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 shadow-sm">
@@ -195,7 +198,7 @@
                     </div>
                     
                     <div class="relative w-full z-10">
-                        <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-80 sm:h-[450px]"></div>
+                        <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-[500px]"></div>
 
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400] backdrop-blur-md bg-slate-900/60 p-1.5 rounded-xl border border-slate-700/50 shadow-xl">
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
@@ -219,169 +222,189 @@
                             <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-orange-400 block"></span> Shallow Bar Port</div>
                         </div>
                     </div>
-
-                    <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
-                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
-                            <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
-                        </h3>
-                        <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
-                    </div>
                 </div>
-                <div id="passageStagesList" class="space-y-2 max-h-32 overflow-y-auto pr-1 custom-scrollbar"></div>
-<div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
-    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
-        <i class="fas fa-book-open text-emerald-400"></i> Port Logbook & Photos
-    </h3>
-    <textarea id="portNotes" class="w-full bg-slate-950 border border-slate-700/50 p-2 rounded-lg text-xs text-slate-300 mb-3 custom-scrollbar" rows="3" placeholder="Enter offline pilotage notes, pontoon depths, or visual cues..."></textarea>
-    
-    <input type="file" id="portPhoto" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 mb-2 cursor-pointer">
-    
-    <div id="photoPreviewContainer" class="mb-3 empty:hidden flex justify-center"></div>
 
-    <div class="flex gap-2">
-        <button id="deletePortBtn" class="bg-rose-900/20 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 w-1/3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
-            <i class="fas fa-trash-alt mr-1"></i> Delete
-        </button>
-        <button id="savePortBtn" class="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 w-2/3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95">
-            Save Offline Data
-        </button>
-    </div>
-</div>
-                <div class="lg:col-span-5 space-y-4 flex flex-col">
+                <div class="mt-4 bg-slate-900/50 rounded-xl border border-slate-800 p-3">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 ml-1">
+                        <i class="fas fa-location-arrow text-blue-400 animate-pulse"></i> Waypoints & Routing Plan
+                    </h3>
+                    <div id="passageStagesList" class="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar"></div>
+                </div>
+            </div>
+
+            <div id="content-log" class="hidden space-y-4 sm:space-y-6 fade-in">
+                <div class="bg-slate-900/50 rounded-xl border border-slate-800 p-4 shadow-lg">
+                    <h3 class="text-xs font-black text-slate-300 uppercase tracking-widest mb-3 flex items-center gap-2 ml-1 border-b border-slate-800 pb-2">
+                        <i class="fas fa-book-open text-emerald-400"></i> Offline Port Logbook
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-3">Save pilotage notes, depth warnings, and approach photos. This data is stored locally on your device and works completely offline.</p>
                     
-                    <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
-                        <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
-                            <i class="fas fa-circle-notch fa-spin text-sky-400 text-lg"></i>
-                            <span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>
-                        </div>
-                    </div>
+                    <textarea id="portNotes" class="w-full bg-slate-950 border border-slate-700/50 p-3 rounded-lg text-sm text-slate-200 mb-4 custom-scrollbar focus:border-emerald-500/50 outline-none transition-colors" rows="6" placeholder="Enter offline pilotage notes, pontoon depths, or visual cues..."></textarea>
+                    
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 ml-1">Attach Photo</label>
+                    <input type="file" id="portPhoto" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 mb-4 cursor-pointer">
+                    
+                    <div id="photoPreviewContainer" class="mb-4 empty:hidden flex flex-wrap justify-center gap-2 bg-slate-950 p-2 rounded-lg border border-slate-800/50"></div>
 
-                    <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
-                            <i id="depthAlertIcon" class="fas text-xl"></i>
-                        </div>
-                        <div class="space-y-0.5 pt-0.5">
-                            <h4 id="depthAlertTitle" class="text-[11px] font-black uppercase tracking-wider">Depth Status</h4>
-                            <p id="depthAlertDesc" class="text-xs text-slate-300 leading-relaxed"></p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
-                        <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
-                            <div class="min-w-0">
-                                <h3 id="portName" class="text-xl sm:text-2xl font-black text-white tracking-wide truncate">Select Route</h3>
-                                <span id="vhfChannel" class="inline-block mt-1 text-[10px] font-black bg-blue-500/15 text-blue-400 px-2 py-1 rounded border border-blue-500/20"><i class="fas fa-broadcast-tower mr-1.5"></i>VHF STANDBY</span>
-                            </div>
-                            <div class="flex flex-col items-end gap-1.5 shrink-0">
-                                <div id="harborCategory" class="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700 font-bold uppercase shadow-inner">Ready</div>
-                                <div id="fuelAvailable" class="transition-all duration-200"></div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="space-y-2">
-                                <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 ml-1">
-                                    <i class="fas fa-phone-volume text-blue-400"></i> Local Port Infrastructure & Contacts
-                                </span>
-                                <div class="bg-slate-900 p-3 sm:p-4 rounded-xl border border-slate-800/80 text-xs sm:text-sm leading-relaxed font-medium shadow-inner">
-                                    <div id="marinaInfo" class="text-slate-200">Choose a destination to display full marina listings and active phone links.</div>
-                                </div>
-                            </div>
-
-                            <div class="space-y-2">
-                                <span class="text-amber-500 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 ml-1">
-                                    <i class="fas fa-triangle-exclamation animate-bounce"></i> Navigational Hazards & Pilotage Advice
-                                </span>
-                                <div class="bg-amber-950/20 p-3 sm:p-4 rounded-xl border border-amber-900/30 text-xs sm:text-sm shadow-inner">
-                                    <p id="hazardInfo" class="text-amber-200/90 font-medium leading-relaxed">Specific pilotage dangers, reefs, and local advice will populate here.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2.5">
-                        <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2"></div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
-                            <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-wind text-lg"></i> Windy
-                            </a>
-                            <a id="tideLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(79,70,229,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-water text-lg"></i> EasyTide
-                            </a>
-                            <a id="navilyLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-binoculars text-lg"></i> Navily
-                            </a>
-                            <a id="eoceanicLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-amber-600 hover:bg-amber-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(13,148,136,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-sailboat text-lg"></i> eOceanic
-                            </a>
-                            <a id="googleMapsLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(16,185,129,0.3)] text-[10px] text-center active:scale-95">
-                                <i class="fas fa-map-location-dot text-lg"></i> GoogleMaps
-                            </a>
-                            <a href="https://www.myshiptracking.com/?mmsi=232040737" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-cyan-700 hover:bg-cyan-800 text-white h-16 rounded-xl font-bold transition-all text-[10px] text-center active:scale-95">
-                                <i class="fas fa-satellite text-lg"></i> AIS
-                            </a>
-                            <a href="https://garymarshall5.github.io/anchor/" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-red-600 hover:bg-red-700 text-white h-16 rounded-xl font-bold transition-all text-[10px] text-center active:scale-95">
-                                <i class="fas fa-anchor text-lg"></i> Anchor Alarm
-                            </a>
-                        </div>
-
-                        <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
-                            <i class="fas fa-info text-purple-200"></i>
-                            <i class="fas fa-beer text-purple-200"></i>
-                            <i class="fas fa-glass-martini text-purple-200"></i>
-                            <i class="fas fa-utensils text-purple-200"></i>
-                            <i class="fas fa-champagne-glasses text-purple-200"></i>
-                            <i class="fas fa-wine-bottle text-purple-200"></i>
-                            <i class="fas fa-burger text-purple-200"></i>
-                            <i class="fas fa-gas-pump text-purple-200"></i>
-                            <i class="fas fa-tripadvisor text-purple-200"></i>
-                            <span>Port Guide</span>
+                    <div class="flex gap-3">
+                        <button id="deletePortBtn" class="bg-rose-900/20 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 w-1/3 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 shadow-md">
+                            <i class="fas fa-trash-alt mr-1"></i> Delete Data
                         </button>
-
-                        <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar"></div>
+                        <button id="savePortBtn" class="bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-400 w-2/3 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 shadow-md">
+                            <i class="fas fa-save mr-1"></i> Save to Logbook
+                        </button>
                     </div>
                 </div>
+            </div>
+
+            <div id="content-tools" class="hidden space-y-4 sm:space-y-6 fade-in">
+                
+                <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-3 sm:p-4 rounded-2xl border border-sky-900/30 shadow-lg flex items-center justify-center min-h-[70px] relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                    <div id="inshoreForecastContent" class="w-full flex items-center justify-center z-10">
+                        <i class="fas fa-circle-notch fa-spin text-sky-400 text-lg"></i>
+                        <span class="ml-2 text-xs text-sky-300 font-bold tracking-widest uppercase">Fetching Marine Weather...</span>
+                    </div>
+                </div>
+
+                <div id="depthAlertBox" class="hidden p-4 rounded-2xl border flex items-start gap-3 fade-in bg-slate-950 border-slate-800 shadow-lg">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" id="depthAlertIconBg">
+                        <i id="depthAlertIcon" class="fas text-xl"></i>
+                    </div>
+                    <div class="space-y-0.5 pt-0.5">
+                        <h4 id="depthAlertTitle" class="text-[11px] font-black uppercase tracking-wider">Depth Status</h4>
+                        <p id="depthAlertDesc" class="text-xs text-slate-300 leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4 flex-grow">
+                    <div class="flex justify-between items-start border-b border-slate-800 pb-3 gap-2">
+                        <div class="min-w-0">
+                            <h3 id="portName" class="text-xl sm:text-2xl font-black text-white tracking-wide truncate">Select Route</h3>
+                            <span id="vhfChannel" class="inline-block mt-1 text-[10px] font-black bg-blue-500/15 text-blue-400 px-2 py-1 rounded border border-blue-500/20"><i class="fas fa-broadcast-tower mr-1.5"></i>VHF STANDBY</span>
+                        </div>
+                        <div class="flex flex-col items-end gap-1.5 shrink-0">
+                            <div id="harborCategory" class="text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700 font-bold uppercase shadow-inner">Ready</div>
+                            <div id="fuelAvailable" class="transition-all duration-200"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 ml-1">
+                                <i class="fas fa-phone-volume text-blue-400"></i> Local Port Infrastructure & Contacts
+                            </span>
+                            <div class="bg-slate-900 p-3 sm:p-4 rounded-xl border border-slate-800/80 text-xs sm:text-sm leading-relaxed font-medium shadow-inner">
+                                <div id="marinaInfo" class="text-slate-200">Choose a destination to display full marina listings and active phone links.</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <span class="text-amber-500 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 ml-1">
+                                <i class="fas fa-triangle-exclamation animate-bounce"></i> Navigational Hazards & Pilotage Advice
+                            </span>
+                            <div class="bg-amber-950/20 p-3 sm:p-4 rounded-xl border border-amber-900/30 text-xs sm:text-sm shadow-inner">
+                                <p id="hazardInfo" class="text-amber-200/90 font-medium leading-relaxed">Specific pilotage dangers, reefs, and local advice will populate here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2.5">
+                    <div id="tideContextBanner" class="text-[10px] text-center text-indigo-300 font-bold uppercase tracking-widest bg-indigo-950/40 py-2 rounded-xl border border-indigo-900/50 shadow-inner mb-2"></div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                        <a id="weatherLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-sky-500 hover:bg-sky-600 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(14,165,233,0.3)] text-[10px] text-center active:scale-95">
+                            <i class="fas fa-wind text-lg"></i> Windy
+                        </a>
+                        <a id="tideLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-blue-700 hover:bg-blue-800 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(79,70,229,0.3)] text-[10px] text-center active:scale-95">
+                            <i class="fas fa-water text-lg"></i> EasyTide
+                        </a>
+                        <a id="navilyLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] text-[10px] text-center active:scale-95">
+                            <i class="fas fa-binoculars text-lg"></i> Navily
+                        </a>
+                        <a id="eoceanicLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-amber-600 hover:bg-amber-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(13,148,136,0.3)] text-[10px] text-center active:scale-95">
+                            <i class="fas fa-sailboat text-lg"></i> eOceanic
+                        </a>
+                        <a id="googleMapsLink" href="#" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white h-16 rounded-xl font-bold transition-all shadow-[0_4px_10px_rgba(16,185,129,0.3)] text-[10px] text-center active:scale-95">
+                            <i class="fas fa-map-location-dot text-lg"></i> GoogleMaps
+                        </a>
+                        <a href="https://www.myshiptracking.com/?mmsi=232040737" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-cyan-700 hover:bg-cyan-800 text-white h-16 rounded-xl font-bold transition-all text-[10px] text-center active:scale-95">
+                            <i class="fas fa-satellite text-lg"></i> AIS
+                        </a>
+                        <a href="https://garymarshall5.github.io/anchor/" target="_blank" class="flex flex-col items-center justify-center gap-1 bg-red-600 hover:bg-red-700 text-white h-16 rounded-xl font-bold transition-all text-[10px] text-center active:scale-95">
+                            <i class="fas fa-anchor text-lg"></i> Anchor Alarm
+                        </a>
+                    </div>
+
+                    <button onclick="fetchAIPortGuide()" class="flex items-center justify-center gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white h-12 rounded-xl font-extrabold transition-all shadow-[0_4px_12px_rgba(147,51,234,0.2)] text-[11px] sm:text-xs active:scale-95 w-full mt-2 border border-purple-400/30">
+                        <i class="fas fa-info text-purple-200"></i>
+                        <i class="fas fa-beer text-purple-200"></i>
+                        <i class="fas fa-glass-martini text-purple-200"></i>
+                        <i class="fas fa-utensils text-purple-200"></i>
+                        <i class="fas fa-champagne-glasses text-purple-200"></i>
+                        <i class="fas fa-wine-bottle text-purple-200"></i>
+                        <i class="fas fa-burger text-purple-200"></i>
+                        <i class="fas fa-gas-pump text-purple-200"></i>
+                        <i class="fas fa-tripadvisor text-purple-200"></i>
+                        <span>Port Guide</span>
+                    </button>
+
+                    <div id="aiGuideContainer" class="hidden mt-2 bg-slate-900 p-4 rounded-xl border border-purple-500/30 text-xs text-slate-200 shadow-inner max-h-96 overflow-y-auto custom-scrollbar"></div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<div id="imageModal" class="hidden fixed inset-0 z-[500] bg-black/95 backdrop-blur-sm flex items-center justify-center overflow-auto p-0" onclick="closeImageModal()">
-    <div class="absolute top-4 right-4 z-[501] bg-slate-800/80 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center border border-slate-600 transition-colors shadow-lg cursor-pointer">
-        <i class="fas fa-times text-lg"></i>
+    
+    <div id="imageModal" class="hidden fixed inset-0 z-[500] bg-black/95 backdrop-blur-sm flex items-center justify-center overflow-auto p-0" onclick="closeImageModal()">
+        <div class="absolute top-4 right-4 z-[501] bg-slate-800/80 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center border border-slate-600 transition-colors shadow-lg cursor-pointer">
+            <i class="fas fa-times text-lg"></i>
+        </div>
+        <img id="modalImage" src="" class="max-h-full max-w-full rounded-xl shadow-2xl object-contain touch-pinch-zoom">
     </div>
-    <img id="modalImage" src="" class="w-full h-auto block touch-pinch-zoom">
-</div>
-<img id="modalImage" src="" class="max-h-full max-w-full rounded-xl shadow-2xl object-contain touch-pinch-zoom">    </div>
+
     <script>
         // Global variables and elements
         const depSelect = document.getElementById('departure');
         const destSelect = document.getElementById('destination');
         const speedSlider = document.getElementById('speedSlider');
-        const speedLabel = document.getElementById('speedLabel');
         const dateElement = document.getElementById('currentDate');
 
+        // --- TAB NAVIGATION LOGIC ---
+        window.switchTab = function(tabId) {
+            document.getElementById('content-nav').classList.add('hidden');
+            document.getElementById('content-log').classList.add('hidden');
+            document.getElementById('content-tools').classList.add('hidden');
+
+            document.getElementById('tab-nav').className = "flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300";
+            document.getElementById('tab-log').className = "flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300";
+            document.getElementById('tab-tools').className = "flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300";
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).className = "flex-1 py-3 text-xs font-black uppercase text-blue-400 border-b-2 border-blue-500 transition-colors";
+            
+            // Fix Leaflet tile loading bug when container display changes
+            if (tabId === 'nav' && map) {
+                setTimeout(() => { map.invalidateSize(); }, 10);
+            }
+        };
+
         // --- SMART PWA ZOOM PREVENTION ---
-        // 1. Prevent Pinch-to-Zoom EXCEPT on Map and Image Modal
         document.addEventListener('touchmove', function (event) {
-            // Check if the user's fingers are on the map or the fullscreen image
             const isMap = event.target.closest('#routingMap');
             const isModal = event.target.closest('#imageModal');
-            
-            // If they are pinching the screen, but NOT touching the map or photo, block it
             if (event.touches.length > 1 && !isMap && !isModal) {
                 event.preventDefault();
             }
         }, { passive: false });
 
-        // 2. Prevent Double-Tap-to-Zoom EXCEPT on allowed elements
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             const isMap = event.target.closest('#routingMap');
             const isModal = event.target.closest('#imageModal');
-            
             const now = (new Date()).getTime();
             if (now - lastTouchEnd <= 300 && !isMap && !isModal) {
                 event.preventDefault();
@@ -389,51 +412,41 @@
             lastTouchEnd = now;
         }, false);
 
-        // 3. Prevent Safari native gesture zooming EXCEPT on allowed areas
         document.addEventListener('gesturestart', function (event) {
             const isMap = event.target.closest('#routingMap');
             const isModal = event.target.closest('#imageModal');
-            
             if (!isMap && !isModal) {
                 event.preventDefault();
             }
         });
 
         // --- NETWORK STATUS MANAGER ---
-const networkBadge = document.getElementById('networkBadge');
+        const networkBadge = document.getElementById('networkBadge');
+        function updateNetworkStatus() {
+            if (navigator.onLine) {
+                networkBadge.className = "text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
+                networkBadge.innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
+                `;
+            } else {
+                networkBadge.className = "text-[9px] text-rose-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
+                networkBadge.innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <i class="fas fa-satellite-dish opacity-60"></i> Offline Mode Active
+                `;
+            }
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        updateNetworkStatus();
 
-function updateNetworkStatus() {
-    if (navigator.onLine) {
-        // Online State (Green & Pinging)
-        networkBadge.className = "text-[9px] text-emerald-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
-        networkBadge.innerHTML = `
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <i class="fas fa-satellite-dish"></i> OpenSeaMap Connected
-        `;
-    } else {
-        // Offline State (Red & Static)
-        networkBadge.className = "text-[9px] text-rose-400 font-bold uppercase flex items-center gap-1 transition-colors duration-300";
-        networkBadge.innerHTML = `
-            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-            <i class="fas fa-satellite-dish opacity-60"></i> Offline Mode Active
-        `;
-    }
-}
-
-// Listen for network changes in real-time
-window.addEventListener('online', updateNetworkStatus);
-window.addEventListener('offline', updateNetworkStatus);
-
-// Run an initial check when the app loads
-updateNetworkStatus();
-
-       // Fetch the live current date
-const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-const liveDate = new Date().toLocaleDateString('en-GB', options);
-
-if (dateElement) {
-    dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + liveDate;
-}
+        // Fetch the live current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const liveDate = new Date().toLocaleDateString('en-GB', options);
+        if (dateElement) {
+            dateElement.innerHTML = `<i class="far fa-calendar-alt text-blue-400 mr-1.5"></i>` + liveDate;
+        }
 
         const solentPorts = [
             'portsmouth', 'southampton', 'beaulieu', 'cowes', 'lymington', 'yarmouth', 
@@ -441,13 +454,11 @@ if (dateElement) {
             'newtown_creek', 'priory_bay', 'seaview', 'alum_bay'
         ];
 
-        // Solent Logic Engine 
         function isSolent(id) {
             return solentPorts.includes(id) || 
                    ['solent_east_forts', 'solent_mid', 'solent_west', 'portsmouth_approach', 'bembridge_approach', 'southampton_water', 'lymington_approach', 'chichester_approach','needles_fairway' , 'chichester_entrance'].includes(id);
         }
 
-        // Helper function to format phone numbers to active tel links
         function telLink(phone) {
             const rawPhone = phone.replace(/[^0-9]/g, '');
             return '<a href="tel:' + rawPhone + '" class="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-bold whitespace-nowrap bg-blue-900/20 px-1.5 py-0.5 rounded transition-colors active:bg-blue-900/50"><i class="fas fa-phone-alt text-[10px]"></i> ' + phone + '</a>';
@@ -466,21 +477,16 @@ if (dateElement) {
             return '<span class="inline-flex items-center gap-1 text-sky-300 font-bold bg-sky-900/40 px-1.5 py-0.5 rounded border border-sky-500/30 text-[9px] mx-1" title="Call on VHF Channel ' + channel + '"><i class="fas fa-walkie-talkie"></i> Ch ' + channel + '</span>';
         }
 
-        // Active Routing Preference
-        let activeRoutePreference = 'auto'; // 'auto', 'offshore', 'solent'
+        let activeRoutePreference = 'auto'; 
         let lastWeatherDestId = null;
 
-        // Leaflet Map Variables
         let map;
         let routeLayer;
         let staticMarkersLayer;
         let gpsMarker;
         let currentRoutePath = [];
 
-        // --- MAP DATA ARRAYS ---
-        // Nodes are ordered strictly East to West geographically to guarantee the correct dropdown populating sequence.
         const mapNodes = {
-            // ----- PORTS: STRICT EAST TO WEST GEOGRAPHICAL ORDER -----
             chichester_entrance: {
                 name: "Chichester Entrance", lat: 50.780, lon: -0.935, isPort: true, isShallowBar: true, barDepth: 1.5, tideId: "0068",
                 vhf: "VHF CH 14 / 80", category: "Harbour", fuel: "Diesel & Petrol",
@@ -733,7 +739,6 @@ if (dateElement) {
                 hazards: "Major military submarine and warship lanes. Navy ships take absolute priority. Keep strictly clear of moving exclusion zones.",
                 links: ["plymouth_sound_approach"]
             },
-
             looe: {
                 name: "Looe", lat: 50.3551, lon: -4.4542, isPort: true, isShallowBar: true, barDepth: 0.0, tideId: "0014",
                 vhf: "VHF CH 14", category: "Harbour", fuel: "Diesel Only",
@@ -761,7 +766,6 @@ if (dateElement) {
                 hazards: "Narrow entry flanked by high cliffs causing wind shadows/gusts. Large commercial cargo vessels loading china clay use the deep water channel.",
                 links: ["fowey_approach"]
             },
-
              mevagissey: {
                 name: "Mevagissey", lat: 50.2702, lon: -4.7875, isPort: true, isShallowBar: true, barDepth: 0.5, tideId: "0014",
                 vhf: "VHF CH 14", category: "Harbour", fuel: "No Fuel",
@@ -770,7 +774,6 @@ if (dateElement) {
                 marina: `• Busy working fishing port<br>• Outer harbour visitor moorings.<br><br>HM (Mevagissey): ${telLink('01726 843305')}<br>Email: ${emailLink('mevagisseyharbour@btconnect.com')}`,
                 hazards: "Inner harbour dries completely to sand/mud. Very busy commercial fishing traffic day and night. Use outer harbour visitor moorings.",
                 links: ["gribbin_head_transit", "dodman_shore_transit"]
-            
             },
             stmawes: {
                 name: "St Mawes", lat: 50.150, lon: -5.010, isPort: true, isShallowBar: false, tideId: "0005",
@@ -853,10 +856,6 @@ if (dateElement) {
                 hazards: "Almost completely dries at low water except for a few deep pools. Ancient oak trees overhang the channel—watch your mast!",
                 links: ["helford", "dodman_offshore",  "helford_approach"]
             },
-
-
-                
-           
             penzance: {
                 name: "Penzance", lat: 50.115, lon: -5.530, isPort: true, isShallowBar: false, tideId: "0002",
                 vhf: "VHF CH 12", category: "Harbour", fuel: "Diesel Only",
@@ -866,8 +865,6 @@ if (dateElement) {
                 hazards: "Tidal gate restricts wet dock access to roughly +/- 2 hours around HW. Cressars, Low Lee, and Gear Rock guard the bay approach.",
                 links: ["mounts_bay"]
             },
-          
-      
 
             // ----- APPROACH & COASTAL TRANSIT NODES -----
             chichester_approach: { name: "Chichester Bar Approach", lat: 50.750, lon: -0.950, isPort: false, links: ["chichester_entrance", "solent_east_forts", "princessa_cardinal"] },
@@ -916,12 +913,9 @@ if (dateElement) {
             polperro_transit: { name: "Polperro Clearance", lat: 50.315, lon: -4.520, isPort: false, links: ["pencarrow_transit", "looe_bay_transit"] },
             pencarrow_transit: { name: "Pencarrow Head Transit", lat: 50.305, lon: -4.580, isPort: false, links: ["fowey_approach"] },
             gribbin_head_transit: { name: "Gribbin Head Clearance", lat: 50.305, lon: -4.665, isPort: false, links: ["fowey_approach", "dodman_shore_transit"] },
-            looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.325, lon: -4.440, isPort: false, links: ["rame_head_transit", "polperro_transit"] },
-            
-            fowey_approach: { name: "Fowey Approach", lat: 50.320, lon: -4.650, isPort: false, links: ["fowey", "pencarrow_transit", "gribbin_head_transit", "dodman_offshore", "newton_ferrers", "bolt_tail_clearance"] }
+            looe_bay_transit: { name: "Looe Bay Coastal", lat: 50.325, lon: -4.440, isPort: false, links: ["rame_head_transit", "polperro_transit"] }
         };
 
-        // Automatic programmatical graph bidirectionality setup
         for (const key in mapNodes) {
             if (!mapNodes[key].links) mapNodes[key].links = [];
             mapNodes[key].links.forEach(neighborId => {
@@ -934,7 +928,6 @@ if (dateElement) {
             });
         }
 
-        // Populate dropdown selectors dynamically
         let depHtml = '';
         let destHtml = '';
         for (const portId in mapNodes) {
@@ -946,7 +939,6 @@ if (dateElement) {
         depSelect.innerHTML = depHtml;
         destSelect.innerHTML = destHtml;
 
-        // Custom UI Dropdown Builder
         function renderCustomOptions() {
             const depOptionsContainer = document.getElementById('dep-options');
             const destOptionsContainer = document.getElementById('dest-options');
@@ -1003,11 +995,9 @@ if (dateElement) {
             });
         }
 
-        // Close dropdowns when clicking outside
         window.addEventListener('click', function() {
             document.querySelectorAll('.custom-select').forEach(el => el.classList.remove('open'));
         });
-
 
         // --- MAP INITIALIZATION (OpenSeaMap & Leaflet) ---
         function initLeafletMap() {
@@ -1089,201 +1079,196 @@ if (dateElement) {
             }
         };
 
-    // --- ROUTING LOGIC ---
-    function setRoutePreference(mode) {
-        activeRoutePreference = mode;
-        ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
-            document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
-        });
-        const activeId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
-        document.getElementById(activeId).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
-        update();
-    }
-
-    function determineRouteRouting(origin, destination, currentPreference) {
-        if (currentPreference === 'solent') return 'solent';
-        if (currentPreference === 'offshore') return 'offshore';
-
-        const easternPorts = ['chichester_entrance', 'whitecliff_bay'];
-        const isOriginEast = easternPorts.includes(origin);
-        const isDestEast = easternPorts.includes(destination);
-        
-        if (isOriginEast && !isSolent(destination) && !easternPorts.includes(destination)) {
-            return 'offshore';
-        }
-        if (isDestEast && !isSolent(origin) && !easternPorts.includes(origin)) {
-            return 'offshore';
+        // --- ROUTING LOGIC ---
+        function setRoutePreference(mode) {
+            activeRoutePreference = mode;
+            ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
+                document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
+            });
+            const activeId = mode === 'auto' ? 'btnRouteAuto' : (mode === 'offshore' ? 'btnRouteOffshore' : 'btnRouteSolent');
+            document.getElementById(activeId).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-blue-400 bg-blue-950/40 border border-blue-800/50";
+            update();
         }
 
-        return 'auto';
-    }
+        function determineRouteRouting(origin, destination, currentPreference) {
+            if (currentPreference === 'solent') return 'solent';
+            if (currentPreference === 'offshore') return 'offshore';
 
-  function getNeighbors(nodeId, startId, endId, effectiveMode) {
-    const node = mapNodes[nodeId];
-    if (!node) return [];
-    return [...node.links];
-}
-
-    function getHaversineDistance(coords1, coords2) {
-        if (!coords1 || !coords2) return 0;
-        const lon1 = coords1.lon * Math.PI / 180; const lat1 = coords1.lat * Math.PI / 180;
-        const lon2 = coords2.lon * Math.PI / 180; const lat2 = coords2.lat * Math.PI / 180;
-        const dlon = lon2 - lon1; const dlat = lat2 - lat1;
-        const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
-        return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
-
-    function calculateRoute(startId, endId, effectiveMode) {
-        if (startId === endId) return { path: [startId], distance: 0 };
-        
-        const westernPorts = [
-            'salcombe', 'newtonferrers', 
-            'bovisand_beach', 'plymouth', 'fowey', 'stmawes', 
-            'st_just', 'malpas', 'mylor', 'truro', 'falmouth', 'penryn', 
-            'helford', 'frenchmans_creek', 'penzance', 'scilly_helens', 
-            'scilly', 'scilly_tresco', 'scilly_grimsby'
-        ];
-
-        const gScore = {};
-        const fScore = {};
-        const previous = {};
-        const openSet = new Set([startId]);
-
-        for (const key in mapNodes) {
-            gScore[key] = Infinity;
-            fScore[key] = Infinity;
-            previous[key] = null;
-        }
-        gScore[startId] = 0;
-        fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
-
-        while (openSet.size > 0) {
-            let current = null;
-            for (let id of openSet) {
-                if (current === null || fScore[id] < fScore[current]) current = id;
-            }
-
-            if (current === endId) break;
-
-            openSet.delete(current);
-            const neighbors = getNeighbors(current, startId, endId, effectiveMode);
-
-            for (const neighborId of neighbors) {
-                const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
-                let tentativeGScore = gScore[current] + edgeDist;
-
-                if (startId === 'brixham' && westernPorts.includes(endId)) {
-                    if (current === 'brixham' && neighborId !== 'berry_head_offshore') {
-                        tentativeGScore += 5000; 
-                    }
-                }
-                
-                if (effectiveMode === 'auto') {
-                    const isOffshoreShortcut = (
-                        (current === 'start_point_offshore' && neighborId === 'falmouth_bay') ||
-                        (current === 'falmouth_bay' && neighborId === 'start_point_offshore') ||
-                        (current === 'start_point_offshore' && neighborId === 'iow_south') ||
-                        (current === 'iow_south' && neighborId === 'start_point_offshore') ||
-                        (current === 'berry_head_offshore' && neighborId === 'iow_south') ||
-                        (current === 'iow_south' && neighborId === 'berry_head_offshore') ||
-                        (current === 'fowey_approach' && neighborId === 'offshore_transit_south_devon') ||
-                        (current === 'offshore_transit_south_devon' && neighborId === 'fowey_approach') ||
-                        (current === 'portland_offshore' && neighborId === 'start_point_offshore') ||
-                        (current === 'start_point_offshore' && neighborId === 'portland_offshore')
-                    );
-                    
-                    if (isOffshoreShortcut) {
-                        tentativeGScore += 500; 
-                    }
-                }
-
-                if (neighborId !== endId && neighborId !== startId) {
-                    if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'beaulieu_approach', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
-                        tentativeGScore += 1000; 
-                    }
-                    if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
-                        tentativeGScore += 1000; 
-                    }
-                }
-                if (tentativeGScore < gScore[neighborId]) {
-                    previous[neighborId] = current;
-                    gScore[neighborId] = tentativeGScore;
-                    const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
-                    fScore[neighborId] = tentativeGScore + h;
-                    openSet.add(neighborId);
-                }
-            }
-        }
-
-        const path = [];
-        let curr = endId;
-        while (curr !== null) {
-            path.unshift(curr);
-            curr = previous[curr];
-        }
-
-        return { path: path[0] === startId ? path : [], distance: gScore[endId] };
-    }
-
-
-    // --- UI & LEAFLET SYNC ---
-    function updateLeafletRoute(pathNodesArray) {
-        routeLayer.clearLayers();
-        currentRoutePath = pathNodesArray;
-
-        if (pathNodesArray && pathNodesArray.length > 0) {
-            const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
+            const easternPorts = ['chichester_entrance', 'whitecliff_bay'];
+            const isOriginEast = easternPorts.includes(origin);
+            const isDestEast = easternPorts.includes(destination);
             
-            // 1. Draw the route line (Animated via CSS)
-            L.polyline(latlngs, {
-                color: '#10b981',
-                weight: 3.5,
-                dashArray: '8, 8',
-                opacity: 0.9
-            }).addTo(routeLayer);
+            if (isOriginEast && !isSolent(destination) && !easternPorts.includes(destination)) {
+                return 'offshore';
+            }
+            if (isDestEast && !isSolent(origin) && !easternPorts.includes(origin)) {
+                return 'offshore';
+            }
+            return 'auto';
+        }
 
-            // 2. Draw intermediate waypoints
-            for (let i = 1; i < pathNodesArray.length - 1; i++) {
-                const wpId = pathNodesArray[i];
-                const wp = mapNodes[wpId];
+        function getNeighbors(nodeId, startId, endId, effectiveMode) {
+            const node = mapNodes[nodeId];
+            if (!node) return [];
+            return [...node.links];
+        }
+
+        function getHaversineDistance(coords1, coords2) {
+            if (!coords1 || !coords2) return 0;
+            const lon1 = coords1.lon * Math.PI / 180; const lat1 = coords1.lat * Math.PI / 180;
+            const lon2 = coords2.lon * Math.PI / 180; const lat2 = coords2.lat * Math.PI / 180;
+            const dlon = lon2 - lon1; const dlat = lat2 - lat1;
+            const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlon / 2) ** 2;
+            return 3440.065 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function calculateRoute(startId, endId, effectiveMode) {
+            if (startId === endId) return { path: [startId], distance: 0 };
+            
+            const westernPorts = [
+                'salcombe', 'newtonferrers', 
+                'bovisand_beach', 'plymouth', 'fowey', 'stmawes', 
+                'st_just', 'malpas', 'mylor', 'truro', 'falmouth', 'penryn', 
+                'helford', 'frenchmans_creek', 'penzance', 'scilly_helens', 
+                'scilly', 'scilly_tresco', 'scilly_grimsby'
+            ];
+
+            const gScore = {};
+            const fScore = {};
+            const previous = {};
+            const openSet = new Set([startId]);
+
+            for (const key in mapNodes) {
+                gScore[key] = Infinity;
+                fScore[key] = Infinity;
+                previous[key] = null;
+            }
+            gScore[startId] = 0;
+            fScore[startId] = getHaversineDistance(mapNodes[startId], mapNodes[endId]);
+
+            while (openSet.size > 0) {
+                let current = null;
+                for (let id of openSet) {
+                    if (current === null || fScore[id] < fScore[current]) current = id;
+                }
+
+                if (current === endId) break;
+
+                openSet.delete(current);
+                const neighbors = getNeighbors(current, startId, endId, effectiveMode);
+
+                for (const neighborId of neighbors) {
+                    const edgeDist = getHaversineDistance(mapNodes[current], mapNodes[neighborId]);
+                    let tentativeGScore = gScore[current] + edgeDist;
+
+                    if (startId === 'brixham' && westernPorts.includes(endId)) {
+                        if (current === 'brixham' && neighborId !== 'berry_head_offshore') {
+                            tentativeGScore += 5000; 
+                        }
+                    }
+                    
+                    if (effectiveMode === 'auto') {
+                        const isOffshoreShortcut = (
+                            (current === 'start_point_offshore' && neighborId === 'falmouth_bay') ||
+                            (current === 'falmouth_bay' && neighborId === 'start_point_offshore') ||
+                            (current === 'start_point_offshore' && neighborId === 'iow_south') ||
+                            (current === 'iow_south' && neighborId === 'start_point_offshore') ||
+                            (current === 'berry_head_offshore' && neighborId === 'iow_south') ||
+                            (current === 'iow_south' && neighborId === 'berry_head_offshore') ||
+                            (current === 'fowey_approach' && neighborId === 'offshore_transit_south_devon') ||
+                            (current === 'offshore_transit_south_devon' && neighborId === 'fowey_approach') ||
+                            (current === 'portland_offshore' && neighborId === 'start_point_offshore') ||
+                            (current === 'start_point_offshore' && neighborId === 'portland_offshore')
+                        );
+                        
+                        if (isOffshoreShortcut) {
+                            tentativeGScore += 500; 
+                        }
+                    }
+
+                    if (neighborId !== endId && neighborId !== startId) {
+                        if (effectiveMode === 'offshore' && ['needles_fairway', 'yarmouth', 'solent_west', 'beaulieu_approach', 'solent_mid', 'solent_east_forts'].includes(neighborId)) {
+                            tentativeGScore += 1000; 
+                        }
+                        if (effectiveMode === 'solent' && ['iow_south', 'iow_south_coastal', 'iow_southeast', 'iow_southwest_transit'].includes(neighborId)) {
+                            tentativeGScore += 1000; 
+                        }
+                    }
+                    if (tentativeGScore < gScore[neighborId]) {
+                        previous[neighborId] = current;
+                        gScore[neighborId] = tentativeGScore;
+                        const h = getHaversineDistance(mapNodes[neighborId], mapNodes[endId]);
+                        fScore[neighborId] = tentativeGScore + h;
+                        openSet.add(neighborId);
+                    }
+                }
+            }
+
+            const path = [];
+            let curr = endId;
+            while (curr !== null) {
+                path.unshift(curr);
+                curr = previous[curr];
+            }
+
+            return { path: path[0] === startId ? path : [], distance: gScore[endId] };
+        }
+
+
+        // --- UI & LEAFLET SYNC ---
+        function updateLeafletRoute(pathNodesArray) {
+            routeLayer.clearLayers();
+            currentRoutePath = pathNodesArray;
+
+            if (pathNodesArray && pathNodesArray.length > 0) {
+                const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
                 
-                const marker = L.circleMarker([wp.lat, wp.lon], { 
-                    radius: 4, 
-                    fillColor: '#cbd5e1', 
-                    color: '#1e293b', 
-                    weight: 1, 
-                    fillOpacity: 1 
+                L.polyline(latlngs, {
+                    color: '#10b981',
+                    weight: 3.5,
+                    dashArray: '8, 8',
+                    opacity: 0.9
                 }).addTo(routeLayer);
 
-                marker.bindTooltip(wp.name || wpId, {
-                    className: 'custom-tooltip',
-                    direction: 'top',
-                    offset: [0, -5]
-                });
-            }
+                for (let i = 1; i < pathNodesArray.length - 1; i++) {
+                    const wpId = pathNodesArray[i];
+                    const wp = mapNodes[wpId];
+                    
+                    const marker = L.circleMarker([wp.lat, wp.lon], { 
+                        radius: 4, 
+                        fillColor: '#cbd5e1', 
+                        color: '#1e293b', 
+                        weight: 1, 
+                        fillOpacity: 1 
+                    }).addTo(routeLayer);
 
-            // 3. Draw Start and End points
-            const startNode = mapNodes[pathNodesArray[0]];
-            const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
+                    marker.bindTooltip(wp.name || wpId, {
+                        className: 'custom-tooltip',
+                        direction: 'top',
+                        offset: [0, -5]
+                    });
+                }
 
-            if (pathNodesArray.length > 1) {
-                L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
-                    .addTo(routeLayer)
-                    .bindTooltip("DEP: " + startNode.name, {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
+                const startNode = mapNodes[pathNodesArray[0]];
+                const endNode = mapNodes[pathNodesArray[pathNodesArray.length - 1]];
 
-                L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
-                    .addTo(routeLayer)
-                    .bindTooltip("DEST: " + endNode.name, {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
-            }
+                if (pathNodesArray.length > 1) {
+                    L.circleMarker([startNode.lat, startNode.lon], { radius: 8, fillColor: '#3b82f6', color: '#fff', weight: 2, fillOpacity: 1 })
+                        .addTo(routeLayer)
+                        .bindTooltip("DEP: " + startNode.name, {permanent: true, direction: 'right', className: 'route-label text-blue-400'}).openTooltip();
 
-            // 4. Handle Zoom
-            if (latlngs.length > 1) {
-                map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
-            } else if (latlngs.length === 1) {
-                map.flyTo(latlngs[0], 12, { duration: 1.5 });
+                    L.circleMarker([endNode.lat, endNode.lon], { radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1 })
+                        .addTo(routeLayer)
+                        .bindTooltip("DEST: " + endNode.name, {permanent: true, direction: 'right', className: 'route-label text-emerald-400'}).openTooltip();
+                }
+
+                if (latlngs.length > 1) {
+                    map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
+                } else if (latlngs.length === 1) {
+                    map.flyTo(latlngs[0], 12, { duration: 1.5 });
+                }
             }
         }
-    }
 
         function checkDepth(destNode) {
             const requiredDepth = 1.5; 
@@ -1329,7 +1314,6 @@ if (dateElement) {
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             localStorage.setItem('coastal_nav_destination', destSelect.value);
             
-            // Sync UI dropdowns
             updateCustomSelectUI('departure', 'dep-wrapper');
             updateCustomSelectUI('destination', 'dest-wrapper');
             
@@ -1342,7 +1326,6 @@ if (dateElement) {
             const destId = destSelect.value;
             if (!depId || !destId) return;
 
-            // Sync Custom Dropdowns text
             updateCustomSelectUI('departure', 'dep-wrapper');
             updateCustomSelectUI('destination', 'dest-wrapper');
 
@@ -1423,7 +1406,7 @@ if (dateElement) {
             
             document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
 
-document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span class="text-indigo-200">` + liveDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
+            document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span class="text-indigo-200">` + liveDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
             if (destId !== lastWeatherDestId) {
                 fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
                 lastWeatherDestId = destId;
@@ -1605,7 +1588,6 @@ document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span
                 if (rainProb > 20) rainColor = "text-sky-400";
                 if (rainProb > 60) rainColor = "text-blue-400";
 
-                // --- DESTINATION WARNING EVALUATOR ---
                 let activeWarnings = [];
 
                 if (rainProb > 30 || rainAmount > 0.5) {
@@ -1628,7 +1610,6 @@ document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span
                         </div>
                     `;
                 } else {
-                // NEW: Positive confirmation badge instead of a blank space
                     warningContainer.innerHTML = `
                         <div class="flex items-center gap-2 bg-emerald-950/40 border border-emerald-500/50 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-wider text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)] mt-1">
                             <i class="fas fa-check-circle text-emerald-500"></i>
@@ -1636,8 +1617,8 @@ document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span
                         </div>
                     `;
                 }
-                // -------------------------------------
-panel.innerHTML = `
+
+                panel.innerHTML = `
                     <div class="flex items-center justify-between w-full flex-nowrap overflow-x-auto gap-4 py-2 fade-in">
                         <div class="flex items-center gap-3 sm:gap-4 shrink-0 min-w-0">
                             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-800 flex items-center justify-center shadow-inner border border-slate-700/50 shrink-0">
@@ -1706,7 +1687,6 @@ panel.innerHTML = `
             container.classList.remove('hidden');
             container.innerHTML = `<div class="flex items-center gap-2 p-2"><i class="fas fa-circle-notch fa-spin text-purple-400"></i> Generating structured guide for ${destNode.name}...</div>`;
 
-            // Core database of structured port guide content
             const portGuidesDb = {
                 chichester_entrance: {
                     pubs: ["<strong>The Crown & Anchor</strong> (Dell Quay) ⭐ 4.6/5 - Spectacular views over the upper reaches; perfect for mid-tide lunches.", "<strong>The Ship Inn</strong> (Itchenor) ⭐ 4.4/5 - Classic maritime pub right up the channel near the ferry slipway."],
@@ -1853,7 +1833,6 @@ panel.innerHTML = `
                     food: ["<strong>The Old Quay House Restaurant</strong> ⭐ 4.5/5 - Smart estuary-side dining terrace with gorgeous views.", "<strong>Gameanger Bakery</strong> ⭐ 4.6/5 - Phenomenal Cornish pasties, buns, and local ice cream lines."],
                     amenities: "Fowey Harbour Authority deep-water visitor pontoons, harbor water taxi networks, public shower cells at the quay, and mid-river fuel options."
                 },
-                
                 stmawes: {
                     pubs: ["<strong>The Victory Inn</strong> ⭐ 4.4/5 - Traditional lanes pub with a lovely elevated sea view terrace.", "<strong>The Rising Sun</strong> ⭐ 4.5/5 - Smart premium waterfront inn overlooking the harbor quay."],
                     food: ["<strong>The Idle Rocks Restaurant</strong> ⭐ 4.6/5 - High-end culinary dining set on a spectacular stone seawall terrace.", "<strong>St Mawes Bakery</strong> ⭐ 4.6/5 - Historic pasty maker supplying the docks since the 1800s."],
@@ -1899,8 +1878,6 @@ panel.innerHTML = `
                     food: ["<strong>Helford Village Ice Cream Shed</strong> ⭐ 4.6/5 - Exceptional local clotted cream ice creams.", "<strong>The Gear Farm Pasties</strong> ⭐ 4.8/5 - Arguably Cornwall's finest pasties."],
                     amenities: "Secluded pristine wilderness anchorage. Deeply wooded shores. Completely dries to sand/mud bands. No lights, zero stores—total tranquility."
                 },
-
-
                 looe: {
                     pubs: ["<strong>The Sail Loft</strong> ⭐ 4.0/5 - Classic maritime pub with a relaxed vibe, great for a pint after tying up.", "<strong>The Jolly Sailor</strong> ⭐ 4.6/5 - One of Britain's oldest pubs, full of heavy beams and nautical history."],
                     food: ["<strong>The Old Sail Loft</strong> ⭐ 4.5/5 - Fine dining in one of the oldest buildings in Looe, right on the water.", "<strong>Catch</strong> ⭐ 4.5/5 - Award-winning fish and chips located directly on the harbour front."],
@@ -1949,7 +1926,6 @@ panel.innerHTML = `
                 return;
             }
 
-            // Construct structural, premium HTML interface layout
             let html = `
                 <div class="fade-in space-y-4">
                     <div class="flex items-center gap-2 pb-2 border-b border-purple-500/20">
@@ -1990,13 +1966,11 @@ panel.innerHTML = `
                 </div>
             `;
             
-            // Simulating a quick premium rendering snap
             setTimeout(() => {
                 container.innerHTML = html;
             }, 150);
         }
 
-        // --- WINDOW ONLOAD INITIALIZATION ---
         // --- OFFLINE LOGBOOK ENGINE (INDEXEDDB) ---
         const DB_NAME = 'MarineLogbookDB';
         const DB_VERSION = 1;
@@ -2021,13 +1995,22 @@ panel.innerHTML = `
             const transaction = db.transaction(STORE_NAME, 'readwrite');
             const store = transaction.objectStore(STORE_NAME);
             
-            const dataRecord = { portName: portName, notes: notes, updatedAt: new Date().toISOString() };
+            const existing = await getDestinationData(portName);
             
+            const dataRecord = { 
+                portName: portName, 
+                notes: notes, 
+                updatedAt: new Date().toISOString(),
+                photoBlobs: existing && existing.photoBlobs ? existing.photoBlobs : [] 
+            };
+            
+            // Backwards compatibility with old single blob saves
+            if (existing && existing.photoBlob && !existing.photoBlobs) {
+                dataRecord.photoBlobs.push(existing.photoBlob);
+            }
+
             if (photoFile) {
-                dataRecord.photoBlob = photoFile; 
-            } else {
-                const existing = await getDestinationData(portName);
-                if (existing && existing.photoBlob) dataRecord.photoBlob = existing.photoBlob;
+                dataRecord.photoBlobs.push(photoFile); 
             }
 
             return new Promise((resolve, reject) => {
@@ -2065,26 +2048,25 @@ panel.innerHTML = `
             const notesText = document.getElementById('portNotes').value;
             const photoFileInput = document.getElementById('portPhoto').files[0];
             const btn = document.getElementById('savePortBtn');
-            const originalText = btn.innerText;
+            const originalText = btn.innerHTML;
 
-            btn.innerText = "SAVING...";
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> SAVING...`;
             btn.classList.add('bg-emerald-900', 'text-white');
             
             try {
                 await saveDestinationData(activePort, notesText, photoFileInput);
-                btn.innerText = "SAVED TO LOGBOOK";
+                btn.innerHTML = `<i class="fas fa-check-circle mr-1"></i> SAVED`;
                 btn.classList.replace('bg-emerald-900', 'bg-emerald-600');
                 
-                // Reload the preview so the newly saved image appears immediately
                 loadOfflinePortData(activePort);
                 
                 setTimeout(() => {
-                    btn.innerText = originalText;
+                    btn.innerHTML = originalText;
                     btn.classList.remove('bg-emerald-600', 'text-white');
                 }, 2000);
             } catch (err) {
                 console.error("Failed to save", err);
-                btn.innerText = "ERROR SAVING";
+                btn.innerHTML = `<i class="fas fa-times-circle mr-1"></i> ERROR`;
             }
         });
 
@@ -2095,23 +2077,35 @@ panel.innerHTML = `
                 const photoPreview = document.getElementById('photoPreviewContainer');
                 const fileInput = document.getElementById('portPhoto');
                 
-                // Clear existing UI state
                 notesEl.value = "";
                 photoPreview.innerHTML = "";
                 fileInput.value = "";
 
                 if (record) {
                     if (record.notes) notesEl.value = record.notes;
-                    if (record.photoBlob) {
+                    
+                    if (record.photoBlobs && record.photoBlobs.length > 0) {
+                        record.photoBlobs.forEach((blob) => {
+                            const imgUrl = URL.createObjectURL(blob);
+                            photoPreview.innerHTML += `
+                                <div class="relative m-1">
+                                    <img src="${imgUrl}" onclick="openFullscreenImage('${imgUrl}')" class="rounded-lg h-32 w-32 object-cover border border-slate-700 shadow-md cursor-zoom-in hover:opacity-80 transition-opacity" title="Click to enlarge">
+                                </div>`;
+                        });
+                    } else if (record.photoBlob) {
                         const imgUrl = URL.createObjectURL(record.photoBlob);
-                        photoPreview.innerHTML = `<img src="${imgUrl}" onclick="openFullscreenImage('${imgUrl}')" class="mt-2 rounded-lg max-h-48 w-auto border border-slate-700 shadow-md cursor-zoom-in hover:opacity-80 transition-opacity" title="Click to enlarge">`;
+                        photoPreview.innerHTML = `
+                            <div class="relative m-1">
+                                <img src="${imgUrl}" onclick="openFullscreenImage('${imgUrl}')" class="rounded-lg h-32 w-32 object-cover border border-slate-700 shadow-md cursor-zoom-in hover:opacity-80 transition-opacity" title="Click to enlarge">
+                            </div>`;
                     }
                 }
             } catch (err) {
                 console.error("Error loading logbook record", err);
             }
         }
-   window.onload = async () => {
+
+        window.onload = async () => {
             initLeafletMap();
             renderCustomOptions();
 
@@ -2127,16 +2121,12 @@ panel.innerHTML = `
             updateCustomSelectUI('departure', 'dep-wrapper');
             updateCustomSelectUI('destination', 'dest-wrapper');
 
-            // Wait a split second to ensure UI is ready, then load data and update map
             setTimeout(async () => {
                 update();
                 await loadOfflinePortData(destSelect.value);
             }, 300);
         };
 
-
-
-        // --- EVENT LISTENERS ---
         depSelect.addEventListener('change', () => {
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             update();
@@ -2149,17 +2139,15 @@ panel.innerHTML = `
             loadOfflinePortData(destSelect.value);
         });
         
-       speedSlider.addEventListener('input', () => {
+        speedSlider.addEventListener('input', () => {
             document.getElementById('speedDisplayVal').innerText = parseFloat(speedSlider.value).toFixed(1);
             update(); 
         });
 
-        // Event listener for deleting
         document.getElementById('deletePortBtn').addEventListener('click', async () => {
             const activePort = destSelect.value;
             const activePortName = destSelect.options[destSelect.selectedIndex].text;
             
-            // The native browser confirmation dialogue
             const isSure = confirm(`ARE YOU SURE you want to delete all offline notes and photos for ${activePortName}?\n\nThis cannot be undone.`);
             
             if (isSure) {
@@ -2169,12 +2157,10 @@ panel.innerHTML = `
                 try {
                     await deleteDestinationData(activePort);
                     
-                    // Clear the UI instantly
                     document.getElementById('portNotes').value = "";
                     document.getElementById('portPhoto').value = "";
                     document.getElementById('photoPreviewContainer').innerHTML = "";
                     
-                    // Show success state
                     btn.innerHTML = `<i class="fas fa-check"></i> DELETED`;
                     btn.classList.add('bg-rose-700', 'text-white');
                     
@@ -2195,15 +2181,14 @@ panel.innerHTML = `
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
             
-            modalImg.src = imgSrc; // Load the high-res offline Blob URL into the fullscreen box
-            modal.classList.remove('hidden'); // Show the black overlay
+            modalImg.src = imgSrc; 
+            modal.classList.remove('hidden'); 
         };
 
         window.closeImageModal = function() {
             const modal = document.getElementById('imageModal');
-            modal.classList.add('hidden'); // Hide the overlay when clicked anywhere
+            modal.classList.add('hidden'); 
             
-            // Clear the source after a brief delay so it doesn't flash the old image next time
             setTimeout(() => {
                 document.getElementById('modalImage').src = "";
             }, 300);
