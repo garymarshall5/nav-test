@@ -22,7 +22,7 @@
             stroke-dasharray: 2000;
             stroke-dashoffset: 2000;
             animation: drawRoute 3.5s ease-out forwards;
-        }
+        }ƒ
         @keyframes drawRoute {
             to { stroke-dashoffset: 0; }
         }
@@ -1221,6 +1221,13 @@
             routeLayer.clearLayers();
             currentRoutePath = pathNodesArray;
 
+            // Ensure the time markers layer exists and is cleared
+            if (!window.timeMarkersLayer) {
+                window.timeMarkersLayer = L.featureGroup().addTo(map);
+            } else {
+                window.timeMarkersLayer.clearLayers();
+            }
+
             if (pathNodesArray && pathNodesArray.length > 0) {
                 const latlngs = pathNodesArray.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
                 
@@ -1267,6 +1274,74 @@
                     map.flyToBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12, duration: 1.5 });
                 } else if (latlngs.length === 1) {
                     map.flyTo(latlngs[0], 12, { duration: 1.5 });
+                }
+
+                // --- Calculate and draw the phased time milestones ---
+                const speedKnots = parseFloat(document.getElementById('speedSlider').value);
+                
+                let totalDist = 0;
+                for (let i = 0; i < pathNodesArray.length - 1; i++) {
+                    totalDist += getHaversineDistance(mapNodes[pathNodesArray[i]], mapNodes[pathNodesArray[i+1]]);
+                }
+                
+                const totalTimeHours = totalDist / speedKnots;
+                const timeIntervals = [];
+                for (let h = 1; h <= Math.floor(totalTimeHours); h++) {
+                    timeIntervals.push(h);
+                }
+
+                if (timeIntervals.length > 0) {
+                    let currentIntervalIndex = 0;
+                    let cumulativeDistance = 0;
+                    let targetDistance = timeIntervals[0] * speedKnots;
+
+                    for (let i = 0; i < pathNodesArray.length - 1; i++) {
+                        const p1 = mapNodes[pathNodesArray[i]];
+                        const p2 = mapNodes[pathNodesArray[i+1]];
+                        const segmentDist = getHaversineDistance(p1, p2);
+
+                        while (cumulativeDistance + segmentDist >= targetDistance) {
+                            const excess = targetDistance - cumulativeDistance;
+                            const ratio = excess / segmentDist;
+                            const interpLat = p1.lat + (p2.lat - p1.lat) * ratio;
+                            const interpLon = p1.lon + (p2.lon - p1.lon) * ratio;
+                            const hourLabel = timeIntervals[currentIntervalIndex];
+
+                            const delaySeconds = 3.5 + (currentIntervalIndex * 0.15);
+
+                            const timeIcon = L.divIcon({
+                                className: 'clear-default-leaflet-bg',
+                                html: `<div class="bg-slate-950 border-2 border-rose-500 text-rose-400 font-black rounded-full text-[9px] w-6 h-6 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.5)] z-50 relative"
+                                            style="opacity: 0; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: ${delaySeconds.toFixed(2)}s;">
+                                            ${hourLabel}h
+                                       </div>`,
+                                iconSize: [24, 24],
+                                iconAnchor: [12, 12]
+                            });
+
+                            L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
+                             .addTo(window.timeMarkersLayer)
+                             .bindTooltip(`
+                                <div class="text-center leading-tight">
+                                    <span class="text-slate-200">Time:</span> <span class="text-white font-black">${hourLabel} hrs</span><br>
+                                    <span class="text-slate-200">Dist:</span> <span class="text-rose-400 font-black">${targetDistance.toFixed(1)} NM</span>
+                                </div>
+                             `, {
+                                 className: 'custom-tooltip border-rose-500/50',
+                                 direction: 'top',
+                                 offset: [0, -10]
+                             });
+
+                            currentIntervalIndex++;
+                            if (currentIntervalIndex < timeIntervals.length) {
+                                targetDistance = timeIntervals[currentIntervalIndex] * speedKnots;
+                            } else {
+                                break;
+                            }
+                        }
+                        cumulativeDistance += segmentDist;
+                        if (currentIntervalIndex >= timeIntervals.length) break;
+                    }
                 }
             }
         }
