@@ -63,7 +63,12 @@
 </head>
 <body class="bg-[#020617] p-2 sm:p-4 text-slate-100 min-h-screen flex flex-col items-center pb-10 safe-pb selection:bg-blue-500/30">
 
-    <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue">
+    <!-- 1. DYNAMIC ISLAND PILL -->
+    <div id="dynamicIsland" class="hidden fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-2 shadow-[0_4px_20px_rgba(0,0,0,0.8)] border border-slate-700/50 transition-all duration-300 pointer-events-none">
+        <!-- Content gets injected by JS -->
+    </div>
+
+    <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue mt-8 sm:mt-4">
         
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
@@ -94,9 +99,8 @@
             </div>
         </div>
    
-        <div class="flex border-b border-slate-800/80 bg-slate-900/50">
+        <div class="flex border-b border-slate-800/80 bg-slate-900/50 relative z-20">
             <button onclick="switchTab('nav')" id="tab-nav" class="flex-1 py-3 text-xs font-black uppercase text-blue-400 border-b-2 border-blue-500 transition-colors">Navigator</button>
-            
             <button onclick="switchTab('tools')" id="tab-tools" class="flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300">Tools</button>
              <button onclick="switchTab('log')" id="tab-log" class="flex-1 py-3 text-xs font-black uppercase text-slate-500 border-b-2 border-transparent transition-colors hover:text-slate-300">Logbook</button>
         </div>
@@ -104,7 +108,9 @@
         <div class="p-3 sm:p-6">
             
             <div id="content-nav" class="space-y-4 sm:space-y-6 fade-in">
-                <div id="navigationDashboard" class="p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px]">
+                
+                <!-- 4. SWIPE GESTURES: Added touch ID and instructional text -->
+                <div id="navigationDashboard" class="cursor-ew-resize p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px] select-none" title="Swipe left or right to swap ports">
                     <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                     <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
                     <div id="distanceOutput" class="font-mono text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
@@ -119,7 +125,7 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center justify-center gap-3 mt-3 w-full max-w-[280px] mx-auto">
+                    <div class="flex items-center justify-center gap-3 mt-3 w-full max-w-[280px] mx-auto relative z-10">
                         <button id="btnSpeedDown" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center transition-all active:scale-95 shadow-md hover:border-blue-500/50 hover:text-blue-400 shrink-0">
                             <i class="fas fa-minus text-xs"></i>
                         </button>
@@ -133,9 +139,11 @@
                     <div id="routePreferenceBadge" class="mt-3 text-[10px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-500/30">
                         <i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing
                     </div>
+                    <!-- Swipe Hint -->
+                    <div class="absolute bottom-2 right-3 text-[8px] text-slate-500 uppercase tracking-widest font-bold opacity-50"><i class="fas fa-arrows-left-right"></i> Swipe to Swap</div>
                 </div>
 
-                <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner">
+                <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner relative z-10">
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Routing Mode Preference</span>
                         <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
@@ -190,7 +198,7 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg">
+                <div class="bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800 flex flex-col justify-between relative shadow-lg z-0">
                     <div class="flex justify-between items-center mb-3 z-20 relative px-1">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block"><i class="fas fa-map text-blue-400 mr-1.5"></i>Live OpenSeaMap</span>
                         <div id="coordinateReadout" class="text-[9px] font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 shadow-sm">
@@ -202,6 +210,12 @@
                         <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-[500px]"></div>
 
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400] backdrop-blur-md bg-slate-900/60 p-1.5 rounded-xl border border-slate-700/50 shadow-xl">
+                            
+                            <!-- 5. LIVE COMPASS -->
+                            <div id="compassRoseWrapper" class="bg-slate-800/80 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 flex items-center justify-center shadow-md mb-2 overflow-hidden" title="Live Device Heading">
+                                <i id="compassRose" class="fas fa-location-arrow text-emerald-400 transition-transform duration-75"></i>
+                            </div>
+
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -392,6 +406,50 @@
                 setTimeout(() => { map.invalidateSize(); }, 10);
             }
         };
+
+        // --- HAPTIC FEEDBACK HELPER ---
+        function triggerHaptic(type) {
+            if (!navigator.vibrate) return;
+            if (type === 'tick') navigator.vibrate(10);
+            if (type === 'pop') navigator.vibrate(40);
+            if (type === 'heavy') navigator.vibrate(80);
+            if (type === 'alert') navigator.vibrate([50, 50, 50]);
+        }
+
+        // --- SWIPE GESTURE LOGIC ---
+        const navDash = document.getElementById('navigationDashboard');
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        navDash.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        navDash.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 60 || touchEndX > touchStartX + 60) {
+                // Meaningful swipe detected
+                swapPorts();
+                triggerHaptic('pop');
+            }
+        }
+
+        // --- DEVICE COMPASS LOGIC ---
+        window.addEventListener('deviceorientation', function(e) {
+            const compass = document.getElementById('compassRose');
+            if (e.webkitCompassHeading) {
+                // iOS
+                compass.style.transform = `rotate(${-e.webkitCompassHeading}deg)`;
+            } else if (e.alpha !== null) {
+                // Android
+                compass.style.transform = `rotate(${e.alpha}deg)`;
+            }
+        });
+
 
         // --- SMART PWA ZOOM PREVENTION ---
         document.addEventListener('touchmove', function (event) {
@@ -1068,10 +1126,11 @@
             });
         }
 
-        window.zoomInMap = function() { map.zoomIn(); };
-        window.zoomOutMap = function() { map.zoomOut(); };
-        window.findMyGPSLocation = function() { map.locate({setView: true, maxZoom: 14}); };
+        window.zoomInMap = function() { map.zoomIn(); triggerHaptic('tick'); };
+        window.zoomOutMap = function() { map.zoomOut(); triggerHaptic('tick'); };
+        window.findMyGPSLocation = function() { map.locate({setView: true, maxZoom: 14}); triggerHaptic('pop'); };
         window.resetZoom = function() { 
+            triggerHaptic('pop');
             if (currentRoutePath.length > 0) {
                 const latlngs = currentRoutePath.map(id => [mapNodes[id].lat, mapNodes[id].lon]);
                 map.fitBounds(L.polyline(latlngs).getBounds(), { padding: [40, 40], maxZoom: 12 });
@@ -1082,6 +1141,7 @@
 
         // --- ROUTING LOGIC ---
         function setRoutePreference(mode) {
+            triggerHaptic('pop');
             activeRoutePreference = mode;
             ['btnRouteAuto', 'btnRouteOffshore', 'btnRouteSolent'].forEach(id => {
                 document.getElementById(id).className = "py-2 text-[10px] font-bold uppercase rounded-lg transition-all text-slate-400 hover:text-white";
@@ -1290,6 +1350,7 @@
                     alertTitle.className = "text-xs font-black uppercase tracking-wider text-rose-400";
                     alertTitle.innerText = "Shallow Bar Alert!";
                     alertDesc.innerHTML = "Destination contains a shallow entry bar with charted depth of <span class='text-white font-bold'>" + barDepth + "m</span>. Required depth is <span class='text-white font-bold'>" + requiredDepth.toFixed(1) + "m</span>. Time entry closely with the rising tide.";
+                    triggerHaptic('alert');
                 } else {
                     alertBox.className = "p-4 sm:p-5 rounded-2xl border flex items-start gap-4 fade-in bg-emerald-950/20 border-emerald-500/40 glow-emerald";
                     iconBg.className = "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-emerald-500/20";
@@ -1309,6 +1370,7 @@
         }
 
         function swapPorts() {
+            triggerHaptic('pop');
             const tempVal = depSelect.value;
             depSelect.value = destSelect.value;
             destSelect.value = tempVal;
@@ -1407,7 +1469,16 @@
             
             document.getElementById('googleMapsLink').href = "https://maps.google.com/?q=" + destNode.lat + "," + destNode.lon;
 
+            // Update traditional banner
             document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span class="text-indigo-200">` + liveDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
+            
+            // --- DYNAMIC ISLAND UPDATE ---
+            const island = document.getElementById('dynamicIsland');
+            island.classList.remove('hidden');
+            island.innerHTML = `<span class="text-emerald-400 font-black"><i class="fas fa-anchor mr-1 text-[10px]"></i> ${destNode.name.toUpperCase()}</span> <span class="text-slate-600 mx-1">|</span> <span class="text-slate-300">Tides: ${liveDate}</span>`;
+            island.classList.add('scale-105', 'glow-emerald');
+            setTimeout(() => island.classList.remove('scale-105', 'glow-emerald'), 250);
+
             if (destId !== lastWeatherDestId) {
                 fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
                 lastWeatherDestId = destId;
@@ -1693,6 +1764,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
 
         // Dynamic Port Knowledge Generator Engine
         async function fetchAIPortGuide() {
+            triggerHaptic('pop');
             const destId = destSelect.value;
             const destNode = mapNodes[destId];
             if (!destNode) return;
@@ -1890,7 +1962,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
                 frenchmans_creek: {
                     pubs: ["<strong>The Trengilly Wartha Inn</strong> ⭐ 4.5/5 - Splendid hidden valley pub found roughly 1.5 miles inland.", "<strong>The Shipwrights</strong> ⭐ 4.7/5 - Reachable by high-tide dinghy rows."],
                     food: ["<strong>Helford Village Ice Cream Shed</strong> ⭐ 4.6/5 - Exceptional local clotted cream ice creams.", "<strong>The Gear Farm Pasties</strong> ⭐ 4.8/5 - Arguably Cornwall's finest pasties."],
-                    amenities: "Secluded pristine wilderness anchorage. Deeply wooded shores. Completely dries to sand/mud bands. No lights, zero stores—total tranquility."
+                    amenities: "Secluded pristine wilderness anchorage. Deeply wooded shores. Completely dries to sand/mud bands. No lights, zero structures—total tranquility."
                 },
                 looe: {
                     pubs: ["<strong>The Sail Loft</strong> ⭐ 4.0/5 - Classic maritime pub with a relaxed vibe, great for a pint after tying up.", "<strong>The Jolly Sailor</strong> ⭐ 4.6/5 - One of Britain's oldest pubs, full of heavy beams and nautical history."],
@@ -2058,6 +2130,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
 
         // --- UI BINDINGS FOR LOGBOOK ---
         document.getElementById('savePortBtn').addEventListener('click', async () => {
+            triggerHaptic('tick');
             const activePort = destSelect.value; 
             const notesText = document.getElementById('portNotes').value;
             const photoFileInput = document.getElementById('portPhoto').files[0];
@@ -2069,6 +2142,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
             
             try {
                 await saveDestinationData(activePort, notesText, photoFileInput);
+                triggerHaptic('alert');
                 btn.innerHTML = `<i class="fas fa-check-circle mr-1"></i> SAVED`;
                 btn.classList.replace('bg-emerald-900', 'bg-emerald-600');
                 
@@ -2080,6 +2154,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
                 }, 2000);
             } catch (err) {
                 console.error("Failed to save", err);
+                triggerHaptic('heavy');
                 btn.innerHTML = `<i class="fas fa-times-circle mr-1"></i> ERROR`;
             }
         });
@@ -2142,23 +2217,27 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
         };
 
         depSelect.addEventListener('change', () => {
+            triggerHaptic('tick');
             localStorage.setItem('coastal_nav_departure', depSelect.value);
             update();
             loadOfflinePortData(destSelect.value);
         });
         
         destSelect.addEventListener('change', () => {
+            triggerHaptic('tick');
             localStorage.setItem('coastal_nav_destination', destSelect.value);
             update();
             loadOfflinePortData(destSelect.value);
         });
         
         speedSlider.addEventListener('input', () => {
+            triggerHaptic('tick');
             document.getElementById('speedDisplayVal').innerText = parseFloat(speedSlider.value).toFixed(1);
             update(); 
         });
 
         document.getElementById('deletePortBtn').addEventListener('click', async () => {
+            triggerHaptic('heavy');
             const activePort = destSelect.value;
             const activePortName = destSelect.options[destSelect.selectedIndex].text;
             
@@ -2170,6 +2249,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
                 
                 try {
                     await deleteDestinationData(activePort);
+                    triggerHaptic('pop');
                     
                     document.getElementById('portNotes').value = "";
                     document.getElementById('portPhoto').value = "";
@@ -2192,6 +2272,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
 
         // --- FULLSCREEN IMAGE MODAL CONTROLS ---
         window.openFullscreenImage = function(imgSrc) {
+            triggerHaptic('pop');
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
             
@@ -2200,6 +2281,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
         };
 
         window.closeImageModal = function() {
+            triggerHaptic('tick');
             const modal = document.getElementById('imageModal');
             modal.classList.add('hidden'); 
             
@@ -2210,6 +2292,7 @@ L.marker([interpLat, interpLon], {icon: timeIcon, zIndexOffset: 1000})
         
         // Speed Button Controls
         function adjustSpeed(amount) {
+            triggerHaptic('tick');
             let currentVal = parseFloat(speedSlider.value);
             let newVal = currentVal + amount;
             
