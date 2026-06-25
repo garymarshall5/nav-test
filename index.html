@@ -63,11 +63,6 @@
 </head>
 <body class="bg-[#020617] p-2 sm:p-4 text-slate-100 min-h-screen flex flex-col items-center pb-10 safe-pb selection:bg-blue-500/30">
 
-    <!-- 1. DYNAMIC ISLAND PILL -->
-    <div id="dynamicIsland" class="hidden fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-2 shadow-[0_4px_20px_rgba(0,0,0,0.8)] border border-slate-700/50 transition-all duration-300 pointer-events-none">
-        <!-- Content gets injected by JS -->
-    </div>
-
     <div class="max-w-5xl w-full mx-auto bg-slate-900 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-800 overflow-hidden glow-blue mt-8 sm:mt-4">
         
         <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-6 text-center border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -109,8 +104,7 @@
             
             <div id="content-nav" class="space-y-4 sm:space-y-6 fade-in">
                 
-                <!-- 4. SWIPE GESTURES: Added touch ID and instructional text -->
-                <div id="navigationDashboard" class="cursor-ew-resize p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px] select-none" title="Swipe left or right to swap ports">
+                <div id="navigationDashboard" class="cursor-ew-resize p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-slate-900 to-slate-950 rounded-2xl border border-blue-900/50 shadow-2xl text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[120px] select-none" title="Swipe left or right to cycle destination ports">
                     <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-emerald-500"></div>
                     <div class="text-xs sm:text-sm text-blue-400 font-black uppercase tracking-widest mb-1 shadow-black drop-shadow-md">Total Passage Distance</div>
                     <div id="distanceOutput" class="font-mono text-6xl sm:text-7xl font-black text-white drop-shadow-[0_2px_15px_rgba(59,130,246,0.5)] tracking-tight">0.0 NM</div>
@@ -139,8 +133,7 @@
                     <div id="routePreferenceBadge" class="mt-3 text-[10px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-500/30">
                         <i class="fas fa-magic mr-1"></i> Auto-Calculated Sea Routing
                     </div>
-                    <!-- Swipe Hint -->
-                    <div class="absolute bottom-2 right-3 text-[8px] text-slate-500 uppercase tracking-widest font-bold opacity-50"><i class="fas fa-arrows-left-right"></i> Swipe to Swap</div>
+                    <div class="absolute bottom-2 right-3 text-[8px] text-slate-500 uppercase tracking-widest font-bold opacity-50"><i class="fas fa-arrows-left-right"></i> Swipe to Cycle Dest</div>
                 </div>
 
                 <div class="space-y-3 bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/60 shadow-inner relative z-10">
@@ -210,12 +203,6 @@
                         <div id="routingMap" class="w-full bg-[#060e1a] rounded-xl border border-slate-800 shadow-inner h-[500px]"></div>
 
                         <div class="absolute top-4 right-2 flex flex-col gap-2 z-[400] backdrop-blur-md bg-slate-900/60 p-1.5 rounded-xl border border-slate-700/50 shadow-xl">
-                            
-                            <!-- 5. LIVE COMPASS -->
-                            <div id="compassRoseWrapper" class="bg-slate-800/80 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 flex items-center justify-center shadow-md mb-2 overflow-hidden" title="Live Device Heading">
-                                <i id="compassRose" class="fas fa-location-arrow text-emerald-400 transition-transform duration-75"></i>
-                            </div>
-
                             <button onclick="zoomInMap()" title="Zoom In" class="bg-slate-800/80 hover:bg-blue-600 hover:text-white hover:border-blue-500 border border-slate-600/50 w-8 h-8 rounded-lg text-slate-300 font-bold flex items-center justify-center shadow-md transition-all active:scale-95">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -431,25 +418,31 @@
         }, {passive: true});
 
         function handleSwipe() {
-            if (touchEndX < touchStartX - 60 || touchEndX > touchStartX + 60) {
-                // Meaningful swipe detected
-                swapPorts();
+            if (touchEndX < touchStartX - 50) {
+                // Swipe Left -> Next Port
+                cycleDestination(1);
+                triggerHaptic('pop');
+            } else if (touchEndX > touchStartX + 50) {
+                // Swipe Right -> Prev Port
+                cycleDestination(-1);
                 triggerHaptic('pop');
             }
         }
 
-        // --- DEVICE COMPASS LOGIC ---
-        window.addEventListener('deviceorientation', function(e) {
-            const compass = document.getElementById('compassRose');
-            if (e.webkitCompassHeading) {
-                // iOS
-                compass.style.transform = `rotate(${-e.webkitCompassHeading}deg)`;
-            } else if (e.alpha !== null) {
-                // Android
-                compass.style.transform = `rotate(${e.alpha}deg)`;
-            }
-        });
-
+        function cycleDestination(direction) {
+            // Get array of valid ports
+            const ports = Object.keys(mapNodes).filter(k => mapNodes[k].isPort);
+            
+            const currentIndex = ports.indexOf(destSelect.value);
+            if (currentIndex === -1) return;
+            
+            let newIndex = currentIndex + direction;
+            if (newIndex >= ports.length) newIndex = 0;
+            if (newIndex < 0) newIndex = ports.length - 1;
+            
+            destSelect.value = ports[newIndex];
+            destSelect.dispatchEvent(new Event('change'));
+        }
 
         // --- SMART PWA ZOOM PREVENTION ---
         document.addEventListener('touchmove', function (event) {
@@ -1471,13 +1464,6 @@
 
             // Update traditional banner
             document.getElementById('tideContextBanner').innerHTML = `Tide Times Date: <span class="text-indigo-200">` + liveDate + `</span> for <span class="text-white">` + destNode.name.toUpperCase() + `</span>`;
-            
-            // --- DYNAMIC ISLAND UPDATE ---
-            const island = document.getElementById('dynamicIsland');
-            island.classList.remove('hidden');
-            island.innerHTML = `<span class="text-emerald-400 font-black"><i class="fas fa-anchor mr-1 text-[10px]"></i> ${destNode.name.toUpperCase()}</span> <span class="text-slate-600 mx-1">|</span> <span class="text-slate-300">Tides: ${liveDate}</span>`;
-            island.classList.add('scale-105', 'glow-emerald');
-            setTimeout(() => island.classList.remove('scale-105', 'glow-emerald'), 250);
 
             if (destId !== lastWeatherDestId) {
                 fetchLocalWeather(destNode.lat, destNode.lon, destNode.name);
